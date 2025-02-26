@@ -1,0 +1,35 @@
+.about-container{
+    width: 100% ;
+    height: 100%;
+    display: flex;
+    gap: 20;
+    margin: 2rem 0;
+}
+
+.leftside {
+    width: 100%;
+    height: auto;
+    background: rgba(43, 48, 43, 0.897);
+    border-radius: 5%;
+}
+
+.rightside {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    background: #0f0;
+}
+
+.rightside .boxes{
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+.rightside .recBox {
+    width: 100%;
+    height: 50%;
+    background-color: #fff;
+}
+

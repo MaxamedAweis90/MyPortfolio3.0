@@ -1,0 +1,41 @@
+/* General link styles */
+.nav-link {
+    position: relative;
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  /* Hover effect: Changes color and triggers the underline animation */
+  .nav-link:hover {
+    color: #e63946; /* Custom hover color (adjust as needed) */
+  }
+  
+  /* Underline animation effect */
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -2px; /* Distance of the underline from the text */
+    width: 0;
+    height: 2px;
+    background-color: #e63946;
+    transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+  }
+  
+  /* Expand the underline when hovering */
+  .nav-link:hover::after {
+    width: 100%;
+    left: 0;
+  }
+  
+  /* Responsive adjustments for smaller screens */
+  @media (max-width: 768px) {
+    .nav-link {
+      font-size: 1.2rem;
+    }
+  }
+  

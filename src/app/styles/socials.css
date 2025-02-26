@@ -1,0 +1,71 @@
+.card {
+    display: flex;
+    width: 220px;
+    height: 50px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 115px;
+    padding-inline: 15px;
+    position: relative;
+    justify-content: space-around;
+  }
+  
+  .social-icons {
+    cursor: pointer;
+    display: flex;
+    transition: all 0.5s;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white;
+    font-weight: bold;
+    font-size: small;
+  }
+  
+  /* Tooltip label (kept as originally styled) */
+  .social-label {
+    --var: -0%;
+    position: absolute;
+    bottom: var(--var);
+    width: max-content;
+    transition: all 0.7s;
+    opacity: 0;
+    padding-inline: 7px;
+    padding-block: 3px;
+    border-radius: 7px;
+  }
+  
+  .social-label::after {
+    content: "";
+    position: absolute;
+    border-bottom: 10px solid crimson;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%);
+  }
+  
+  /* Show the tooltip on hover */
+  .social-icons:hover .social-label {
+    --var: -65%;
+    opacity: 1;
+  }
+  
+  .social-icons:hover {
+    z-index: 15;
+  }
+  
+  .card:hover > .social-icons:not(:hover) {
+    filter: blur(3px);
+    transform: scale(0.8);
+  }
+  
+  /* Ensure the clickable icon isn’t affected by tooltip styles */
+  .social-link {
+    text-decoration: none;
+  }
+  
+  .card svg {
+    height: 30px;
+  }
+  
