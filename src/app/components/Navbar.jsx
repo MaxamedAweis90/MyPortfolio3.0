@@ -3,7 +3,19 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import '@/styles/menu.css'
+import { motion, AnimatePresence } from 'framer-motion';
+import '@/styles/menu.css';
+
+// Faded animation variants
+const sidebarVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.3, ease: 'easeOut' },
+  },
+  exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2, ease: 'easeIn' } },
+};
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -20,6 +32,7 @@ const Navbar = () => {
 
   return (
     <>
+      {/* Navbar */}
       <nav className="fixed top-3 md:top-5 px-5 md:px-0 w-full z-[99999] transition-all duration-300">
         <div
           className={`container wrapper p-4 px-10 flex justify-between items-center ${
@@ -48,11 +61,11 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-            <div className="tooltip-container">
-              <a className="hover:text-gray-400 nav-link">Gallery</a>
-              <span className="tooltip">Coming Soon!</span>
-            </div>
-          </li>
+              <div className="tooltip-container">
+                <a className="hover:text-gray-400 nav-link">Gallery</a>
+                <span className="tooltip">Coming Soon!</span>
+              </div>
+            </li>
             <li>
               <Link href="/about" className="nav-link hover:text-gray-400">
                 About
@@ -60,10 +73,10 @@ const Navbar = () => {
             </li>
           </ul>
 
-          {/* Mobile Hamburger Button (only visible on small screens) */}
+          {/* Mobile Hamburger Button */}
           <div className="md:hidden">
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={() => setMenuOpen(true)}
               className="focus:outline-none z-50"
             >
               <div className="bar flex flex-col gap-1 w-6 h-5">
@@ -88,65 +101,63 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Sidebar Overlay */}
-      <div
-        onClick={() => setMenuOpen(false)}
-        className={`fixed inset-0 bg-slate-500 transition-opacity duration-300 z-[999999] ${
-          menuOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
-        }`}
-      ></div>
-
-      {/* Mobile Sidebar */}
-      <div
-        className={`fixed text-center top-0 left-0 h-full w-64 bg-white z-[999999] transform transition-transform duration-300 ease-in-out ${
-          menuOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        
-        <ul className="flex flex-col p-6 space-y-4">
-
-          {/* Logo */}
-          <div className="text-xl font-bold">
-            <Link href="/">
-              <Image src="/myLogo.png" width={200} height={20} alt="Logo" />
-            </Link>
-          </div>
-
-          <li>
-            <Link
-              href="/"
+      {/* Mobile Sidebar with Fade Animation */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={sidebarVariants}
+            className="fixed inset-0 bg-white z-[100000] flex flex-col justify-center items-center text-center"
+          >
+            {/* Close Button */}
+            <button
               onClick={() => setMenuOpen(false)}
-              className="block text-xl text-gray-800 hover:text-gray-600"
+              className="absolute top-4 right-4 text-6xl focus:outline-none"
             >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/work"
-              onClick={() => setMenuOpen(false)}
-              className="nav-link block text-xl text-gray-800 hover:text-gray-600"
-            >
-              Work
-            </Link>
-          </li>
-          <li className=' relative'>
-            <div className="tooltip-container">
-              <a className="nav-link block text-xl text-gray-800">Gallery</a>
-              <span className="tooltip">Coming Soon!</span>
-            </div>
-          </li>
-          <li>
-            <Link
-              href="/about"
-              onClick={() => setMenuOpen(false)}
-              className=" nav-link block text-xl text-gray-800 hover:text-gray-600"
-            >
-              About
-            </Link>
-          </li>
-        </ul>
-      </div>
+              &times;
+            </button>
+
+            {/* Centered Links */}
+            <ul className="space-y-8">
+              <li>
+                <Link
+                  href="/"
+                  onClick={() => setMenuOpen(false)}
+                  className="nav-link"
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/work"
+                  onClick={() => setMenuOpen(false)}
+                  className="nav-link"
+                >
+                  Work
+                </Link>
+              </li>
+              <li className="relative">
+                <div className="tooltip-container">
+                  <a className="nav-link block text-gray-800">Gallery</a>
+                  <span className="tooltip">Coming Soon!</span>
+                </div>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  onClick={() => setMenuOpen(false)}
+                  className="nav-link"
+                >
+                  About
+                </Link>
+              </li>
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

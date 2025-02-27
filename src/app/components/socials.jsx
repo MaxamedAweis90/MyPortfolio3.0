@@ -16,7 +16,7 @@ const socialLinks = [
     color: "#FF0000"
   },
   {
-    name: "maxamedaweys3",
+    name: "Behance",
     url: "https://www.behance.net/maxamedaweys3",
     icon: <FaBehance size={30} color="#1769FF" />,
     color: "#1769FF"

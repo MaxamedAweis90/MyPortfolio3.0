@@ -51,9 +51,21 @@ const Hero = () => {
 
       {/* Info Section */}
       <div className="info w-full max-w-[600px] -mt-16 md:mt-0 flex flex-col items-start gap-4 px-4 md:px-0">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold flex flex-row items-center mb-3">
-      <span className="lobster-two-font">👋🏼 Kore wa Mo desu</span>
-        </h1>
+      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold flex flex-row items-center mb-3">
+      <motion.span
+        style={{ display: "inline-block", transformOrigin: "bottom" }}
+        animate={{ rotate: [-20, 20, -20, 20, 0] }}
+        transition={{
+          duration: 1,
+          repeat: Infinity,       // Initial run plus 5 repeats
+          repeatDelay: 2,
+          ease: "easeInOut",
+        }}
+      >
+        👋🏼
+      </motion.span>
+      <span className="lobster-two-font ml-2">Kore wa Mo desu</span>
+    </h1>
 
         <p className="text-lg md:text-xl lg:text-2xl flex flex-row items-start gap-3 text-start">
           💻 <span>A passionate tech enthusiast blending coding with creativity to craft innovative solutions.</span>
