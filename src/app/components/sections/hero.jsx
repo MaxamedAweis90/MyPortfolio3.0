@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import "@/styles/hero.css";
 import Socials from "@/components/socials";
+import {  } from "react-icons";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const Hero = () => {
   const [baseRotation, setBaseRotation] = useState(0);
@@ -16,7 +18,7 @@ const Hero = () => {
 
   const handleMouseEnter = () => {
     setTimeout(() => {
-      setIsHovered(true);
+      setIsHovered(true); 
     }, 100); // Small delay to prevent flickering
   };
 
@@ -25,10 +27,12 @@ const Hero = () => {
   };
 
   return (
-    <section className="bg-amber-100 md:h-lvh hero section relative flex flex-col md:flex-row items-center justify-center h-full text-black px-4 md:gap-12 border-b-4 border-amber-100 shadow-[0px_10px_20px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:bottom-[-10px] before:left-0 before:w-full before:h-6 before:bg-gradient-to-b before:from-transparent before:to-amber-100 before:opacity-50">
+    <>
+    <div className="bg-amber-100  md:h-lvh hero section relative border-b-4 border-amber-100 shadow-[0px_10px_20px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:bottom-[-10px] before:left-0 before:w-full before:h-6 before:bg-gradient-to-b before:from-transparent before:to-amber-100 before:opacity-50">
+    <section className="flex flex-col-reverse md:flex-row items-center justify-center h-full text-black px-4 md:gap-12 ">
       {/* Flip Image Container */}
       <div
-        className="flip-container md:mt-16 mt-7 relative w-full max-w-[600px] md:max-w-[600px] lg:max-w-[600px] h-[600px] md:h-[600px] lg:h-[600px] cursor-pointer"
+        className="flip-container md:mt-16 mt-0  relative w-full max-w-[600px] md:max-w-[600px] lg:max-w-[600px] h-[600px] md:h-[600px] lg:h-[600px] cursor-pointer"
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -50,8 +54,8 @@ const Hero = () => {
       </div>
 
       {/* Info Section */}
-      <div className="info w-full max-w-[600px] -mt-16 md:mt-0 flex flex-col items-start gap-4 px-4 md:px-0">
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold flex flex-row items-center mb-3">
+      <div className="info w-full max-w-[600px] md:mt-16 mt-32 flex flex-col items-center md:items-start gap-4 px-4 md:px-0">
+      <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold flex flex-row items-center mb-3">
       <motion.span
         style={{ display: "inline-block", transformOrigin: "bottom" }}
         animate={{ rotate: [-20, 20, -20, 20, 0] }}
@@ -64,33 +68,47 @@ const Hero = () => {
       >
         👋🏼
       </motion.span>
-      <span className="lobster-two-font ml-2">Kore wa Mo desu</span>
+      <span className="lobster-two-font ml-2">Watashi wa Mo desu</span>
     </h1>
 
-        <p className="text-lg md:text-xl lg:text-2xl flex flex-row items-start gap-3 text-start">
-          💻 <span>A passionate tech enthusiast blending coding with creativity to craft innovative solutions.</span>
+        <p className="text-lg md:text-xl lg:text-2xl flex flex-row items-start gap-3 text-start ">
+           <span>💻  A passionate tech enthusiast blending coding with creativity to craft innovative solutions.</span>
         </p>
 
         <p className="  text-lg md:text-xl lg:text-2xl flex flex-row items-start gap-3 text-start">
-          🎨 <span>Graduate of Simad University [Coming soon!], Faculty of Computing (IT). Always striving for excellence in development & design.</span>
+           <span>🎨  Graduate of Simad University [Coming soon!], Faculty of Computing (IT). Always striving for excellence in development & design.</span>
         </p>
 
-        <Socials />
+        <div className="links flex  w-full flex-col-reverse md:gap-3 gap-2">
+          <Socials />
+          
+        </div>
 
-        <div className="mt-4 md:mt-6 flex flex-wrap justify-start gap-4">
-          <Link href="/about" className="inline-block">
+        <div className="mt-4 md:mt-6 flex flex-wrap gap-14  md:gap-4 items-center w-full">
+          <Link href="/work" className="inline-block">
             <button className="px-6 py-2 bg-blue-500 text-white rounded border-2 border-blue-500 hover:bg-transparent hover:text-black transition-colors text-lg md:text-xl">
-              Read More
+              Work Done
             </button>
           </Link>
-          <Link href="/hire" className="inline-block">
-            <button className="px-6 py-2 border-2 border-blue-500 text-black rounded hover:bg-blue-500 hover:text-white transition-colors text-lg md:text-xl">
-              Hire Me
+          <Link href="https://drive.google.com/file/d/1ZwyR207h-sNGKLHczySZqQMtWEeYdytq/view?usp=drive_link" className="inline-block">
+            <button className="flex items-center  gap-1 px-3 py-2 border-2 border-blue-500 text-black rounded hover:bg-blue-500 hover:text-white transition-colors text-lg md:text-xl">
+              Resume<FaExternalLinkAlt />
             </button>
           </Link>
         </div>
       </div>
     </section>
+    <div className="scroll-container">
+      <div className="mouse">
+        <span className="scroll-ball"></span>
+      </div>
+      <div className="chevrons">
+        <div className="chevrondown"></div>
+        <div className="chevrondown"></div>
+      </div>
+    </div>
+    </div>
+    </>
   );
 };
 

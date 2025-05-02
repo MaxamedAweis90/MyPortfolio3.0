@@ -1,7 +1,9 @@
+// app/studio/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
-import "./styles/globals.css";
-import LayoutWrapper from "./components/LayoutWrapper"; // Import LayoutWrapper
+import "../styles/globals.css"; // Assuming global styles are here
+import CustomCursor from "../components/CustomCursor";
 
+// Define fonts for layout
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -13,16 +15,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "EngAweis",
-  description:
-    "This is the Portfolio of EngAweis 'Mohamed Aweys Iiman' a Software Engineer, Graphic Designer, Content Creator",
+  title: "Studio | EngAweis",
+  description: "Studio section of EngAweis' portfolio.",
 };
 
-export default function RootLayout({ children }) {
+export default function StudioLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <LayoutWrapper>{children}</LayoutWrapper> {/* Wrap children with LayoutWrapper */}
+        {children}
+        <CustomCursor />
       </body>
     </html>
   );

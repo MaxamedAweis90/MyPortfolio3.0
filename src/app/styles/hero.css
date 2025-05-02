@@ -68,6 +68,8 @@
 
   .info {
     padding: 0 1rem;
+    align-items: start;
+
   }
 }
 

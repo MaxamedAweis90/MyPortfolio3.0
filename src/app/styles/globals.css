@@ -183,27 +183,40 @@ p {
 
 /* Base styling for section headers */
 .section-header {
+  display: inline-block; /* Shrink to fit text */
   text-align: center;
   margin-bottom: 5rem; /* Space below the header */
   font-size: 2.2rem; /* Adjust the size as needed */
   font-weight: bold;
-  color: #5e24e7; /* You can set any color */
+  color: #ffffff; /* Text color */
   text-transform: uppercase; /* Optional: makes text uppercase */
   letter-spacing: 1px; /* Optional: adds spacing between letters */
   position: relative;
+  z-index: 10; /* Brings it forward */
+  -webkit-text-stroke: 2px #3a137a; /* Outline size and color */
+  text-shadow: 2px 2px 5px rgba(221, 220, 220, 0.753); /* Optional: Adds depth */
 }
 
 /* Optional: Add a subtle decoration under the header */
 .section-header::after {
   content: '';
   position: absolute;
-  width: 100px;
-  height: 3px;
-  background-color: #6b6767; /* Customize the color */
-  bottom: -10px; /* Adjust position */
+  width: 80%; /* Match the text width */
+  height: 30px;
+  background-color: #fef3c7; /* Customize the color */
+  bottom: -10px; /* Adjust vertical position */
   left: 50%;
-  transform: translateX(-50%); /* Centers the decoration */
+  transform: translateX(-50%); /* Center under the text */
+  z-index: -1; /* Place behind the header */
+  border-radius: 5px; /* Optional: Adds rounded corners */
+  border-color: #fef3c7;
+  /* Shadow effect */
+  --tw-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  --tw-shadow-colored: 0px 10px 20px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
+
+
 
 
 /* 🌟 Footer */
@@ -243,5 +256,97 @@ p {
 
 
   
+}
+
+
+
+/* Scroll down style */
+.scroll-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0px;
+}
+
+@media screen and (max-width: 818px) {
+  .scroll-container {
+    display: none;
+
+  }
+}
+
+.mouse {
+  --color: black;
+  width: 30px;
+  height: 50px;
+  border: 3px solid var(--color);
+  border-radius: 25px;
+  position: relative;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.scroll-ball {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  background-color: var(--color);
+  border-radius: 50%;
+  animation: scroll-ball-move 2s infinite;
+  box-shadow: 0px -5px 3px 1px #2a547066;
+}
+
+@keyframes scroll-ball-move {
+  0% {
+    opacity: 0;
+    height: 6px;
+    top: 10px;
+  }
+  40% {
+    opacity: 1;
+    height: 10px;
+  }
+  80% {
+    opacity: 0;
+    top: 30px;
+    height: 10px;
+  }
+  100% {
+    opacity: 0;
+    height: 3px;
+  }
+}
+
+.chevrons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0px;
+}
+
+.chevrondown {
+  border: solid var(--color);
+  border-width: 0 3px 3px 0;
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  margin-top: 0px;
+  animation: chevron-pulse 500ms ease infinite alternate;
+}
+
+.chevrondown:nth-child(2) {
+  animation-delay: 250ms;
+}
+
+@keyframes chevron-pulse {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
 }
 

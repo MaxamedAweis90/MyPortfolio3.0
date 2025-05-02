@@ -28,7 +28,7 @@ const ServiceCard = ({ bgClass, Icon, title, subtitle }) => {
 const Services = () => {
   return (
     <section className="section">
-      <div className="container">
+      <div className="container text-center">
       <h2 className="section-header">My Services</h2>
         <div className="cards flex flex-col lg:flex-row gap-4 justify-center items-center">
           <ServiceCard

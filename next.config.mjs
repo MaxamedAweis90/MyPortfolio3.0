@@ -1,8 +1,7 @@
 // next.config.mjs
 export default {
-    output: 'export', // Enables static export for Netlify
-    images: {
-      unoptimized: true, // Fixes issues with Next.js images on Netlify
-    },
-  };
-  
+  images: {
+    unoptimized: true, // Prevent Next.js from optimizing images on static export (if using Netlify/Vercel)
+  },
+  // If using next.js with Sanity Studio, do not use 'output: export'
+};
