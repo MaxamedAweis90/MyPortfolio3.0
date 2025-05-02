@@ -1,99 +1,60 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import ReactPlayer from 'react-player/youtube';
 import { motion } from "framer-motion";
 import '@/styles/about.css';
 import { GoGoal } from "react-icons/go";
-import { IoCreate, IoCreateOutline } from "react-icons/io5";
+import { IoCreate } from "react-icons/io5";
 import { FaPause, FaPlay, FaRegEye } from 'react-icons/fa';
-import { LucideVerified, Verified } from 'lucide-react';
+import { LucideVerified } from 'lucide-react';
 import { GiSpeaker, GiSpeakerOff } from "react-icons/gi";
 
 const Page = () => {
-  const videoRef = useRef(null);
-  // Set initial state to false since we'll start after user interaction
+  const playerRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
 
-  // Try to play the video after user interaction
-  useEffect(() => {
-    const enablePlayback = () => {
-      if (videoRef.current) {
-        videoRef.current.play().then(() => {
-          setIsPlaying(true);
-        }).catch((error) => {
-          console.error("Autoplay failed:", error);
-        });
-      }
-      // Remove listeners after first interaction
-      window.removeEventListener("click", enablePlayback);
-      window.removeEventListener("touchstart", enablePlayback);
-    };
-
-    window.addEventListener("click", enablePlayback);
-    window.addEventListener("touchstart", enablePlayback);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener("click", enablePlayback);
-      window.removeEventListener("touchstart", enablePlayback);
-    };
-  }, []);
-
   const togglePlayPause = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    }
+    setIsPlaying(prev => !prev);
   };
 
-  const toggleSound = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !videoRef.current.muted;
-    setIsMuted(videoRef.current.muted);
+  const toggleMute = () => {
+    setIsMuted(prev => !prev);
   };
 
   return (
     <>
       <section className="topvideo overflow-hidden bg-amber-100 md:h-lvh hero section relative flex flex-col items-center justify-center text-black px-4 md:gap-12 border-b-4 border-amber-100 shadow-[0px_10px_20px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:bottom-[-10px] before:left-0 before:w-full before:h-6 before:bg-gradient-to-b before:from-transparent before:to-amber-100 before:opacity-50">
         <div className="video-container">
-          <video
-            ref={videoRef}
-            className="video-element"
+          <ReactPlayer
+            ref={playerRef}
+            url="https://youtu.be/cVsY9-SPrRc"
+            playing={isPlaying}
+            muted={isMuted}
             controls={false}
-            preload="metadata"
-            poster="/intro-Cover.jpg"
-            autoPlay
-            muted // ensure the video is muted at start
-          >
-            <source src="/intro.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+            width="100%"
+            height="100%"
+            className="video-element"
+          />
           <div className="video-overlay">
-            {/* Intro text overlay */}
             <h2 className="intro-text">The Intro</h2>
-            {/* Custom sound toggle button */}
-            <button onClick={toggleSound} className="sound-control">
+            <button onClick={toggleMute} className="sound-control">
               {isMuted ? <GiSpeakerOff /> : <GiSpeaker />}
             </button>
-            {/* Custom play/pause button */}
             <button onClick={togglePlayPause} className="play-control">
               {isPlaying ? <FaPause /> : <FaPlay />}
             </button>
           </div>
         </div>
         <div className="scroll-container">
-      <div className="mouse">
-        <span className="scroll-ball"></span>
-      </div>
-      <div className="chevrons">
-        <div className="chevrondown"></div>
-        <div className="chevrondown"></div>
-      </div>
-    </div>
+          <div className="mouse">
+            <span className="scroll-ball"></span>
+          </div>
+          <div className="chevrons">
+            <div className="chevrondown"></div>
+            <div className="chevrondown"></div>
+          </div>
+        </div>
       </section>
       <div className="container section text-center h-screen w-full mt-0">
         <div className="about-container">
@@ -155,7 +116,7 @@ const Page = () => {
           </div>
         </div>
         <div className="Certificates">
-          <h2 className="section-header">My Certificatess</h2>
+          <h2 className="section-header">My Certificates</h2>
         </div>
       </div>
     </>
