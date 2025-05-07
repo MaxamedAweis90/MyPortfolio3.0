@@ -11,7 +11,6 @@ export default function SwiperGallery({ images, title }) {
     <div className="mb-10">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
-        navigation
         pagination={{ clickable: true }}
         autoplay={{ delay: 3000 }}
         loop

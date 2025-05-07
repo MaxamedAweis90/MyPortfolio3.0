@@ -24,7 +24,6 @@ export default function StudioLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
-        <CustomCursor />
       </body>
     </html>
   );
