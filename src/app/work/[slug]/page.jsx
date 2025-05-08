@@ -74,7 +74,7 @@ export default async function ProjectDetails({ params }) {
       </Head>
 
       {/* Hero Section */}
-      <section className="bg-amber-100 py-24">
+      <section className="bg-amber-100 py-24 flex ">
         <div className="container mx-auto px-4 max-w-6xl mt-12">
           <div className="space-y-6">
             {/* Title and Duration */}
@@ -97,7 +97,7 @@ export default async function ProjectDetails({ params }) {
               {/* Team Members */}
               <div className="text-start">
                 <h4 className="font-semibold mb-2">Team:</h4>
-                <ul className="list-disc list-inside text-gray-700">
+                <ul className=" text-gray-700">
                   {project.team?.map((member, index) => (
                     <li key={index}>{member}</li>
                   ))}
