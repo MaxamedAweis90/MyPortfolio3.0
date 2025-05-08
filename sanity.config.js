@@ -1,22 +1,18 @@
-'use client'
-
-import { visionTool } from '@sanity/vision'
-import { defineConfig } from 'sanity'
-import { structureTool } from 'sanity/structure'
-
-import { apiVersion, dataset, projectId } from './src/sanity/env'
-import schemaTypes from './src/sanity/schemaTypes/' // ✅ fixed import
-import { structure } from './src/sanity/structure'
+import { defineConfig } from 'sanity';
+import { visionTool } from '@sanity/vision';
+import { structureTool } from 'sanity/structure';
+import { apiVersion, dataset, projectId } from './src/sanity/env'; // Ensure these are correctly exported
+import schemaTypes from './src/sanity/schemaTypes/'; // Correct import for your schema types
+import { structure } from './src/sanity/structure'; // Structure for the custom document structure
 
 export default defineConfig({
-  basePath: '/studio',
-  projectId,
-  dataset,
+  projectId, // Your Sanity project ID
+  dataset,  // Your dataset name (e.g., 'production')
   schema: {
-    types: schemaTypes, // ✅ correct usage
+    types: schemaTypes, // Import your schema types correctly
   },
   plugins: [
-    structureTool({ structure }),
-    visionTool({ defaultApiVersion: apiVersion }),
+    structureTool({ structure }), // Use the custom structure
+    visionTool({ defaultApiVersion: apiVersion }), // Vision plugin with API version
   ],
-})
+});
