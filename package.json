@@ -13,7 +13,7 @@
     "@sanity/color": "^3.0.6",
     "@sanity/image-url": "^1.1.0",
     "@sanity/preview-kit": "^5.0.0",
-    "@sanity/vision": "^2.2.6",
+    "@sanity/vision": "^3.88.1",
     "aos": "^2.3.4",
     "framer-motion": "^12.9.4",
     "gsap": "^3.13.0",
