@@ -1,6 +1,7 @@
+// app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css";
-import LayoutWrapper from "./components/LayoutWrapper"; // Import LayoutWrapper
+import LayoutWrapper from "./components/LayoutWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,28 +13,39 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// ✅ Built-in SEO metadata for App Router
 export const metadata = {
-  title: "EngAweis",
-  description:
-    "This is the Portfolio of EngAweis 'Mohamed Aweys Iiman' a Software Engineer, Graphic Designer, Content Creator",
+  title: "Mohamed Aweys – Developer & Designer",
+  description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
+  metadataBase: new URL("https://engaweis.space"),
+  openGraph: {
+    title: "Mohamed Aweys – Developer & Designer",
+    description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
+    url: "https://engaweis.space",
+    siteName: "EngAweis",
+    images: [
+      {
+        url: "/og-image.jpg", // Make sure this exists in your /public folder
+        width: 1200,
+        height: 630,
+        alt: "Mohamed Aweys – Developer & Designer",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mohamed Aweys – Developer & Designer",
+    description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
+    images: ["/og-image.jpg"],
+  },
 };
 
 export default function RootLayout({ children }) {
-
-  const seoData = {
-    title: 'Mohamed Aweys – Developer & Designer',
-    description: 'Explore Mohamed Aweis’s portfolio, projects and design gallery.',
-    url: 'https://engaweis.space',
-    image: 'https://engaweis.space/og-image.jpg', // Replace with your image URL
-  };
-  
   return (
     <html lang="en">
-      <head>
-        <Seo {...seoData} /> {/* ✅ Inject SEO meta tags here */}
-      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <LayoutWrapper>{children}</LayoutWrapper> {/* Wrap children with LayoutWrapper */}
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );
