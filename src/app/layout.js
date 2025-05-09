@@ -29,6 +29,9 @@ export default function RootLayout({ children }) {
   
   return (
     <html lang="en">
+      <head>
+        <Seo {...seoData} /> {/* ✅ Inject SEO meta tags here */}
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <LayoutWrapper>{children}</LayoutWrapper> {/* Wrap children with LayoutWrapper */}
       </body>
