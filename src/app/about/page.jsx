@@ -8,6 +8,7 @@ import { IoCreate } from "react-icons/io5";
 import { FaPause, FaPlay, FaRegEye } from 'react-icons/fa';
 import { LucideVerified } from 'lucide-react';
 import { GiSpeaker, GiSpeakerOff } from "react-icons/gi";
+import Certificates from './certificates';
 
 const Page = () => {
   const playerRef = useRef(null);
@@ -24,7 +25,7 @@ const Page = () => {
 
   return (
     <>
-      <section className="topvideo overflow-hidden bg-amber-100 md:h-lvh hero section relative flex flex-col items-center justify-center text-black px-4 md:gap-12 border-b-4 border-amber-100 shadow-[0px_10px_20px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:bottom-[-10px] before:left-0 before:w-full before:h-6 before:bg-gradient-to-b before:from-transparent before:to-amber-100 before:opacity-50">
+      <section className="topvideo overflow-hidden  bg-amber-100 md:h-lvh h-50 hero section relative flex flex-col items-center justify-center text-black px-4 md:gap-12 border-b-4 border-amber-100 shadow-[0px_10px_20px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:bottom-[-10px] before:left-0 before:w-full before:h-6 before:bg-gradient-to-b before:from-transparent before:to-amber-100 before:opacity-50">
         <div className="video-container">
           <ReactPlayer
             ref={playerRef}
@@ -56,7 +57,7 @@ const Page = () => {
           </div>
         </div>
       </section>
-      <div className="container section text-center h-screen w-full mt-0">
+      <div className="container section text-center w-full mt-0">
         <div className="about-container">
           <div className="leftside">
             <img src="./myProfile.png" alt="" className="profilepic" />
@@ -115,9 +116,11 @@ const Page = () => {
             <div className="recBox">ggg</div>
           </div>
         </div>
-        <div className="Certificates">
-          <h2 className="section-header">My Certificates</h2>
-        </div>
+       
+       {/* Certificates */}
+       < Certificates />
+
+       
       </div>
     </>
   );

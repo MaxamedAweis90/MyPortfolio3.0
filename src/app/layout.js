@@ -19,6 +19,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
+  const seoData = {
+    title: 'Mohamed Aweys – Developer & Designer',
+    description: 'Explore Mohamed’s projects, blog posts, and design gallery.',
+    url: 'https://yourdomain.com',
+    image: 'https://yourdomain.com/og-image.jpg', // Replace with your image URL
+  };
+  
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

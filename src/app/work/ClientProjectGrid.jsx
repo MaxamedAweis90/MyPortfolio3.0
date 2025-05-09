@@ -1,9 +1,9 @@
-// app/work/ClientProjectGrid.jsx
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ExternalLink } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   SiReact,
   SiVite,
@@ -19,13 +19,13 @@ import {
 
 const TOOL_ICONS = {
   'Vite + React': <><SiVite className="text-purple-500" /><SiReact className="text-blue-500" /></>,
-  'Next.js': <SiNextdotjs className="text-black" />,
-  Tailwind: <SiTailwindcss className="text-teal-400" />,
-  Firebase: <SiFirebase className="text-yellow-500" />,
-  Supabase: <SiSupabase className="text-green-500" />,
-  JavaScript: <SiJavascript className="text-yellow-400" />,
-  TypeScript: <SiTypescript className="text-blue-600" />,
-  Flutter: <SiFlutter className="text-blue-400" />,
+  'Next.js': <SiNextdotjs className="text-black" />, 
+  Tailwind: <SiTailwindcss className="text-teal-400" />, 
+  Firebase: <SiFirebase className="text-yellow-500" />, 
+  Supabase: <SiSupabase className="text-green-500" />, 
+  JavaScript: <SiJavascript className="text-yellow-400" />, 
+  TypeScript: <SiTypescript className="text-blue-600" />, 
+  Flutter: <SiFlutter className="text-blue-400" />, 
   'Sanity.io': <SiSanity className="text-red-500" />
 }
 
@@ -35,6 +35,11 @@ const LABEL_STYLES = {
   'For clients': 'bg-yellow-100 text-yellow-600',
   'Experimenting': 'bg-blue-100 text-blue-600',
   'Latest': 'bg-green-100 text-green-600',
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: index => ({ opacity: 1, y: 0, transition: { delay: index * 0.1, duration: 0.4 } }),
 }
 
 export default function ClientProjectGrid({ projects }) {
@@ -47,7 +52,7 @@ export default function ClientProjectGrid({ projects }) {
 
   return (
     <>
-      <div className="sticky top-0 z-10 py-6 ">
+      <div className="sticky top-0 z-10 py-6">
         <div className="flex justify-center">
           <div className="inline-flex bg-gray-100 rounded-full px-4 py-2 shadow-md gap-2">
             {categories.map(cat => (
@@ -66,11 +71,13 @@ export default function ClientProjectGrid({ projects }) {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-        {filtered.map((proj, idx) => (
-          <ProjectCard key={proj._id} proj={proj} index={idx} />
-        ))}
-      </div>
+      <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10" layout>
+        <AnimatePresence>
+          {filtered.map((proj, idx) => (
+            <ProjectCard key={proj._id} proj={proj} index={idx} />
+          ))}
+        </AnimatePresence>
+      </motion.div>
     </>
   )
 }
@@ -93,27 +100,31 @@ function ProjectCard({ proj, index }) {
     return () => clearInterval(intervalRef.current)
   }, [hovering, proj.images.length])
 
-  // Build labels array: manual + automatic Latest on newest
   const manualLabels = proj.labels || []
   const isLatest = index === 0
   const allLabels = isLatest ? [...manualLabels, 'Latest'] : manualLabels
 
   return (
-    <div
+    <motion.div
+      custom={index}
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      layout
       onClick={() => router.push(`/work/${proj.slug}`)}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      className="group relative bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 transition-transform hover:scale-[1.02] cursor-pointer"
+      className="group relative bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 cursor-pointer"
     >
-      <div className="flex justify-between items-start bg-amber-100 px-4 py-4">
+      <div className="flex justify-between items-start bg-amber-100 px-4 py-4 transition-transform group-hover:scale-105">
         <div className="flex-1 pr-2">
           <h2 className="text-lg font-semibold text-gray-800 flex flex-wrap gap-2">
             {proj.title}
             {allLabels.map(label => (
               <span
                 key={label}
-                className={`text-xs font-bold px-2 py-1 rounded-full ${LABEL_STYLES[label] || 'bg-gray-100 text-gray-800'}`}
-              >
+                className={`text-xs font-bold px-2 py-1 rounded-full ${LABEL_STYLES[label] || 'bg-gray-100 text-gray-800'}`}>
                 {label}
               </span>
             ))}
@@ -147,11 +158,11 @@ function ProjectCard({ proj, index }) {
           <img
             key={idx}
             src={src}
-            alt={`${proj.title} screenshot ${idx + 1}`}  
+            alt={`${proj.title} screenshot ${idx + 1}`}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${idx === current ? 'opacity-100' : 'opacity-0'}`}
           />
         ))}
       </div>
-    </div>
+    </motion.div>
   )
 }

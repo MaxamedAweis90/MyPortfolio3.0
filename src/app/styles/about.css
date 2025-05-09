@@ -84,7 +84,7 @@
     height: 100%;
     display: flex;
     gap: 20;
-    margin: 2rem 0;
+ 
     text-align: start;
     align-items: start;
     justify-content: start;
@@ -161,15 +161,18 @@
 @media screen and (max-width: 818px) {
     
     .topvideo{
-        height: 75vh;
+        height: 45vh;
         display: flex;
         justify-content: center;
         align-items: center;
+        padding-top: 155px;
+        padding-bottom: 155px;
+
     }
     .video-container {
            /* Center the container */
         padding-bottom: 56.25%;
-        top: 2rem;
+        top: 0rem;
         height: 0; /* 16:9 Aspect Ratio */
       }
       
@@ -224,7 +227,7 @@
         display: flex;
         flex-direction: column;
         gap: 20;
-        margin: 2rem 0;
+
     }
 
     .leftside {

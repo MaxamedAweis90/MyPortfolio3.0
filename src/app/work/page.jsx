@@ -26,8 +26,8 @@ export default async function WorkPage() {
 
   return (
     <>
-      <div className="w-full bg-amber-100 py-40">
-        <h1 className="text-5xl font-extrabold text-black text-center">
+      <div className="w-full bg-amber-100 md:py-32 py-24 ">
+        <h1 className="text-5xl md:mt-0 mt-10 font-extrabold text-black text-center">
           My Work
         </h1>
       </div>
