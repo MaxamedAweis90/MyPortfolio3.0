@@ -32,6 +32,7 @@ export default {
     { name: 'duration', title: 'Duration', type: 'string' },
     { name: 'team', title: 'Team Members', type: 'array', of: [{ type: 'string' }] },
     { name: 'images', title: 'Images', type: 'array', of: [{ type: 'image', options: { hotspot: true } }] },
-    { name: 'video', title: 'Video URL', type: 'url' }
+    { name: 'video', title: 'Video URL', type: 'url' },
+    { name: 'liveProjectUrl', title: 'Live Project URL', type: 'url' } // Added liveProjectUrl
   ]
 }
