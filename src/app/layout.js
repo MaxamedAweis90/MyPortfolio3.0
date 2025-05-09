@@ -22,9 +22,9 @@ export default function RootLayout({ children }) {
 
   const seoData = {
     title: 'Mohamed Aweys – Developer & Designer',
-    description: 'Explore Mohamed’s projects, blog posts, and design gallery.',
-    url: 'https://yourdomain.com',
-    image: 'https://yourdomain.com/og-image.jpg', // Replace with your image URL
+    description: 'Explore Mohamed Aweis’s portfolio, projects and design gallery.',
+    url: 'https://engaweis.space',
+    image: 'https://engaweis.space/og-image.jpg', // Replace with your image URL
   };
   
   return (
