@@ -1,19 +1,29 @@
-// structure.js
 import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list'
 
 export const structure = (S, context) =>
   S.list()
     .title('Content')
     .items([
-      // Replace the default certificate list with orderable one
+      // Certificates - already orderable
       orderableDocumentListDeskItem({
         type: 'certificate',
         title: 'Certificates',
         S,
         context,
       }),
-      // Include all other document types, except 'certificate'
+
+      // 🆕 Make Projects orderable
+      orderableDocumentListDeskItem({
+        type: 'project',
+        title: 'Projects',
+        S,
+        context,
+      }),
+
+      // Include all other types except 'certificate' and 'project'
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() !== 'certificate'
+        (item) =>
+          item.getId() !== 'certificate' &&
+          item.getId() !== 'project'
       ),
     ])

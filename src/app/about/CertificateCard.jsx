@@ -47,7 +47,7 @@ export default function CertificateCard({ cert, index }) {
             Latest
           </span>
         )}
-        <div className="aspect-w-16 aspect-h-9">
+        <div className="aspect-w-full aspect-h-9">
           {cert.imageRef?.image?.asset?.url ? (
             <a
               href={cert.link}

@@ -8,7 +8,7 @@ import ClientProjectGrid from './ClientProjectGrid'
 
 export default async function WorkPage() {
   const projects = await sanityClient.fetch(
-    `*[_type == "project"] | order(date desc){
+    `*[_type == "project"] | order(orderRank){
       _id,
       title,
       "slug": slug.current,
