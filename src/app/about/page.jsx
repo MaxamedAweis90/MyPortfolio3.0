@@ -14,6 +14,9 @@ import Certificates from "./certificates";
 import { client as sanityClient } from "../../sanity/lib/client";
 import { getCertificatesQuery } from "@/lib/queries";
 
+import { FiCode, FiSmartphone, FiLayers, FiVideo, FiGithub, FiDatabase, FiCloud, FiCpu } from "react-icons/fi";
+import LanguageSwiper from "./LanguageSwiper";
+
 export default function Page() {
   const playerRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -138,11 +141,115 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="rightside">
-            <div className="boxes">yes</div>
-            <div className="recBox">ggg</div>
-          </div>
+< div className="rightside flex justify-center bg-black min-h-screen ">
+  {/* Skills & Tools Box */}
+  <div className="boxes bg-gradient-to-br from-gray-800 to-black from-opacity-75 p-8 rounded-3xl shadow-2xl w-full max-w-6xl">
+    <h3 className="text-4xl font-extrabold text-white mb-4 text-center flex items-center gap-3 justify-center">
+      <FiCode className="text-blue-500 w-8 h-8" /> Skills & Tools
+    </h3>
+
+    {/* Skills and Tools Sections */}
+    <div className="flex flex-col gap-7 justify-between">
+
+      {/* Professional Skills (merged with Side Skills) */}
+      <div>
+        <h4 className="text-3xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
+          <FiLayers className="w-6 h-6 text-blue-300" /> Professional Skills
+        </h4>
+        <ul className="space-y-4 text-right text-lg">
+          <li className="flex items-center justify-start text-gray-200 hover:text-blue-500 transition duration-300">
+            <FiCode className="w-6 h-6 text-blue-400 mr-3" />
+            MERN Stack (MongoDB, Express, React, Node.js)
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-green-500 transition duration-300">
+            <FiSmartphone className="w-6 h-6 text-green-400 mr-3" />
+            Flutter (Mobile Development)
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-purple-400 transition duration-300">
+            <FiLayers className="w-6 h-6 text-purple-400 mr-3" />
+            UI/UX Design (Figma, Adobe XD)
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-pink-400 transition duration-300">
+            <FiVideo className="w-6 h-6 text-pink-400 mr-3" />
+            Graphic Design & Video Editing
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-gray-400 transition duration-300">
+            <FiGithub className="w-6 h-6 text-gray-400 mr-3" />
+            Git & GitHub
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-teal-400 transition duration-300">
+            <FiDatabase className="w-6 h-6 text-teal-400 mr-3" />
+            Sanity.io (Headless CMS)
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-indigo-400 transition duration-300">
+            <FiCloud className="w-6 h-6 text-indigo-400 mr-3" />
+            Firebase & Supabase
+          </li>
+        </ul>
+      </div>
+
+      {/* Soft Skills */}
+      <div>
+        <h4 className="text-3xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
+          <FiCpu className="w-6 h-6 text-yellow-400" /> Soft Skills
+        </h4>
+        <ul className="space-y-4 text-right text-lg">
+          <li className="flex items-center justify-start text-gray-200 hover:text-yellow-500 transition duration-300">
+            <FiCpu className="w-6 h-6 text-yellow-400 mr-3" />
+            Time Management
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-blue-400 transition duration-300">
+            <FiLayers className="w-6 h-6 text-blue-400 mr-3" />
+            Problem Solving
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-teal-500 transition duration-300">
+            <FiDatabase className="w-6 h-6 text-teal-400 mr-3" />
+            Communication
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-green-500 transition duration-300">
+            <FiLayers className="w-6 h-6 text-green-400 mr-3" />
+            Efficiency & Productivity
+          </li>
+        </ul>
+      </div>
+
+      {/* Graphic Design Skills */}
+      <div>
+        <h4 className="text-3xl font-semibold text-blue-400 mt-8 mb-4 items-center flex gap-2">
+          <FiVideo className="w-6 h-6 text-pink-400" /> Graphic Design Tools
+        </h4>
+        <ul className="space-y-4 text-right text-lg">
+          <li className="flex items-center justify-start text-gray-200 hover:text-blue-300 transition duration-300">
+            <FiLayers className="w-6 h-6 text-blue-300 mr-3" />
+            Photoshop
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-purple-300 transition duration-300">
+            <FiLayers className="w-6 h-6 text-purple-400 mr-3" />
+            Premiere Pro
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-green-400 transition duration-300">
+            <FiLayers className="w-6 h-6 text-green-400 mr-3" />
+            CapCut
+          </li>
+          <li className="flex items-center justify-start text-gray-200 hover:text-red-400 transition duration-300">
+            <FiLayers className="w-6 h-6 text-red-400 mr-3" />
+            Canva
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div className="recBox bg-gradient-to-br from-indigo-800 to-black p-7 rounded-3xl shadow-2xl  w-full max-w-6xl">
+     <LanguageSwiper />
+  </div>
+</div>
+
+
         </div>
+
+        
 
         {/* Certificates */}
         <Certificates certificates={certificates} />
