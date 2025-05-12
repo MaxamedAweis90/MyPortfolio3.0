@@ -1,9 +1,10 @@
-// app/work/page.jsx
+// Re-generate this page in the background at most once every 60 seconds
+export const revalidate = 60
+
 import { client as sanityClient } from '../../sanity/lib/client'
+
 import { urlFor } from '../../sanity/lib/image'
 import ClientProjectGrid from './ClientProjectGrid'
-
-export const revalidate = 60  // ISR: re‑fetch every 60 seconds
 
 export default async function WorkPage() {
   const projects = await sanityClient.fetch(
@@ -15,18 +16,19 @@ export default async function WorkPage() {
       labels,
       tools,
       description,
-      images
+      images,
+      liveProjectUrl
     }`
   )
 
-  const prepared = projects.map(p => ({
+  const prepared = projects.map((p) => ({
     ...p,
-    images: p.images.map(img => urlFor(img).width(600).height(400).url())
+    images: p.images.map((img) => urlFor(img).width(600).height(400).url()),
   }))
 
   return (
     <>
-      <div className="w-full bg-amber-100 md:py-32 py-24 ">
+      <div className="w-full bg-amber-100 md:py-32 py-24">
         <h1 className="text-5xl md:mt-0 mt-10 font-extrabold text-black text-center">
           My Work
         </h1>
