@@ -1,4 +1,7 @@
-// pages/project/[slug].js (or your specific path for project details)
+// app/project/[slug]/page.js
+
+// Re-generate this page in the background at most once every 60 seconds
+export const revalidate = 60
 
 import { notFound } from 'next/navigation'
 import { client as sanityClient } from '../../../sanity/lib/client'
@@ -17,7 +20,6 @@ import {
   SiFlutter,
   SiSanity,
 } from 'react-icons/si'
-import { Metadata } from 'next'
 
 // Tool icon mapping
 const TOOL_ICONS = {
@@ -37,35 +39,34 @@ const TOOL_ICONS = {
   'Sanity.io': <SiSanity className="text-red-500" />,
 }
 
-// Fetch all slugs for static generation
+// 1️⃣ Specify which slugs to pre-render at build time
 export async function generateStaticParams() {
-  const slugs = await sanityClient.fetch(`*[_type=='project'].slug.current`)
+  const slugs = await sanityClient.fetch(
+    `*[_type == "project"].slug.current`
+  )
   return slugs.map((slug) => ({ slug }))
 }
 
-// Optional: Generate metadata for SEO
+// 2️⃣ Optional: per-page <head> metadata
 export async function generateMetadata({ params }) {
   const { slug } = params
-
   const project = await sanityClient.fetch(
-    `*[_type=='project' && slug.current == $slug][0]{ title, description }`,
+    `*[_type == "project" && slug.current == $slug][0]{ title, description }`,
     { slug }
   )
-
   if (!project) return {}
-
   return {
     title: `${project.title} | My Portfolio`,
     description: project.description,
   }
 }
 
-// Main Component
+// 3️⃣ The actual page component
 export default async function ProjectDetails({ params }) {
   const { slug } = params
 
   const project = await sanityClient.fetch(
-    `*[_type=='project' && slug.current == $slug][0]{
+    `*[_type == "project" && slug.current == $slug][0]{
       title,
       description,
       longDescription,
@@ -81,7 +82,9 @@ export default async function ProjectDetails({ params }) {
     { slug }
   )
 
-  if (!project) return notFound()
+  if (!project) {
+    notFound()
+  }
 
   const formattedDate = new Date(project.date).toLocaleDateString('en-US', {
     month: 'long',
@@ -111,8 +114,8 @@ export default async function ProjectDetails({ params }) {
             <div className="text-start">
               <h4 className="font-semibold mb-2">Team:</h4>
               <ul className="text-gray-700">
-                {project.team?.map((member, index) => (
-                  <li key={index}>{member}</li>
+                {project.team?.map((member, i) => (
+                  <li key={i}>{member}</li>
                 ))}
               </ul>
             </div>
@@ -120,9 +123,9 @@ export default async function ProjectDetails({ params }) {
             <div className="text-start">
               <h4 className="font-semibold mb-2">Tools Used:</h4>
               <div className="flex flex-wrap gap-3">
-                {project.tools?.map((tool, index) => (
+                {project.tools?.map((tool, i) => (
                   <div
-                    key={index}
+                    key={i}
                     className="flex items-center gap-2 text-sm bg-gray-100 border border-gray-300 rounded-full px-4 py-1"
                   >
                     {TOOL_ICONS[tool] || '🔧'}
