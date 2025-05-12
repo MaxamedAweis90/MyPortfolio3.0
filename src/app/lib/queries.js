@@ -1,11 +1,14 @@
 // lib/queries.js
+
 export const getCertificatesQuery = `
   *[_type == "certificate"]
-    | order(_createdAt desc)
+    | order(orderRank)
     {
       _id,
       title,
       issuer,
+      issuedDate,
+      category,
       imageRef->{
         image{
           asset->{
@@ -15,7 +18,7 @@ export const getCertificatesQuery = `
       },
       link,
       verificationUrl,
-      verificationCode, // Fetch the new verification code field
+      verificationCode,
       _createdAt
     }
 `;
