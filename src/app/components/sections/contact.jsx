@@ -45,13 +45,21 @@ const ProjectRequest = () => {
       const result = await res.json();
 
       if (result.success) {
-        toast.success("Project request sent successfully!", {
-          style: {
-            backgroundColor: "black",
-            color: "white",
-            fontSize: "1.25rem",
-          },
-        });
+       toast.success("Project request sent successfully!", {
+  position: "top-center",
+  autoClose: 2000,
+  hideProgressBar: true,
+  theme: "colored",
+  style: {
+    backgroundColor: "Black",
+    color: "white",
+    fontSize: "1.25rem",
+    height: "80px", // ✅ set custom height here
+    display: "flex", // optional, to center text vertically
+    alignItems: "center", // optional
+  },
+});
+
         setFormData({
           projectName: "",
           name: "",
@@ -316,22 +324,6 @@ const ProjectRequest = () => {
           </motion.div>
         </div>
       </div>
-
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        containerStyle={{
-          width: "100%",
-          maxWidth: "600px",
-          zIndex: 999999,
-        }}
-      />
     </>
   );
 };
