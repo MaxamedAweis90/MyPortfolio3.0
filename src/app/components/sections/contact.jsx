@@ -16,13 +16,14 @@ const ProjectRequest = () => {
     deadline: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  // Calculate today's date for the deadline's minimum value.
+  // Today's date for min deadline
   const today = new Date().toISOString().split("T")[0];
 
   const contactInfo = {
     address: "Banadir, Mogadishu, Somalia",
-    phone: "+252 618294023",
+    phone: "+252618294023",
     email: "maxamedaweys90@gmail.com",
     website: "https://engaweis.space",
   };
@@ -34,7 +35,8 @@ const ProjectRequest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const sent_time = new Date().toLocaleString();
+    setLoading(true);
+    const sent_time = new Date().toLocaleString("en-GB", { timeZone: "Africa/Mogadishu" });
 
     try {
       const res = await fetch("/api/project-request", {
@@ -44,22 +46,14 @@ const ProjectRequest = () => {
       });
       const result = await res.json();
 
-      if (result.success) {
-       toast.success("Project request sent successfully!", {
-  position: "top-center",
-  autoClose: 2000,
-  hideProgressBar: true,
-  theme: "colored",
-  style: {
-    backgroundColor: "Black",
-    color: "white",
-    fontSize: "1.25rem",
-    height: "80px", // ✅ set custom height here
-    display: "flex", // optional, to center text vertically
-    alignItems: "center", // optional
-  },
-});
-
+      if (res.ok && result.success) {
+        toast.success("Project request sent successfully!", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          theme: "dark",
+          style: { fontSize: "1.25rem", height: "80px", display: "flex", alignItems: "center" },
+        });
         setFormData({
           projectName: "",
           name: "",
@@ -71,12 +65,18 @@ const ProjectRequest = () => {
           message: "",
         });
       } else {
-        throw new Error(result.error);
+        throw new Error(result.error || "Unknown error");
       }
-    } catch {
-      toast.error("Failed to send project request. Please try again.", {
-        style: { backgroundColor: "black", color: "white", fontSize: "1.25rem" },
+    } catch (err) {
+      console.error("Form submission error:", err);
+      toast.error(`Failed to send request: ${err.message}`, {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "dark",
+        style: { fontSize: "1.1rem" },
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,35 +85,24 @@ const ProjectRequest = () => {
     {
       icon: <FaPhoneAlt size={26} />,
       label: "Phone",
-      value: (
-        <a href={`tel:${contactInfo.phone}`} className="no-underline">
-          {contactInfo.phone}
-        </a>
-      ),
+      value: <a href={`tel:${contactInfo.phone}`}>{contactInfo.phone}</a>,
     },
     {
       icon: <FaPaperPlane size={26} />,
       label: "Email",
-      value: (
-        <a href={`mailto:${contactInfo.email}`} className="no-underline">
-          {contactInfo.email}
-        </a>
-      ),
+      value: <a href={`mailto:${contactInfo.email}`}>{contactInfo.email}</a>,
     },
     {
       icon: <FaGlobe size={26} />,
       label: "Website",
-      value: (
-        <a href={contactInfo.website} target="_blank" rel="noreferrer" className="no-underline">
-          {contactInfo.website}
-        </a>
-      ),
+      value: <a href={contactInfo.website} target="_blank" rel="noreferrer">{contactInfo.website}</a>,
     },
   ];
 
   return (
     <>
-    <div className="py-16 px-4 md:px-10 bg-amber-100">
+      {/* ToastContainer must be present once at root of this tree */}
+      <div className="py-16 px-4 md:px-10 bg-amber-100">
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="text-center mb-12"
@@ -122,12 +111,10 @@ const ProjectRequest = () => {
             transition={{ duration: 0.6 }}
           >
             <h3 className="text-primary text-sm uppercase tracking-wider">
-              Let's Start Your Project
+              Let’s Start Your Project
             </h3>
             <h2 className="section-header after:bg-white">Project Request</h2>
-            <p className="text-gray-600">
-              Have a project in mind? Share your details with us!
-            </p>
+            <p className="text-gray-600">Have a project in mind? Share your details with us!</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -144,79 +131,71 @@ const ProjectRequest = () => {
                   Project Name
                 </label>
                 <input
-                  type="text"
                   id="projectName"
                   name="projectName"
+                  type="text"
                   placeholder="Project Name"
                   value={formData.projectName}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   required
+                  className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
-              {/* Basic Contact Details */}
+              {/* Name & Email */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label htmlFor="name" className="mb-2 font-medium text-gray-800">
-                    Your Name
-                  </label>
+                  <label htmlFor="name" className="mb-2 font-medium text-gray-800">Your Name</label>
                   <input
-                    type="text"
                     id="name"
                     name="name"
+                    type="text"
                     placeholder="Your Name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                     required
+                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="email" className="mb-2 font-medium text-gray-800">
-                    Your Email
-                  </label>
+                  <label htmlFor="email" className="mb-2 font-medium text-gray-800">Your Email</label>
                   <input
-                    type="email"
                     id="email"
                     name="email"
+                    type="email"
                     placeholder="Your Email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                     required
+                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
 
-              {/* Additional Contact & Project Info */}
+              {/* Phone & Project Type */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label htmlFor="phone" className="mb-2 font-medium text-gray-800">
-                    Your Phone
-                  </label>
+                  <label htmlFor="phone" className="mb-2 font-medium text-gray-800">Your Phone</label>
                   <input
-                    type="tel"
                     id="phone"
                     name="phone"
+                    type="tel"
                     placeholder="Your Phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                     required
+                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="projectType" className="mb-2 font-medium text-gray-800">
-                    Project Type
-                  </label>
+                  <label htmlFor="projectType" className="mb-2 font-medium text-gray-800">Project Type</label>
                   <select
                     id="projectType"
                     name="projectType"
                     value={formData.projectType}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                     required
+                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="">Select Project Type</option>
                     <option value="Web Development">Web Development</option>
@@ -228,16 +207,14 @@ const ProjectRequest = () => {
                 </div>
               </div>
 
-              {/* Budget and Deadline */}
+              {/* Budget & Deadline */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label htmlFor="budget" className="mb-2 font-medium text-gray-800">
-                    Estimated Budget
-                  </label>
+                  <label htmlFor="budget" className="mb-2 font-medium text-gray-800">Estimated Budget</label>
                   <input
-                    type="text"
                     id="budget"
                     name="budget"
+                    type="text"
                     placeholder="Estimated Budget"
                     value={formData.budget}
                     onChange={handleChange}
@@ -245,14 +222,11 @@ const ProjectRequest = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="deadline" className="mb-2 font-medium text-gray-800">
-                    Project Deadline
-                  </label>
+                  <label htmlFor="deadline" className="mb-2 font-medium text-gray-800">Project Deadline</label>
                   <input
-                    type="date"
                     id="deadline"
                     name="deadline"
-                    placeholder="Project Deadline"
+                    type="date"
                     value={formData.deadline}
                     onChange={handleChange}
                     min={today}
@@ -260,28 +234,32 @@ const ProjectRequest = () => {
                   />
                 </div>
               </div>
-                            {/* Project Description */}
-                            <div className="flex flex-col">
+
+              {/* Message */}
+              <div className="flex flex-col">
                 <label htmlFor="message" className="mb-2 font-medium text-gray-800">
                   Additional Project Details
                 </label>
                 <textarea
                   id="message"
                   name="message"
-                  placeholder="Additional Project Details"
                   rows={6}
+                  placeholder="Additional Project Details"
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                   required
+                  className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <button
                 type="submit"
-                className="bg-red-600 text-white px-6 py-3 rounded font-semibold hover:opacity-90 transition"
+                disabled={loading}
+                className={` text-white px-6 py-3 rounded font-semibold transition ${
+                  loading ? "bg-gray-400" : "bg-red-600 hover:opacity-90"
+                }`}
               >
-                Send Request
+                {loading ? "Sending…" : "Send Request"}
               </button>
             </motion.form>
 

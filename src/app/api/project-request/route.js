@@ -1,35 +1,46 @@
+import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-// Optional: Ensure required env variables exist
-if (!process.env.RESEND_API_KEY || !process.env.EMAIL_RECEIVER) {
-  console.error("❌ Missing env vars!",
-    { RESEND_API_KEY: process.env.RESEND_API_KEY, EMAIL_RECEIVER: process.env.EMAIL_RECEIVER }
-  );
-  throw new Error("Missing required environment variables");
+// Ensure required env variables exist
+const { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER } = process.env;
+if (!RESEND_API_KEY || !EMAIL_RECEIVER || !EMAIL_SENDER) {
+  console.error("❌ Missing env vars!", { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER });
+  throw new Error("Missing required environment variables: RESEND_API_KEY, EMAIL_RECEIVER or EMAIL_SENDER");
 }
 
+const resend = new Resend(RESEND_API_KEY);
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+export async function POST(request) {
+  console.log("🟢 [project-request] POST invoked");
 
-export async function POST(req) {
+  let data;
   try {
-    // Updated to accept all project request fields
-    const {
-      projectName,
-      name,
-      email,
-      phone,
-      projectType,
-      budget,
-      deadline,
-      message,
-      sent_time,
-    } = await req.json();
+    data = await request.json();
+    console.log("Payload:", data);
+  } catch (err) {
+    console.error("🚫 Invalid JSON:", err);
+    return NextResponse.json(
+      { success: false, error: "Invalid JSON payload" },
+      { status: 400 }
+    );
+  }
 
-    await resend.emails.send({
-      // Replace with a verified sender email address registered in your Resend account!
-      from: "Verified Sender <onboarding@yourdomain.com>",
-      to: process.env.EMAIL_RECEIVER,
+  const {
+    projectName,
+    name,
+    email,
+    phone,
+    projectType,
+    budget,
+    deadline,
+    message,
+    sent_time,
+  } = data;
+
+  try {
+    const resp = await resend.emails.send({
+      from: `${EMAIL_SENDER}`,
+      to: EMAIL_RECEIVER,
       subject: `New Project Request: ${projectName}`,
       html: `
         <p><strong>Name:</strong> ${name}</p>
@@ -43,18 +54,13 @@ export async function POST(req) {
       `,
     });
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.log("✉️ Resend response ID:", resp.id);
+    return NextResponse.json({ success: true, id: resp.id }, { status: 200 });
   } catch (error) {
-    console.error("Error sending email:", error);
-    return new Response(
-      JSON.stringify({ error: error.message || "Failed to send email" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+    console.error("❌ Error sending email:", error);
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to send email" },
+      { status: 500 }
     );
   }
 }
