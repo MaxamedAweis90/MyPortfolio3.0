@@ -24,7 +24,7 @@ const ProjectRequest = () => {
     address: "Banadir, Mogadishu, Somalia",
     phone: "+252 618294023",
     email: "maxamedaweys90@gmail.com",
-    website: "https://engaweis.vercel.app",
+    website: "https://engaweis.space",
   };
 
   const handleChange = (e) => {

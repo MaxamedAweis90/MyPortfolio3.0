@@ -2,8 +2,12 @@ import { Resend } from "resend";
 
 // Optional: Ensure required env variables exist
 if (!process.env.RESEND_API_KEY || !process.env.EMAIL_RECEIVER) {
-  throw new Error("Missing required environment variables: RESEND_API_KEY or EMAIL_RECEIVER");
+  console.error("❌ Missing env vars!",
+    { RESEND_API_KEY: process.env.RESEND_API_KEY, EMAIL_RECEIVER: process.env.EMAIL_RECEIVER }
+  );
+  throw new Error("Missing required environment variables");
 }
+
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
