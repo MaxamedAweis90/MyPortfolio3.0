@@ -13,11 +13,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ✅ Built-in SEO metadata for App Router
 export const metadata = {
   title: "Mohamed Aweys – Developer & Designer",
   description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
   metadataBase: new URL("https://engaweis.space"),
+  icons: {
+    icon: "/favicon.png",      // <-- point to your PNG
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
   openGraph: {
     title: "Mohamed Aweys – Developer & Designer",
     description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
@@ -25,7 +29,7 @@ export const metadata = {
     siteName: "EngAweis",
     images: [
       {
-        url: "/og-image.jpg", // Make sure this exists in your /public folder
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Mohamed Aweys – Developer & Designer",
