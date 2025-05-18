@@ -156,8 +156,8 @@ export default function Page() {
         <h4 className="text-3xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
           <FiLayers className="w-6 h-6 text-blue-300" /> Professional Skills
         </h4>
-        <ul className="space-y-4 text-right text-lg">
-          <li className="flex items-center justify-start text-gray-200 hover:text-blue-500 transition duration-300">
+        <ul className="space-y-4 text-right md:text-2xl text-sm">
+          <li className="flex md:items-center justify-start text-start text-gray-200 hover:text-blue-500 transition duration-300">
             <FiCode className="w-6 h-6 text-blue-400 mr-3" />
             MERN Stack (MongoDB, Express, React, Node.js)
           </li>
