@@ -25,15 +25,8 @@ export default {
     {
       name: 'category',
       title: 'Category',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Web', value: 'Web' },
-          { title: 'Mobile', value: 'Mobile' },
-          { title: 'Design', value: 'Design' },
-        ],
-        layout: 'dropdown', // This will make it a dropdown
-      },
+      type: 'reference',
+      to: [{ type: 'category' }],
       validation: Rule => Rule.required(),
     },
     {
@@ -60,8 +53,7 @@ export default {
       name: 'verificationCode',
       title: 'Verification Code',
       type: 'string',
-      description: 'Enter the unique verification code for this certificate.',
-      validation: Rule => Rule.optional(),
+      description: 'Unique verification code for this certificate',
     },
     {
       name: 'orderRank',

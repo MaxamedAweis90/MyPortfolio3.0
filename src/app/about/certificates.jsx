@@ -1,7 +1,9 @@
 "use client";
-import React, { useState, useRef } from "react";
+
+import React, { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import CertificateCard from "./CertificateCard";
+import { client as sanityClient } from '../../sanity/lib/client';
 import "react-toastify/dist/ReactToastify.css";
 
 // reuse the same fadeUpVariants
@@ -11,18 +13,44 @@ const fadeUpVariants = {
 };
 
 export default function Certificates({ certificates = [] }) {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const categories = ["All", "Web", "Mobile", "Design"];
+  // categories as array of objects [{ _id, title }]
+  const [categories, setCategories] = useState([{ _id: "all", title: "All" }]);
+  const [activeCategory, setActiveCategory] = useState("all"); // store selected category _id
 
-  // filter by category
+  // fetch categories from Sanity on mount
+  useEffect(() => {
+    async function loadCategories() {
+      const cats = await sanityClient.fetch(`
+        *[_type == "category"] | order(orderRank asc) { _id, title }
+      `);
+      setCategories([{ _id: "all", title: "All" }, ...cats]);
+    }
+    loadCategories();
+  }, []);
+
+  // filter by category, 'all' shows all certificates
   const filtered =
-    activeCategory === "All"
+    activeCategory === "all"
       ? certificates
-      : certificates.filter((c) => c.category === activeCategory);
+      : certificates.filter(
+          (c) => c.category?._ref === activeCategory
+        );
 
-  // hook for toggle animation
+  // refs for scroll and animation
+  const scrollRef = useRef(null);
   const toggleRef = useRef(null);
   const toggleInView = useInView(toggleRef, { once: false, margin: "-100px" });
+
+  // scroll active pill into view when clicked
+  const handleCategoryClick = (catId) => {
+    setActiveCategory(catId);
+    const el = document.getElementById(`cat-${catId}`);
+    const container = scrollRef.current;
+    if (el && container) {
+      const offset = el.offsetLeft + el.clientWidth / 2 - container.clientWidth / 2;
+      container.scrollTo({ left: offset, behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="Certificates mt-12 px-4">
@@ -32,7 +60,6 @@ export default function Certificates({ certificates = [] }) {
         variants={fadeUpVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: false }}
         transition={{ duration: 0.8 }}
       >
         My Certificates
@@ -47,27 +74,31 @@ export default function Certificates({ certificates = [] }) {
         animate={toggleInView ? "visible" : "hidden"}
         transition={{ duration: 0.6 }}
       >
-        <div className="flex justify-center">
-          <div className="inline-flex bg-gray-100 rounded-full px-4 py-2 shadow gap-2">
-            {categories.map((cat, idx) => (
-              <motion.button
-                key={cat}
-                variants={fadeUpVariants}
-                initial="hidden"
-                animate={toggleInView ? "visible" : "hidden"}
-                transition={{ duration: 0.4, delay: idx * 0.1 }}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-full font-medium transition ${
-                  activeCategory === cat
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-blue-100"
-                }`}
-                whileTap={{ scale: 0.95 }}
-              >
-                {cat}
-              </motion.button>
-            ))}
-          </div>
+        <div
+          ref={scrollRef}
+          className=" flex md:inline-flex items-center space-x-3 bg-gray-100 rounded-full shadow py-2
+                     overflow-x-auto scrollbar-hide -mx-4 px-4
+                     md:overflow-visible md:mx-2 md:px-2 md:justify-center"
+        >
+          {categories.map((cat, idx) => (
+            <motion.button
+              id={`cat-${cat._id}`}
+              key={cat._id}
+              variants={fadeUpVariants}
+              initial="hidden"
+              animate={toggleInView ? "visible" : "hidden"}
+              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              onClick={() => handleCategoryClick(cat._id)}
+              className={`flex md-shrink-0 whitespace-nowrap px-4 py-2 rounded-full font-medium transition ${
+                activeCategory === cat._id
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 hover:bg-blue-100"
+              }`}
+              whileTap={{ scale: 0.95 }}
+            >
+              {cat.title}
+            </motion.button>
+          ))}
         </div>
       </motion.div>
 

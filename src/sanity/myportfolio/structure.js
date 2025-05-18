@@ -20,10 +20,21 @@ export const structure = (S, context) =>
         context,
       }),
 
+      // 🆕 Make categories orderable
+      orderableDocumentListDeskItem({
+        type: 'category',
+        title: 'category',
+        S,
+        context,
+      }),
+
       // Include all other types except 'certificate' and 'project'
       ...S.documentTypeListItems().filter(
         (item) =>
           item.getId() !== 'certificate' &&
-          item.getId() !== 'project'
+          item.getId() !== 'project' && 
+          item.getId() !== 'category'
+
+          
       ),
     ])
