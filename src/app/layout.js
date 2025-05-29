@@ -2,6 +2,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css";
 import LayoutWrapper from "./components/LayoutWrapper";
+import Script from "next/script"; // ✅ Import this from Next.js
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +19,7 @@ export const metadata = {
   description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
   metadataBase: new URL("https://engaweis.space"),
   icons: {
-    icon: "/favicon.png",      // <-- point to your PNG
+    icon: "/favicon.png",
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
@@ -48,6 +49,22 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        {/* ✅ Google Analytics Scripts */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-4H2Y9DKTFS"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-4H2Y9DKTFS');
+          `}
+        </Script>
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
