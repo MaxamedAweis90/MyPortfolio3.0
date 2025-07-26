@@ -1,0 +1,309 @@
+/* ------------------ Base Styles: Mobile First (0px–639px) ------------------ */
+
+.filterBarContainer {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 1.5rem;
+}
+.dark .filterBarContainer {
+  background-color: #0f172a;
+}
+
+.filterBar {
+  display: flex;
+  justify-content: center;
+}
+
+.filterButtons {
+  display: inline-flex;
+  background-color: #f3f4f6;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  gap: 0.5rem;
+}
+.dark .filterButtons {
+  background-color: #1e293b;
+}
+
+.filterButton {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  transition: background 0.3s, color 0.3s;
+  background: white;
+  color: #374151;
+}
+.dark .filterButton {
+  background: #0f172a;
+  color: white;
+}
+.filterButton:hover {
+  background-color: #dbeafe;
+}
+.dark .filterButton:hover {
+  background-color: #334155;
+}
+.filterButtonActive {
+  background-color: #2563eb;
+  color: white;
+}
+
+.projectGrid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  grid-template-columns: 1fr;
+}
+
+.projectCard {
+  position: relative;
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.projectCard:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+.dark .projectCard {
+  background-color: #1e293b;
+}
+
+.imageWrapper {
+  position: relative;
+  height: 480px;
+  width: 100%;
+}
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  transition: all 0.3s ease-in-out;
+  background-color: rgba(0, 0, 0, 0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cardTitle {
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(14px);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+}
+
+.cardDescription {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #d1d5db;
+  display: none;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(14px);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  align-items: center;
+  font-size: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cardTool,
+.cardLiveLink {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  backdrop-filter: blur(4px);
+  background-color: rgb(232, 250, 188);
+  position: relative;
+}
+
+.cardLiveLink {
+  background-color: #fad6d650;
+  color: #93c5fd;
+}
+.cardLiveLink:hover {
+  background-color: #a6ff00;
+  color: #000000;
+}
+
+/* ---------- Responsive Tool Label Visibility ---------- */
+
+.toolList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Default: all tool labels hidden on mobile */
+.toolLabel {
+  display: none;
+}
+
+/* Tablet (640px – 1023px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .projectGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cardOverlay {
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cardDescription {
+    display: none;
+  }
+
+  .toolList.fewToolsTablet .toolLabel {
+    display: inline;
+  }
+  .toolList.manyToolsTablet .toolLabel {
+    display: none;
+  }
+
+  .cardFooter {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(14px);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    align-items: center;
+    font-size: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .cardTool,
+  .cardLiveLink {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    backdrop-filter: blur(4px);
+    background-color: rgba(66, 75, 26, 0.603);
+  }
+
+  .cardLiveLink {
+    color: #93c5fd;
+  }
+  .cardLiveLink:hover {
+    background-color: #a6ff00;
+    color: #000000;
+  }
+}
+
+/* Desktop (1024px and up) */
+@media (min-width: 1024px) {
+  .projectGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cardOverlay {
+    background-color: transparent;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .cardOverlay.hovering {
+    background-color: rgba(0, 0, 0, 0.8);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cardDescription {
+    display: block;
+    text-align: center;
+  }
+
+  .cardTitle {
+    background-color: transparent;
+    backdrop-filter: blur(0);
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .toolList.fewToolsDesktop .toolLabel {
+    display: inline;
+  }
+
+  .toolList.manyToolsDesktop .toolLabel {
+    display: none;
+  }
+
+  .cardFooter {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    align-items: center;
+    font-size: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .cardTool {
+    color: #000000;
+  }
+}
+
+/* ------------------ Tooltip Styling ------------------ */
+
+.tooltip {
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: lightgray;
+  color: #0000050;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 20;
+}
+
+.tooltipArrow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid lightgray;
+}
+
+.cardTool:hover .tooltip {
+  opacity: 1;
+}
