@@ -31,12 +31,29 @@ export default {
       type: 'array',
       of: [{ type: 'string' }],
       options: {
+        layout: 'tags', // shows selections as tags
         list: [
-          'Vite + React', 'Next.js', 'Tailwind', 'Firebase',
-          'Supabase', 'JavaScript', 'TypeScript', 'Flutter', 'Sanity.io'
+          // Frontend & Frameworks
+          'Vite + React', 'Next.js', 'Tailwind', 'JavaScript', 'TypeScript', 'Flutter',
+    
+          // Backend & DB
+          'Firebase', 'Supabase', 'MongoDB', 'Express', 'NodeJS', 'MySQL', 'PostgreSQL',
+    
+          // CMS & Hosting
+          'Sanity.io', 'WordPress', 'Vercel', 'Netlify',
+    
+          // DevOps
+          'Docker',
+    
+          // Design & Productivity
+          'Figma', 'Canva', 'Adobe XD', 'Photoshop', 'Illustrator',
+    
+          // Dev & Team Tools
+          'GitHub', 'Git', 'VSCode', 'Notion', 'Trello', 'Slack', 'Zoom'
         ]
       }
-    },
+    }
+    ,
     { name: 'description', title: 'Short Description', type: 'text' },
     { name: 'longDescription', title: 'Long Description', type: 'blockContent' },
     { name: 'date', title: 'Date', type: 'date', options: { dateFormat: 'MMMM YYYY' } },
