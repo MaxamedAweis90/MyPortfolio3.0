@@ -1,10 +1,9 @@
 // Re-generate this page in the background at most once every 60 seconds
-export const revalidate = 60
+export const revalidate = 60;
 
-import { client as sanityClient } from '../../sanity/lib/client'
-
-import { urlFor } from '../../sanity/lib/image'
-import ClientProjectGrid from './ClientProjectGrid'
+import { client as sanityClient } from '../../sanity/lib/client';
+import { urlFor } from '../../sanity/lib/image';
+import ClientProjectGrid from './ClientProjectGrid';
 
 export default async function WorkPage() {
   const projects = await sanityClient.fetch(
@@ -13,20 +12,23 @@ export default async function WorkPage() {
       title,
       "slug": slug.current,
       category,
-      labels,
-      tools,
+      tools[]->{
+        _id,
+        title,
+        icon
+      },
       description,
       images,
       liveProjectUrl
     }`
-  )
+  );
 
   const prepared = projects.map((p) => ({
     ...p,
     images: Array.isArray(p.images)
       ? p.images.map((img) => urlFor(img).width(600).height(400).url())
       : [],
-  }))
+  }));
 
   return (
     <>
@@ -39,5 +41,5 @@ export default async function WorkPage() {
         <ClientProjectGrid projects={prepared} />
       </div>
     </>
-  )
+  );
 }

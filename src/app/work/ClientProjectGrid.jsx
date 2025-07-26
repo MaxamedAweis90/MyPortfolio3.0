@@ -98,16 +98,22 @@ function ProjectCard({ proj, index }) {
 
           <div className={styles.cardFooter}>
             <div className={`${styles.toolList} ${toolClass}`}>
-              {proj.tools?.map((tool) => (
-                <span key={tool} className={styles.cardTool}>
-                  {TOOL_ICONS[tool] || "🔧"}
-                  <span className={styles.toolLabel}>{tool}</span>
-                  <div className={styles.tooltip}>
-                    {tool}
-                    <div className={styles.tooltipArrow} />
-                  </div>
-                </span>
-              ))}
+            {proj.tools?.map((tool) => {
+  if (!tool || !tool.title || !tool.icon) return null; // ✅ skip broken/null tools
+
+  const IconComponent = TOOL_ICONS[tool.icon];
+  return (
+    <span key={tool._id || tool.title} className={styles.cardTool}>
+      {IconComponent ? <IconComponent className="text-base" /> : "🔧"}
+      <span className={styles.toolLabel}>{tool.title}</span>
+      <div className={styles.tooltip}>
+        {tool.title}
+        <div className={styles.tooltipArrow} />
+      </div>
+    </span>
+  );
+})}
+
             </div>
 
             {proj.liveProjectUrl && (
