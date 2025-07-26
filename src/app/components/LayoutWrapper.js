@@ -6,6 +6,7 @@ import CustomCursor from "@/components/CustomCursor";
 import Footer from "./Footer";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
+import Socialaccounts from "./Socialaccounts";
 
 const LayoutWrapper = ({ children }) => {
   const pathname = usePathname(); // Access the current pathname
@@ -16,11 +17,11 @@ const LayoutWrapper = ({ children }) => {
   return (
     <>
       {!isStudioPage && <Navbar />}
-      
       {/* Main content */}
       {children}
       
       <CustomCursor />
+      
       
       {/* Footer */}
       {!isStudioPage && <Footer />}

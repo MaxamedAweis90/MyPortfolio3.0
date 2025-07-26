@@ -23,7 +23,9 @@ export default async function WorkPage() {
 
   const prepared = projects.map((p) => ({
     ...p,
-    images: p.images.map((img) => urlFor(img).width(600).height(400).url()),
+    images: Array.isArray(p.images)
+      ? p.images.map((img) => urlFor(img).width(600).height(400).url())
+      : [],
   }))
 
   return (

@@ -33,14 +33,6 @@ const TOOL_ICONS = {
   "Sanity.io": <SiSanity className="text-red-500" />,
 };
 
-const LABEL_STYLES = {
-  "Hot 🔥": "bg-red-100 text-red-600",
-  "Just for fun": "bg-purple-100 text-purple-600",
-  "For clients": "bg-yellow-100 text-yellow-600",
-  Experimenting: "bg-blue-100 text-blue-600",
-  Latest: "bg-green-100 text-green-600",
-};
-
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: (index) => ({
@@ -61,6 +53,7 @@ export default function ClientProjectGrid({ projects }) {
 
   return (
     <>
+      {/* Category Filter */}
       <div className="sticky top-0 z-10 py-6">
         <div className="flex justify-center">
           <div className="inline-flex bg-gray-100 rounded-full px-4 py-2 shadow-md gap-2">
@@ -81,6 +74,7 @@ export default function ClientProjectGrid({ projects }) {
         </div>
       </div>
 
+      {/* Project Cards */}
       <motion.div
         className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10"
         layout
@@ -97,25 +91,7 @@ export default function ClientProjectGrid({ projects }) {
 
 function ProjectCard({ proj, index }) {
   const router = useRouter();
-  const [current, setCurrent] = useState(0);
   const [hovering, setHovering] = useState(false);
-  const intervalRef = useRef(null);
-
-  useEffect(() => {
-    if (hovering && proj.images.length > 1) {
-      intervalRef.current = setInterval(() => {
-        setCurrent((prev) => (prev + 1) % proj.images.length);
-      }, 1500);
-    } else {
-      clearInterval(intervalRef.current);
-      setCurrent(0);
-    }
-    return () => clearInterval(intervalRef.current);
-  }, [hovering, proj.images.length]);
-
-  const manualLabels = proj.labels || [];
-  const isLatest = index === 0;
-  const allLabels = isLatest ? [...manualLabels, "Latest"] : manualLabels;
 
   return (
     <motion.div
@@ -125,65 +101,52 @@ function ProjectCard({ proj, index }) {
       animate="visible"
       exit="hidden"
       layout
-      onClick={() => router.push(`/work/${proj.slug}`)}
+      className="relative bg-white rounded-2xl overflow-hidden shadow-md transition-transform hover:shadow-xl hover:-translate-y-1"
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      className="group relative bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 cursor-pointer hover:scale-105"
+      onClick={() => router.push(`/work/${proj.slug}`)}
     >
-      <div className="flex justify-between items-start bg-amber-100 px-4 py-4 transition-transform">
-        <div className="flex-1 pr-2">
-          <h2 className="text-lg font-semibold text-gray-800 flex flex-wrap gap-2">
-            {proj.title}
-            {allLabels.map((label) => (
-              <span
-                key={label}
-                className={`text-xs font-bold px-2 py-1 rounded-full ${
-                  LABEL_STYLES[label] || "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {label}
-              </span>
-            ))}
-          </h2>
-          <p className="text-sm text-gray-600 mt-1">{proj.description}</p>
+      {/* Image */}
+      <div className="relative h-[480px] overflow-hidden rounded-t-2xl">
+        <img
+          src={proj.images?.[0]}
+          alt={proj.title}
+          className="w-full h-full object-cover"
+        />
+
+        {/* Hover Content Overlay */}
+        <div
+          className={`absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-80 px-6 text-center text-white transition-opacity duration-300 ${
+            hovering ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <h2 className="text-xl font-semibold">{proj.title}</h2>
+          <p className="text-sm text-gray-300 mt-2">{proj.description}</p>
+
+          {/* Tools Icons */}
           {proj.tools?.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="flex gap-4 flex-wrap justify-center mt-4 text-xl">
               {proj.tools.map((tool) => (
-                <span
-                  key={tool}
-                  className="text-xs inline-flex items-center gap-1 bg-gray-100 border border-gray-300 rounded-full px-2 py-1"
-                >
-                  {TOOL_ICONS[tool] || "🔧"} <span>{tool}</span>
+                <span key={tool} title={tool}>
+                  {TOOL_ICONS[tool] || "🔧"}
                 </span>
               ))}
             </div>
           )}
+
+          {/* Live View link */}
+          {proj.liveProjectUrl && (
+            <a
+              href={proj.liveProjectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="mt-6 text-sm text-blue-400 hover:text-blue-300 underline"
+            >
+              Live View →
+            </a>
+          )}
         </div>
-
-        {proj.liveProjectUrl && (
-          <a
-            href={proj.liveProjectUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ExternalLink size={16} />
-          </a>
-        )}
-      </div>
-
-      <div className="relative h-96 overflow-hidden">
-        {proj.images.map((src, idx) => (
-          <img
-            key={idx}
-            src={src}
-            alt={`${proj.title} screenshot ${idx + 1}`}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-              idx === current ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        ))}
       </div>
     </motion.div>
   );
