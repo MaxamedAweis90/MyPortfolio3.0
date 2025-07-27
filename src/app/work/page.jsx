@@ -15,7 +15,8 @@ export default async function WorkPage() {
       tools[]->{
         _id,
         title,
-        icon
+        icon,
+        color
       },
       description,
       images,

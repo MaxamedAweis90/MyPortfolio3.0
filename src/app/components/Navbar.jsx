@@ -30,7 +30,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-3 md:top-5 px-5 md:px-0 w-full z-[99] transition-all duration-300">
+      <nav className="fixed top-3 md:top-5 px-5 w-full z-[99] transition-all duration-300">
         <div
           className={`container wrapper p-4 px-10 flex justify-between md:justify-center items-center ${
             isScrolled

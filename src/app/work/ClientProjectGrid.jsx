@@ -99,12 +99,22 @@ function ProjectCard({ proj, index }) {
           <div className={styles.cardFooter}>
             <div className={`${styles.toolList} ${toolClass}`}>
             {proj.tools?.map((tool) => {
-  if (!tool || !tool.title || !tool.icon) return null; // ✅ skip broken/null tools
+  if (!tool || !tool.icon || !tool.title || !tool.color) return null;
 
-  const IconComponent = TOOL_ICONS[tool.icon];
+  const IconComponent = TOOL_ICONS[tool.icon]; // 🟢 use icon field from Sanity
+  const isTailwind = tool.color.startsWith("text-");
+
   return (
-    <span key={tool._id || tool.title} className={styles.cardTool}>
-      {IconComponent ? <IconComponent className="text-base" /> : "🔧"}
+    <span
+      key={tool._id || tool.title}
+      className={`${styles.cardTool} ${isTailwind ? tool.color : ""}`}
+      style={!isTailwind ? { color: tool.color } : {}}
+    >
+      {IconComponent ? (
+        <IconComponent className="text-base" />
+      ) : (
+        "🔧"
+      )}
       <span className={styles.toolLabel}>{tool.title}</span>
       <div className={styles.tooltip}>
         {tool.title}
@@ -113,6 +123,7 @@ function ProjectCard({ proj, index }) {
     </span>
   );
 })}
+
 
             </div>
 

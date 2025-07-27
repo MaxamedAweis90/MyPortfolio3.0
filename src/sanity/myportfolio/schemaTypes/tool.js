@@ -1,5 +1,4 @@
 // schemas/tool.js
-
 export default {
 	name: 'tool',
 	title: 'Tool',
@@ -13,7 +12,13 @@ export default {
 	  },
 	  {
 		name: 'icon',
-		title: 'React Icon Name (e.g., SiNextdotjs, FaGithub)',
+		title: 'React Icon Name (e.g., SiNextdotjs)',
+		type: 'string',
+		validation: Rule => Rule.required()
+	  },
+	  {
+		name: 'color',
+		title: 'Tailwind or HEX Color (e.g., text-blue-500 or #1e90ff)',
 		type: 'string',
 		validation: Rule => Rule.required()
 	  }
@@ -24,5 +29,5 @@ export default {
 		subtitle: 'icon'
 	  }
 	}
-  }
+  };
   
