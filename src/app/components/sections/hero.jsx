@@ -88,7 +88,7 @@ const Hero = () => {
 
           <div className="mt-4 md:mt-6 flex flex-wrap gap-14 md:gap-4 items-center w-full">
             <Link href="/work" className="inline-block">
-              <button className="px-6 py-2 bg-blue-500 text-white rounded border-2 border-blue-500 hover:bg-transparent hover:text-black transition-colors text-lg md:text-xl">
+              <button className="cursor-target px-6 py-2 bg-blue-500 text-white rounded border-2 border-blue-500 hover:bg-transparent hover:text-black transition-colors text-lg md:text-xl">
                 Work Done
               </button>
             </Link>
@@ -96,7 +96,7 @@ const Hero = () => {
               href="https://drive.google.com/file/d/1ZwyR207h-sNGKLHczySZqQMtWEeYdytq/view?usp=drive_link"
               className="inline-block"
             >
-              <button className="flex items-center gap-1 px-3 py-2 border-2 border-blue-500 text-black rounded hover:bg-blue-500 hover:text-white transition-colors text-lg md:text-xl">
+              <button className="cursor-target flex items-center gap-1 px-3 py-2 border-2 border-blue-500 text-black rounded hover:bg-blue-500 hover:text-white transition-colors text-lg md:text-xl">
                 Resume <FaExternalLinkAlt />
               </button>
             </Link>

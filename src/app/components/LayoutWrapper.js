@@ -2,11 +2,12 @@
 
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
-import CustomCursor from "@/components/CustomCursor";
+import TargetCursor from "@/components/TargetCursor";
 import Footer from "./Footer";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
 import Socialaccounts from "./Socialaccounts";
+import '../styles/globals.css';
 
 const LayoutWrapper = ({ children }) => {
   const pathname = usePathname(); // Access the current pathname
@@ -20,7 +21,12 @@ const LayoutWrapper = ({ children }) => {
       {/* Main content */}
       {children}
       
-      <CustomCursor />
+      <TargetCursor
+  targetSelector="a, button, .cursor-target"
+  spinDuration={2}
+  hideDefaultCursor={true}
+/>
+
       
       
       {/* Footer */}

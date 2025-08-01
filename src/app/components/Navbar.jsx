@@ -51,17 +51,17 @@ export default function Navbar() {
               <TransitionLink
                 href="/"
                 label="Home"
-                className="nav-link hover:text-gray-400"
+                className="cursor-target nav-link hover:text-gray-400"
               />
               <TransitionLink
                 href="/work"
                 label="Work"
-                className="nav-link hover:text-gray-400"
+                className="cursor-target nav-link hover:text-gray-400"
               />
             </div>
 
             {/* Animated Logo */}
-            <div className="text-xl font-bold">
+            <div className="cursor-target text-xl font-bold">
               <Link href="/">
                 <motion.div
                   onMouseEnter={() => setIsHovered(true)}
@@ -109,12 +109,17 @@ export default function Navbar() {
             </div>
 
             <div className="flex space-x-6">
-              <TransitionLink
+            <TransitionLink
                 href="/about"
                 label="About"
-                className="nav-link hover:text-gray-400"
+                className="cursor-target nav-link hover:text-gray-400"
               />
-              <div className="tooltip-container">
+              {/* <TransitionLink
+                href="/blog"
+                label="Blog"
+                className="cursor-target nav-link hover:text-gray-400"
+              /> */}
+              <div className="cursor-target tooltip-container">
                 <a className="hover:text-gray-400 nav-link">Gallery</a>
                 <span className="tooltip">Coming Soon!</span>
               </div>

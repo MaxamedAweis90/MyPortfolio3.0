@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Automatically apply .cursor-target styles to all buttons */
+button {
+  /* This lets GSAP detect it as a cursor-target */
+  position: relative; /* ensure layout behaves well */
+}
+
+button::before {
+  content: "";
+  display: none; /* just to show it could be customized */
+}
+
+/* Let the custom cursor system target buttons */
+button.cursor-target,
+button {
+  /* optional: add a style hook if needed */
+}
+
 /* Tooltip */
 
 .tooltip-container {

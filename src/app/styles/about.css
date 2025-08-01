@@ -96,6 +96,7 @@
     background: rgba(43, 48, 43, 0.897);
     border-radius: 20px;
     padding: 40px;
+    color: #fff;
 }
 
 .rightside {
@@ -158,6 +159,8 @@
 }
 
 @media screen and (max-width: 818px) {
+
+  
     
     .topvideo{
         height: 45vh;
@@ -248,6 +251,15 @@
     max-width: 95% !important;
     border-radius: 6px !important;
   }
+
+  
+}
+
+@media (min-width: 640px) and (max-width: 1200px) {
+  .toolsize{
+    padding-left: 2.2rem !important;
+    padding-right: 2.2rem !important;
+}
 }
 
 

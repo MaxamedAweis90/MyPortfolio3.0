@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./ClientProjectGrid.module.css";
@@ -6,12 +7,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TOOL_ICONS } from "@/components/toolIcons";
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
   visible: (index) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: index * 0.1, duration: 0.4 },
+    scale: 1,
+    transition: {
+      delay: index * 0.15,
+      duration: 0.4,
+      ease: "easeOut",
+    },
   }),
+  exit: {
+    opacity: 0,
+    y: -20,
+    scale: 0.95,
+    transition: {
+      duration: 0.25,
+      ease: "easeIn",
+    },
+  },
 };
 
 export default function ClientProjectGrid({ projects }) {
@@ -43,8 +58,15 @@ export default function ClientProjectGrid({ projects }) {
         </div>
       </div>
 
-      <motion.div className={styles.projectGrid} layout>
-        <AnimatePresence>
+      <motion.div
+        className={styles.projectGrid}
+        layout
+        key={activeCategory}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <AnimatePresence mode="wait">
           {filtered.map((proj, idx) => (
             <ProjectCard key={proj._id} proj={proj} index={idx} />
           ))}
@@ -71,9 +93,11 @@ function ProjectCard({ proj, index }) {
       custom={index}
       variants={cardVariants}
       initial="hidden"
-      animate="visible"
-      exit="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.2 }}
+      exit="exit"
       layout
+      layoutId={proj._id}
       className={styles.projectCard}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
@@ -98,33 +122,34 @@ function ProjectCard({ proj, index }) {
 
           <div className={styles.cardFooter}>
             <div className={`${styles.toolList} ${toolClass}`}>
-            {proj.tools?.map((tool) => {
-  if (!tool || !tool.icon || !tool.title || !tool.color) return null;
+              {proj.tools?.map((tool) => {
+                if (!tool || !tool.icon || !tool.title || !tool.color)
+                  return null;
 
-  const IconComponent = TOOL_ICONS[tool.icon]; // 🟢 use icon field from Sanity
-  const isTailwind = tool.color.startsWith("text-");
+                const IconComponent = TOOL_ICONS[tool.icon];
+                const isTailwind = tool.color.startsWith("text-");
 
-  return (
-    <span
-      key={tool._id || tool.title}
-      className={`${styles.cardTool} ${isTailwind ? tool.color : ""}`}
-      style={!isTailwind ? { color: tool.color } : {}}
-    >
-      {IconComponent ? (
-        <IconComponent className="text-base" />
-      ) : (
-        "🔧"
-      )}
-      <span className={styles.toolLabel}>{tool.title}</span>
-      <div className={styles.tooltip}>
-        {tool.title}
-        <div className={styles.tooltipArrow} />
-      </div>
-    </span>
-  );
-})}
-
-
+                return (
+                  <span
+                    key={tool._id || tool.title}
+                    className={`${styles.cardTool} ${
+                      isTailwind ? tool.color : ""
+                    }`}
+                    style={!isTailwind ? { color: tool.color } : {}}
+                  >
+                    {IconComponent ? (
+                      <IconComponent className="text-base" />
+                    ) : (
+                      "🔧"
+                    )}
+                    <span className={styles.toolLabel}>{tool.title}</span>
+                    <div className={styles.tooltip}>
+                      {tool.title}
+                      <div className={styles.tooltipArrow} />
+                    </div>
+                  </span>
+                );
+              })}
             </div>
 
             {proj.liveProjectUrl && (

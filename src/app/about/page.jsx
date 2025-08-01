@@ -3,6 +3,8 @@ import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player/youtube";
 import { motion } from "framer-motion";
 import "@/styles/about.css";
+import BlurText from "../components/BlurText";
+import ScrollReveal from "../components/ScrollReveal";
 
 import { GoGoal } from "react-icons/go";
 import { IoCreate } from "react-icons/io5";
@@ -14,16 +16,37 @@ import Certificates from "./certificates";
 import { client as sanityClient } from "../../sanity/lib/client";
 import { getCertificatesQuery } from "@/lib/queries";
 
-import { FiCode, FiSmartphone, FiLayers, FiVideo, FiGithub, FiDatabase, FiCloud, FiCpu } from "react-icons/fi";
+import {
+  SiVite,
+  SiNextdotjs,
+  SiMongodb,
+  SiExpress,
+  SiReact,
+  SiNodedotjs,
+  SiFlutter,
+  SiFigma,
+  SiAdobephotoshop,
+  SiAdobeillustrator,
+  SiAdobepremierepro,
+  SiCapcut,
+  SiCanva,
+  SiGithub,
+  SiSanity,
+  SiFirebase,
+  SiSupabase,
+} from "react-icons/si";
+import { FaLaptopCode, FaPeopleCarry, FaRegClock, FaBolt, FaHandshake, FaPhotoVideo } from "react-icons/fa";
+import { CgWebsite } from "react-icons/cg";
 import LanguageSwiper from "./LanguageSwiper";
+
 
 export default function Page() {
   const playerRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [played, setPlayed] = useState(0);
   const [certificates, setCertificates] = useState([]);
 
-  // Fetch certificates on mount
   useEffect(() => {
     sanityClient
       .fetch(getCertificatesQuery)
@@ -36,224 +59,273 @@ export default function Page() {
 
   return (
     <>
-      {/* Hero Video Section */}
-      <section className="topvideo overflow-hidden bg-amber-100 md:h-lvh h-50 hero section relative flex flex-col items-center justify-center text-black px-4 md:gap-12 border-b-4 border-amber-100 shadow-[0px_10px_20px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:bottom-[-10px] before:left-0 before:w-full before:h-6 before:bg-gradient-to-b before:from-transparent before:to-amber-100 before:opacity-50">
-        <div className="video-container">
-          <ReactPlayer
-            ref={playerRef}
-            url="https://youtu.be/cVsY9-SPrRc"
-            playing={isPlaying}
-            muted={isMuted}
-            controls={false}
-            width="100%"
-            height="100%"
-            className="video-element"
-          />
-          <div className="video-overlay">
-            <h2 className="intro-text">The Intro</h2>
-            <button onClick={toggleMute} className="sound-control">
-              {isMuted ? <GiSpeakerOff /> : <GiSpeaker />}
-            </button>
-            <button onClick={togglePlayPause} className="play-control">
-              {isPlaying ? <FaPause /> : <FaPlay />}
-            </button>
-          </div>
-        </div>
-        <div className="scroll-container">
-          <div className="mouse">
-            <span className="scroll-ball"></span>
-          </div>
-          <div className="chevrons">
-            <div className="chevrondown" />
-            <div className="chevrondown" />
-          </div>
-        </div>
-      </section>
+      <div className="flex justify-center items-center text-center w-full bg-amber-100 md:py-32 py-24">
+        
+        <BlurText
+  text="About Me!"
+  delay={600}
+  animateBy="words"
+  direction="top"
+  className="text-5xl md:mt-0 mt-10 font-extrabold text-black"
+/>
 
-      {/* About Content */}
-      <div className="container section text-center w-full mt-0">
-        <div className="about-container">
-          <div className="leftside">
-            <img src="./myProfile.png" alt="" className="profilepic" />
-            <h2>A BRIEF ABOUT ME</h2>
-            <h1 className="space-x-2">
-              <motion.span
-                style={{ display: "inline-block", transformOrigin: "bottom" }}
-                animate={{ rotate: [-20, 20, -20, 20, 0] }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                  ease: "easeInOut",
-                }}
-              >
-                👋🏼
-              </motion.span>
-              <span>I'm, Mohamed Aweys</span>
-            </h1>
-            <div className="info">
-              <p>
-                a passionate <strong>developer, designer, and tech enthusiast</strong> with a strong focus on
-                building seamless digital experiences. As an <strong>IT student at SIMAD University</strong>,
-                I constantly seek new challenges and opportunities to refine my skills in <strong>web
-                and mobile development, UI/UX design, and problem-solving.</strong>
-              </p>
+      </div>
 
-              <h2 className="flex gap-2 items-center">
-                <IoCreate /> <u>What I Do</u>
-              </h2>
-              <p>
-                I specialize in the <strong>MERN stack</strong> (MongoDB, Express, React, Node.js) for building
-                scalable and efficient web applications. I’m currently in progress with <strong>mobile app
-                development using Flutter</strong>, working on creating cross-platform applications that offer
-                smooth user experiences. <br />
-                Beyond development, I bring creativity to the table through <strong>graphic design and video
-                editing</strong>, creating visually appealing content that enhances user engagement and brand identity.
-              </p>
+      <section className="about-flex-container container section mx-auto flex flex-col md:flex-row gap-6 px-4 md:px-10 py-10">
+        {/* Left - Video + Info */}
+        <div className="flex-1">
+  {/* Video Player */}
+  <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-xl shadow-lg">
+    <ReactPlayer
+      ref={playerRef}
+      url="https://youtu.be/cVsY9-SPrRc"
+      playing={isPlaying}
+      muted={isMuted}
+      controls={false}
+      width="100%"
+      height="100%"
+      onProgress={({ played }) => setPlayed(played)}
+      className="absolute top-0 left-0"
+    />
+    <div className="absolute inset-0  bg-black/20  flex items-end justify-between px-4">
+      <button onClick={toggleMute} className="text-white text-2xl bottom-3">
+        {isMuted ? <GiSpeakerOff /> : <GiSpeaker />}
+      </button>
+      <button onClick={togglePlayPause} className="text-white text-2xl bottom-3">
+        {isPlaying ? <FaPause /> : <FaPlay />}
+      </button>
+    </div>
+    {/* Progress bar */}
+    <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20">
+      <div
+        className="h-full bg-amber-400"
+        style={{ width: `${played * 100}%` }}
+      ></div>
+    </div>
+  </div>
 
-              <h2 className="flex gap-2 items-center">
-                <FaRegEye /> <u>Vision</u>
-              </h2>
-              <p>
-                To <strong>innovate and create impactful digital solutions</strong> that improve efficiency,
-                enhance user experiences, and simplify everyday tasks through <strong>cutting-edge technology and design.</strong>
-              </p>
+  {/* Info Section (Left Aligned) */}
+<div className="leftside bg-white text-black p-6 mt-6 rounded-xl shadow-md text-left space-y-6">
+  <img src="./myProfile.png" alt="" className="w-32 h-32 rounded-full mb-4" />
 
-              <h2 className="flex gap-2 items-center">
-                <GoGoal /> <u>Mission</u>
-              </h2>
-              <p>
-                🔹 <strong>Build high-quality web and mobile applications</strong> that solve real-world problems. <br />
-                🔹 <strong>Enhance user experiences</strong> with intuitive UI/UX design and engaging visuals. <br />
-                🔹 <strong>Continuously learn and adapt</strong> to emerging technologies. <br />
-                🔹 <strong>Empower brands and individuals</strong> through creative graphic design and video editing.
-              </p>
+  <ScrollReveal>
+    <h2 className="text-lg font-semibold text-amber-700">A BRIEF ABOUT ME</h2>
+  </ScrollReveal>
 
-              <h2 className="flex gap-2 items-center">
-                <LucideVerified /> <u>Values</u>
-              </h2>
-              <p>
-                🚀 <strong>Innovation</strong> → Always pushing boundaries to explore new possibilities.<br />
-                🎯 <strong>Excellence</strong> → Striving for high-quality work in everything I create.<br />
-                🔗 <strong>Collaboration</strong> → Believing in teamwork and knowledge-sharing to drive success.<br />
-                📈 <strong>Growth</strong> → Constantly learning and improving to stay ahead in the ever-evolving tech world.
-              </p>
-            </div>
-          </div>
+  <ScrollReveal>
+    <h1 className="text-2xl font-bold flex items-center gap-2">
+      <motion.span
+        style={{ display: "inline-block", transformOrigin: "bottom" }}
+        animate={{ rotate: [-20, 20, -20, 20, 0] }}
+        transition={{
+          duration: 1,
+          repeat: Infinity,
+          repeatDelay: 1,
+          ease: "easeInOut",
+        }}
+      >
+        👋🏼
+      </motion.span>
+      I'm Mohamed Aweys
+    </h1>
+  </ScrollReveal>
 
-< div className="rightside flex justify-center bg-black min-h-screen ">
-  {/* Skills & Tools Box */}
-  <div className="boxes bg-gradient-to-br from-gray-800 to-black from-opacity-75 p-8 rounded-3xl shadow-2xl w-full max-w-6xl">
-    <h3 className="text-4xl font-extrabold text-white mb-4 text-center flex items-center gap-3 justify-center">
-      <FiCode className="text-blue-500 w-8 h-8" /> Skills & Tools
+  <ScrollReveal>
+    <p>
+      A passionate <strong>developer, designer, and tech enthusiast</strong> with a strong focus on
+      building seamless digital experiences.
+    </p>
+    <p>
+      As an <strong>IT student at SIMAD University</strong>, I constantly seek new challenges and opportunities.
+    </p>
+    <p>
+      I refine my skills in <strong>web and mobile development, UI/UX design, and problem-solving</strong>.
+    </p>
+  </ScrollReveal>
+
+  <ScrollReveal>
+    <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
+      <IoCreate /> <u>What I Do</u>
+    </h2>
+    <p className="mt-2">
+      I specialize in the <strong>MERN stack</strong> (MongoDB, Express, React, Node.js) for
+      building scalable and efficient web applications.
+    </p>
+    <p>
+      I'm also advancing in <strong>mobile app development using Flutter</strong>, creating cross-platform apps.
+    </p>
+    <p>
+      Beyond coding, I engage in <strong>graphic design and video editing</strong> to build strong digital brands.
+    </p>
+  </ScrollReveal>
+
+  <ScrollReveal>
+    <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
+      <FaRegEye /> <u>Vision</u>
+    </h2>
+    <p className="mt-2">
+      To <strong>innovate and create impactful digital solutions</strong> that improve efficiency,
+      enhance user experiences, and simplify everyday tasks through{" "}
+      <strong>cutting-edge technology and design</strong>.
+    </p>
+  </ScrollReveal>
+
+  <ScrollReveal>
+    <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
+      <GoGoal /> <u>Mission</u>
+    </h2>
+    <ul className="mt-2 space-y-1 list-disc list-inside">
+      <li><strong>Build high-quality web and mobile applications</strong> that solve real-world problems.</li>
+      <li><strong>Enhance user experiences</strong> with intuitive UI/UX design and engaging visuals.</li>
+      <li><strong>Continuously learn and adapt</strong> to emerging technologies.</li>
+      <li><strong>Empower brands and individuals</strong> through creative graphic design and video editing.</li>
+    </ul>
+  </ScrollReveal>
+
+  <ScrollReveal>
+    <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
+      <LucideVerified /> <u>Values</u>
+    </h2>
+    <ul className="mt-2 space-y-1 list-disc list-inside">
+      <li>🚀 <strong>Innovation</strong> – Always pushing boundaries to explore new possibilities.</li>
+      <li>🎯 <strong>Excellence</strong> – Striving for high-quality work in everything I create.</li>
+      <li>🔗 <strong>Collaboration</strong> – Believing in teamwork and knowledge-sharing.</li>
+      <li>📈 <strong>Growth</strong> – Constantly learning and improving to stay ahead in tech.</li>
+    </ul>
+  </ScrollReveal>
+</div>
+
+
+
+</div>
+
+        {/* Glowing Divider - Vertical (Desktop) */}
+<div className="hidden md:flex items-center justify-center px-4 relative">
+  <div className="w-1 h-full bg-gradient-to-b from-blue-400 via-purple-500 to-pink-500 rounded-full shadow-[0_0_20px_#8b5cf6] animate-pulse" />
+  <div className="absolute top-0 w-2 h-2 bg-purple-500 rounded-full shadow-md animate-ping" />
+  <div className="absolute bottom-0 w-2 h-2 bg-pink-500 rounded-full shadow-md animate-ping" />
+</div>
+
+{/* Glowing Divider - Horizontal (Mobile) */}
+<div className="flex md:hidden justify-center items-center py-4 relative">
+  <div className="h-1 w-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 rounded-full shadow-[0_0_20px_#8b5cf6] animate-pulse" />
+  <div className="absolute left-0 w-2 h-2 bg-blue-500 rounded-full shadow-md animate-ping" />
+  <div className="absolute right-0 w-2 h-2 bg-pink-500 rounded-full shadow-md animate-ping" />
+</div>
+
+
+        {/* Right - Tools */}
+<div className="flex-1">
+  <div className="bg-gradient-to-br from-gray-800 to-blue-950 text-white p-6 rounded-xl shadow-lg">
+    <h3 className="text-3xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+      <FaLaptopCode className="text-blue-400" /> Skills & Tools
     </h3>
 
-    {/* Skills and Tools Sections */}
-    <div className="flex flex-col gap-7 justify-between">
-
-      {/* Professional Skills (merged with Side Skills) */}
+    <div className="space-y-10">
+      {/* Pro Skills */}
       <div>
-        <h4 className="text-3xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
-          <FiLayers className="w-6 h-6 text-blue-300" /> Professional Skills
+        <h4 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-blue-300">
+          <FaLaptopCode /> Professional Skills
         </h4>
-        <ul className="space-y-4 text-right md:text-2xl text-sm">
-          <li className="flex md:items-center justify-start text-start text-gray-200 hover:text-blue-500 transition duration-300">
-            <FiCode className="w-6 h-6 text-blue-400 mr-3" />
-            MERN Stack (MongoDB, Express, React, Node.js)
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-green-500 transition duration-300">
-            <FiSmartphone className="w-6 h-6 text-green-400 mr-3" />
-            Flutter (Mobile Development)
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-purple-400 transition duration-300">
-            <FiLayers className="w-6 h-6 text-purple-400 mr-3" />
-            UI/UX Design (Figma, Adobe XD)
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-pink-400 transition duration-300">
-            <FiVideo className="w-6 h-6 text-pink-400 mr-3" />
-            Graphic Design & Video Editing
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-gray-400 transition duration-300">
-            <FiGithub className="w-6 h-6 text-gray-400 mr-3" />
-            Git & GitHub
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-teal-400 transition duration-300">
-            <FiDatabase className="w-6 h-6 text-teal-400 mr-3" />
-            Sanity.io (Headless CMS)
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-indigo-400 transition duration-300">
-            <FiCloud className="w-6 h-6 text-indigo-400 mr-3" />
-            Firebase & Supabase
-          </li>
-        </ul>
+        <div className="grid grid-cols-3 gap-3 justify-items-center">
+          <ToolCard icon={SiNextdotjs} color="text-cyan-400" text="React" percent={97} />
+          <ToolCard
+  icon={() => (
+    <div className="flex gap-2 text-3xl">
+      <SiReact className="text-cyan-400" />
+      <SiVite className="text-purple-300" />
+    </div>
+  )}
+  text="React + Vite"
+  percent={93}
+/>
+
+          <ToolCard icon={SiMongodb} color="text-green-500" text="MongoDB" percent={90} />
+          <ToolCard icon={SiFlutter} color="text-sky-400" text="Flutter" percent={80} />
+          <ToolCard icon={SiExpress} color="text-gray-400" text="Express.js" percent={85} />
+          <ToolCard icon={SiReact} color="text-cyan-400" text="React" percent={88} />
+          <ToolCard icon={SiNodedotjs} color="text-green-600" text="Node.js" percent={87} />
+          <ToolCard icon={SiFigma} color="text-pink-500" text="Figma" percent={78} />
+          <ToolCard icon={FaLaptopCode} color="text-indigo-400" text="UI/UX Design" percent={75} />
+        </div>
       </div>
 
       {/* Soft Skills */}
       <div>
-        <h4 className="text-3xl font-semibold text-blue-400 mb-4 flex items-center gap-2">
-          <FiCpu className="w-6 h-6 text-yellow-400" /> Soft Skills
+        <h4 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-yellow-300">
+          <FaPeopleCarry /> Soft Skills
         </h4>
-        <ul className="space-y-4 text-right text-lg">
-          <li className="flex items-center justify-start text-gray-200 hover:text-yellow-500 transition duration-300">
-            <FiCpu className="w-6 h-6 text-yellow-400 mr-3" />
-            Time Management
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-blue-400 transition duration-300">
-            <FiLayers className="w-6 h-6 text-blue-400 mr-3" />
-            Problem Solving
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-teal-500 transition duration-300">
-            <FiDatabase className="w-6 h-6 text-teal-400 mr-3" />
-            Communication
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-green-500 transition duration-300">
-            <FiLayers className="w-6 h-6 text-green-400 mr-3" />
-            Efficiency & Productivity
-          </li>
-        </ul>
+        <div className="grid grid-cols-3 gap-3 justify-items-center">
+          <ToolCard icon={FaRegClock} color="text-yellow-400" text="Time Management" percent={92} />
+          <ToolCard icon={FaBolt} color="text-blue-400" text="Problem Solving" percent={88} />
+          <ToolCard icon={FaPeopleCarry} color="text-purple-400" text="Collaboration" percent={90} />
+          <ToolCard icon={FaHandshake} color="text-red-400" text="Communication" percent={86} />
+        </div>
       </div>
 
-      {/* Graphic Design Skills */}
+      {/* Design Tools */}
       <div>
-        <h4 className="text-3xl font-semibold text-blue-400 mt-8 mb-4 items-center flex gap-2">
-          <FiVideo className="w-6 h-6 text-pink-400" /> Graphic Design Tools
+        <h4 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-pink-300">
+          <FaPhotoVideo /> Graphic Design Tools
         </h4>
-        <ul className="space-y-4 text-right text-lg">
-          <li className="flex items-center justify-start text-gray-200 hover:text-blue-300 transition duration-300">
-            <FiLayers className="w-6 h-6 text-blue-300 mr-3" />
-            Photoshop
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-purple-300 transition duration-300">
-            <FiLayers className="w-6 h-6 text-purple-400 mr-3" />
-            Premiere Pro
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-green-400 transition duration-300">
-            <FiLayers className="w-6 h-6 text-green-400 mr-3" />
-            CapCut
-          </li>
-          <li className="flex items-center justify-start text-gray-200 hover:text-red-400 transition duration-300">
-            <FiLayers className="w-6 h-6 text-red-400 mr-3" />
-            Canva
-          </li>
-        </ul>
+        <div className="grid grid-cols-3 gap-3 justify-items-center">
+          <ToolCard icon={SiAdobephotoshop} color="text-blue-300" text="Photoshop" percent={87} />
+          <ToolCard icon={SiAdobeillustrator} color="text-blue-300" text="Photoshop" percent={94} />
+          <ToolCard icon={SiAdobepremierepro} color="text-purple-400" text="Premiere Pro" percent={75} />
+          <ToolCard icon={SiCanva} color="text-blue-500" text="Canva" percent={90} />
+        </div>
       </div>
 
+      {/* CMS & Cloud */}
+      <div>
+        <h4 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-teal-300">
+          <CgWebsite /> CMS & Cloud Tools
+        </h4>
+        <div className="grid grid-cols-3 gap-3 justify-items-center">
+          <ToolCard icon={SiGithub} color="text-gray-300" text="Git & GitHub" percent={85} />
+          <ToolCard icon={SiSanity} color="text-orange-400" text="Sanity CMS" percent={70} />
+          <ToolCard icon={SiFirebase} color="text-yellow-500" text="Firebase" percent={76} />
+          <ToolCard icon={SiSupabase} color="text-emerald-400" text="Supabase" percent={78} />
+        </div>
+      </div>
     </div>
   </div>
 
-  <div className="recBox bg-gradient-to-br from-indigo-800 to-black p-7 rounded-3xl shadow-2xl  w-full max-w-6xl">
-     <LanguageSwiper />
+  <div className="mt-6 bg-gradient-to-br from-indigo-800 to-black p-5 rounded-xl shadow-md">
+    <LanguageSwiper />
   </div>
 </div>
 
 
-        </div>
 
-        
 
-        {/* Certificates */}
+      </section>
+
+      <div className="container section text-center w-full -mt-20">
         <Certificates certificates={certificates} />
       </div>
     </>
   );
 }
+
+const ToolCard = ({ icon: Icon, text, percent, color = "text-purple-400" }) => (
+  <div className=" cursor-target flex flex-col items-center gap-2 transition-all duration-200 cursor-pointer select-none group w-full max-w-[100px] xs:max-w-[110px] sm:max-w-[120px] md:max-w-[140px] lg:max-w-[150px]">
+    <div className="group-hover:bg-[#2a1454] w-full flex flex-col justify-center items-center gap-4 border-slate-800 group-hover:border-[#8750f7] bg-[#140b1c] px-4 py-6 border border-transparent rounded-3xl transition-all duration-500">
+      <div className="group-hover:scale-110 group-hover:grayscale-0 transition-all duration-500 sm:grayscale object-contain text-3xl sm:text-4xl md:text-5xl">
+        <Icon className={color} />
+      </div>
+      <p className="group-hover:text-purple-500 font-bold text-slate-500 text-sm sm:text-base transition-colors duration-500">
+        {percent}%
+      </p>
+    </div>
+    <p className="text-xs sm:text-sm md:text-base font-light text-cyan-200 group-hover:text-opacity-100 tracking-tight transition-colors duration-500 text-center">
+      {text}
+    </p>
+  </div>
+);
+
+
+
+
+
+

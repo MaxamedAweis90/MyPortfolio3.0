@@ -114,7 +114,7 @@ const ProjectRequest = () => {
               Let’s Start Your Project
             </h3>
             <h2 className="section-header after:bg-white">Project Request</h2>
-            <p className="text-gray-600">Have a project in mind? Share your details with us!</p>
+            <p className="text-gray-600">Have a project in mind? Share your details with me!</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
