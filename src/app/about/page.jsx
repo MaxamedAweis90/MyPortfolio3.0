@@ -165,34 +165,55 @@ export default function Page() {
     </h2>
     <p className="mt-2">
       To <strong>innovate and create impactful digital solutions</strong> that improve efficiency,
+      </p>
+      <p>
       enhance user experiences, and simplify everyday tasks through{" "}
+    </p>
+    <p>
       <strong>cutting-edge technology and design</strong>.
     </p>
-  </ScrollReveal>
+    </ScrollReveal>
 
   <ScrollReveal>
     <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
       <GoGoal /> <u>Mission</u>
     </h2>
+    </ScrollReveal>
     <ul className="mt-2 space-y-1 list-disc list-inside">
+    <ScrollReveal>
       <li><strong>Build high-quality web and mobile applications</strong> that solve real-world problems.</li>
+      </ScrollReveal>
+      <ScrollReveal>
       <li><strong>Enhance user experiences</strong> with intuitive UI/UX design and engaging visuals.</li>
+      </ScrollReveal>
+      <ScrollReveal>
       <li><strong>Continuously learn and adapt</strong> to emerging technologies.</li>
+      </ScrollReveal>
+      <ScrollReveal>
       <li><strong>Empower brands and individuals</strong> through creative graphic design and video editing.</li>
+      </ScrollReveal>
     </ul>
-  </ScrollReveal>
+  
 
   <ScrollReveal>
     <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
       <LucideVerified /> <u>Values</u>
     </h2>
-    <ul className="mt-2 space-y-1 list-disc list-inside">
-      <li>🚀 <strong>Innovation</strong> – Always pushing boundaries to explore new possibilities.</li>
-      <li>🎯 <strong>Excellence</strong> – Striving for high-quality work in everything I create.</li>
-      <li>🔗 <strong>Collaboration</strong> – Believing in teamwork and knowledge-sharing.</li>
-      <li>📈 <strong>Growth</strong> – Constantly learning and improving to stay ahead in tech.</li>
-    </ul>
   </ScrollReveal>
+    <ul className="mt-2 space-y-1 list-disc list-inside">
+    <ScrollReveal>
+      <li>🚀 <strong>Innovation</strong> – Always pushing boundaries to explore new possibilities.</li>
+      </ScrollReveal>
+      <ScrollReveal>
+      <li>🎯 <strong>Excellence</strong> – Striving for high-quality work in everything I create.</li>
+      </ScrollReveal>
+      <ScrollReveal>
+      <li>🔗 <strong>Collaboration</strong> – Believing in teamwork and knowledge-sharing.</li>
+      </ScrollReveal>
+      <ScrollReveal>
+      <li>📈 <strong>Growth</strong> – Constantly learning and improving to stay ahead in tech.</li>
+      </ScrollReveal>
+    </ul>
 </div>
 
 
