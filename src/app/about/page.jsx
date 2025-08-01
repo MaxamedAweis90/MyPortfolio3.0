@@ -228,7 +228,7 @@ export default function Page() {
           <FaLaptopCode /> Professional Skills
         </h4>
         <div className="grid grid-cols-3 gap-3 justify-items-center">
-          <ToolCard icon={SiNextdotjs} color="text-cyan-400" text="React" percent={97} />
+          <ToolCard icon={SiNextdotjs} color="text-cyan-400" text="Next.js" percent={97} />
           <ToolCard
   icon={() => (
     <div className="flex gap-2 text-3xl">
