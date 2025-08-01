@@ -75,7 +75,7 @@
 
 .imageWrapper {
   position: relative;
-  height: 480px;
+  height: 500px;
   width: 100%;
 }
 .image {
@@ -224,6 +224,12 @@
 
 /* Desktop (1024px and up) */
 @media (min-width: 1024px) {
+  .imageWrapper {
+    position: relative;
+    height: 580px;
+    width: 100%;
+  }
+  
   .projectGrid {
     grid-template-columns: repeat(3, 1fr);
   }
