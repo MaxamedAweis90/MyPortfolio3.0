@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import "@/styles/hero.css";
 import Socials from "@/components/socials";
+import TextType from "@/components/TextType";
 import { client as sanityClient } from '../../../sanity/lib/client';
 import { FaExternalLinkAlt } from "react-icons/fa";
 
@@ -21,6 +22,23 @@ const Hero = () => {
   const [resume, setResume] = useState(null);
   const [socialLinks, setSocialLinks] = useState({});
   const [name, setName] = useState("");
+  const greetings = [
+    "Asc, Magacyku waa Mo!", // Somali (Aniga waa = I am)
+    "Hello, I am Mo!", // English
+    "Marhaban, Ana Mo!", // Arabic (Ana = I am)
+    "Ohayo, Watashi wa Mo desu!", // Japanese (Watashi wa = I am)
+    "Namaste, Main Mo hoon!", // Hindi (Main ... hoon = I am)
+    "Hallo, Ich bin Mo!", // German (Ich bin = I am)
+    "Bonjour, Je suis Mo!", // French (Je suis = I am)
+  ];
+  const [greetIdx, setGreetIdx] = useState(2); // Start with Japanese
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGreetIdx((prev) => (prev + 1) % greetings.length);
+    }, 2200);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchSanityData = async () => {
@@ -87,7 +105,16 @@ const Hero = () => {
             >
               👋🏼
             </motion.span>
-            <span className="lobster-two-font ml-2">Watashi wa Mo desu</span>
+            <TextType
+              text={greetings}
+              className="lobster-two-font ml-2  text-black  rounded"
+              typingSpeed={60}
+              pauseDuration={1800}
+              showCursor={true}
+              cursorCharacter="|"
+              as="span"
+            />
+
           </h1>
 
           <p className="text-lg md:text-xl lg:text-2xl text-start">
