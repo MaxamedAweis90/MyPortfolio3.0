@@ -1,15 +1,25 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, useInView, useAnimation } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import "@/styles/hero.css";
 import Socials from "@/components/socials";
+import { client as sanityClient } from "../../sanity/lib/client";
 import { FaExternalLinkAlt } from "react-icons/fa";
 
 const Hero = () => {
   const [baseRotation, setBaseRotation] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [footerData, setFooterData] = useState(null);
+  useEffect(() => {
+    const fetchFooterData = async () => {
+      const query = '*[_type == "appContext"][0]';
+      const result = await sanityClient.fetch(query);
+      setFooterData(result);
+    };
+    fetchFooterData();
+  }, []);
 
   // Ref and InView detection
   const flipRef = useRef(null);
@@ -20,6 +30,8 @@ const Hero = () => {
   const handleClick = () => setBaseRotation((prev) => prev + 180);
   const handleMouseEnter = () => setTimeout(() => setIsHovered(true), 100);
   const handleMouseLeave = () => setIsHovered(false);
+
+  if (!footerData) return null;
 
   return (
     <div className="bg-amber-100 md:h-lvh hero section relative border-b-4 border-amber-100 shadow-[0px_10px_20px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:bottom-[-10px] before:left-0 before:w-full before:h-6 before:bg-gradient-to-b before:from-transparent before:to-amber-100 before:opacity-50">
@@ -83,7 +95,7 @@ const Hero = () => {
           </p>
 
           <div className="links flex w-full flex-col-reverse md:gap-3 gap-2">
-            <Socials />
+            <Socials socialLinks={footerData.socialLinks} name={footerData.name} />
           </div>
 
           <div className="mt-4 md:mt-6 flex flex-wrap gap-14 md:gap-4 items-center w-full">
@@ -92,14 +104,18 @@ const Hero = () => {
                 Work Done
               </button>
             </Link>
-            <Link
-              href="https://drive.google.com/file/d/1ZwyR207h-sNGKLHczySZqQMtWEeYdytq/view?usp=drive_link"
-              className="inline-block"
-            >
-              <button className="cursor-target flex items-center gap-1 px-3 py-2 border-2 border-blue-500 text-black rounded hover:bg-blue-500 hover:text-white transition-colors text-lg md:text-xl">
-                Resume <FaExternalLinkAlt />
-              </button>
-            </Link>
+            {footerData.resume && (
+              <Link
+                href={footerData.resume}
+                className="inline-block"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button className="cursor-target flex items-center gap-1 px-3 py-2 border-2 border-blue-500 text-black rounded hover:bg-blue-500 hover:text-white transition-colors text-lg md:text-xl">
+                  Resume <FaExternalLinkAlt />
+                </button>
+              </Link>
+            )}
           </div>
         </motion.div>
       </section>
