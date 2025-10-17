@@ -4,10 +4,13 @@ import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import TargetCursor from "@/components/TargetCursor";
 import Footer from "./Footer";
+import dynamic from "next/dynamic";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
 import Socialaccounts from "./Socialaccounts";
 import '../styles/globals.css';
+
+const ChatWidget = dynamic(() => import("./chatapp/ChatWidget"), { ssr: false });
 
 const LayoutWrapper = ({ children }) => {
   const pathname = usePathname(); // Access the current pathname
@@ -17,6 +20,12 @@ const LayoutWrapper = ({ children }) => {
 
   return (
     <>
+<ChatWidget />
+
+    <div className="w-full ">
+    
+  
+
       {!isStudioPage && <Navbar />}
       {/* Main content */}
       {children}
@@ -27,10 +36,11 @@ const LayoutWrapper = ({ children }) => {
   hideDefaultCursor={true}
 />
 
+
       
       
       {/* Footer */}
-      {!isStudioPage && <Footer />}
+  {!isStudioPage && <Footer />}
       
       {/* Toast Notifications - Positioned on top */}
       <ToastContainer
@@ -46,6 +56,7 @@ const LayoutWrapper = ({ children }) => {
           transform: 'translateX(-50%)', // Adjust for perfect centering
         }}
       />
+      </div>
     </>
   );
 };
