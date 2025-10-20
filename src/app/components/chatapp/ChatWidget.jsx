@@ -73,7 +73,7 @@ export default function ChatWidget() {
   }, [messages, typing, open]);
 
   const content = (
-    <div className="fixed inset-0 z-[2147483647] ">
+    <div className="fixed inset-0 z-[2147483647] pointer-events-none">
       {/* bottom-right island (respects safe area) */}
       <div
         className="absolute bottom-5 right-5 pointer-events-auto"
@@ -171,7 +171,7 @@ export default function ChatWidget() {
                         {/* Bubble + meta */}
                         <div className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
                           <div
-                            className={`w-fit max-w-[78%] sm:max-w-[70%] px-3 py-2 rounded-2xl text-sm shadow whitespace-pre-wrap break-words overflow-hidden cursor-pointer ${
+                            className={`w-fit max-w-[78%] sm:max-w-[90%] px-3 py-2 rounded-2xl text-sm shadow whitespace-pre-wrap break-words overflow-hidden cursor-pointer ${
                               m.role === "user"
                                 ? "bg-blue-600 text-white rounded-br-sm"
                                 : "bg-indigo-600 text-white rounded-bl-sm"
