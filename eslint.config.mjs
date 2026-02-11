@@ -9,6 +9,16 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [...compat.extends("next/core-web-vitals")];
+const eslintConfig = [
+  {
+    ignores: [
+      "src/sanity/myportfolio/dist/**",
+      "src/sanity/myportfolio/static/**",
+      "src/sanity/myportfolio/script/**",
+      "src/sanity/myportfolio/**/vendor/**",
+    ],
+  },
+  ...compat.extends("next/core-web-vitals"),
+];
 
 export default eslintConfig;
