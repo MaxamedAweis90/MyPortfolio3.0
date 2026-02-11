@@ -3,9 +3,11 @@ import { defineCliConfig } from 'sanity/cli'
 
 export default defineCliConfig({
   api: {
-    projectId: 'yf7fdygw',     // 👈 Your actual project ID
-    dataset: 'production'      // 👈 Your dataset
+    projectId: 'yf7fdygw',
+    dataset: 'production',
   },
-  studioHost: 'engaweis-studio',
-  autoUpdates: true
+  studioHost: 'engaweis',
+  deployment: {
+    autoUpdates: true,
+  },
 })
