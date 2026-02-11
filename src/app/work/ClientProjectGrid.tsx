@@ -17,7 +17,6 @@ const cardVariants = {
     transition: {
       delay: index * 0.15,
       duration: 0.4,
-      ease: "easeOut",
     },
   }),
   exit: {
@@ -26,7 +25,6 @@ const cardVariants = {
     scale: 0.95,
     transition: {
       duration: 0.25,
-      ease: "easeIn",
     },
   },
 };
