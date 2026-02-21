@@ -401,5 +401,34 @@ p {
   scrollbar-width: none;    /* Firefox */
 }
 
+.scrollbar-screenshots {
+  scrollbar-width: none;
+}
+
+.scrollbar-screenshots::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .scrollbar-screenshots {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(2, 129, 220, 0.45) transparent;
+  }
+
+  .scrollbar-screenshots::-webkit-scrollbar {
+    display: block;
+    height: 6px;
+  }
+
+  .scrollbar-screenshots::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-screenshots::-webkit-scrollbar-thumb {
+    background-color: rgba(2, 129, 220, 0.45);
+    border-radius: 9999px;
+  }
+}
+
 
 

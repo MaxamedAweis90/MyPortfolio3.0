@@ -140,7 +140,7 @@ export default async function ProjectDetails({
 			<div className="container mx-auto px-2 md:px-6 max-w-6xl">
 				<AutoDownload shouldDownload={shouldAutoDownload} apkUrl={apkUrl} />
 
-				<div className="p-2 pt-5 md:p-10">
+				<div className="p-2 pt-5 md:p-10 ">
 					<div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 md:gap-8">
 						{/* Mobile header: icon left, text right */}
 						<div className="flex items-center gap-4 sm:gap-5 md:hidden">
@@ -215,7 +215,7 @@ export default async function ProjectDetails({
 						<div className="mt-8 md:mt-10">
 							{/* <h3 className="text-2xl font-semibold mb-4">Screenshots</h3> */}
 							<div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 md:static md:left-auto md:right-auto md:w-auto md:translate-x-0">
-								<div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 snap-x snap-mandatory scrollbar-whatsapp px-0 md:px-0">
+								<div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 snap-x snap-mandatory scrollbar-screenshots px-0 md:px-0">
 									{galleryUrls.map((url, index) => (
 										<div
 											key={`${project.title}-shot-${index}`}
