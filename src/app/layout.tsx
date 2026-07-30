@@ -67,6 +67,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
+        {/* ✅ Anime.js CDN Script */}
+        <Script
+          src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+          strategy="beforeInteractive"
+        />
         {/* ✅ Google Analytics Scripts */}
         <Script
           async

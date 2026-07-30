@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import TargetCursor from "@/components/TargetCursor";
 import Footer from "./Footer";
 import SocialBar from "./SocialBar";
+import ScrollToTop from "./ScrollToTop";
 import dynamic from "next/dynamic";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
@@ -22,24 +23,25 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <ChatWidget />
+      {!isStudioPage && <ScrollToTop />}
 
-      <div className="w-full ">
+      <div className="w-full min-h-screen flex flex-col justify-between">
         {!isStudioPage && <Navbar />}
         {!isStudioPage && <SocialBar />}
-        {/* Main content */}
-        {children}
-      
-      <TargetCursor
-  targetSelector="a, button, .cursor-target"
-  spinDuration={2}
-  hideDefaultCursor={true}
-/>
 
+        {/* Main content wrapper */}
+        <main className="flex-1 w-full relative">
+          {children}
+        </main>
 
-      
-      
-      {/* Footer */}
-  {!isStudioPage && <Footer />}
+        <TargetCursor
+          targetSelector="a, button, .cursor-target"
+          spinDuration={2}
+          hideDefaultCursor={true}
+        />
+
+        {/* Footer */}
+        {!isStudioPage && <Footer />}
       
       {/* Toast Notifications - Positioned on top */}
       <ToastContainer

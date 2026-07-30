@@ -1,5 +1,6 @@
 import Hero from "@/components/sections/hero";
 import Services from "./components/sections/services";
+import MyWorkSection from "./components/sections/MyWorkSection";
 import Contact from "./components/sections/contact";
 
 const Page = () => {
@@ -7,6 +8,7 @@ const Page = () => {
     <div>
       <Hero />
       <Services />
+      <MyWorkSection />
       <Contact />
     </div>
   );

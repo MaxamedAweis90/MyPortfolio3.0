@@ -94,12 +94,12 @@ export default function ChatWidget() {
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close chat" : "Open chat"}
             aria-expanded={open}
-            className="btn btn-circle btn-lg text-white shadow-xl hover:scale-105 transition-transform duration-200 border-0 bg-gradient-to-br from-blue-600 to-indigo-600 ring-2 ring-blue-500/30 rounded-full p-4 min-w-12 min-h-12 flex items-center justify-center"
+            className="btn btn-circle btn-lg text-white shadow-2xl hover:scale-110 transition-all duration-300 border-0 bg-gradient-to-br from-brandAccent via-blue-600 to-indigo-600 ring-2 ring-brandAccent/40 rounded-full p-4 min-w-12 min-h-12 flex items-center justify-center shadow-brandAccent/30"
           >
             {open ? <BsX size={22} /> : <BsChatDots size={22} />}
           </button>
           {!open && messages.length > 1 && (
-            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
+            <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-rose-500 ring-2 ring-mainBg animate-pulse" />
           )}
         </div>
 
@@ -115,61 +115,73 @@ export default function ChatWidget() {
           aria-label="UgaasAI Chat"
         >
           <div
-            className={`bg-base-100 shadow-2xl border border-base-200 overflow-hidden rounded-3xl bg-white ring-1 ring-black/5 ${
+            className={`bg-surface/95 backdrop-blur-xl shadow-[0_25px_60px_rgba(0,0,0,0.85)] border border-borderSubtle overflow-hidden rounded-3xl ring-1 ring-white/10 ${
               isExpanded ? "h-[85vh]" : "h-[72vh] sm:h-[66vh]"
             } max-h-[90vh] min-h-[24rem] flex flex-col transition-[height] duration-300 ease-out`}
           >
             <div className="card-body p-0 flex flex-col h-full overflow-hidden">
               {/* Header */}
-              <div className="sticky top-0 z-10 flex-shrink-0 flex items-center justify-between px-4 py-3 bg-gray-100 text-gray-900 border-b border-base-200 rounded-t-3xl">
+              <div className="sticky top-0 z-10 flex-shrink-0 flex items-center justify-between px-4 py-3.5 bg-mainBg/90 backdrop-blur-md text-primaryText border-b border-borderSubtle rounded-t-3xl">
                 {/* top handle */}
-                <div className=" absolute left-1/2 -translate-x-1/2 -top-2 w-12 h-1.5 bg-base-300/80 rounded-full" />
+                <div className="absolute left-1/2 -translate-x-1/2 -top-2 w-12 h-1.5 bg-borderSubtle/80 rounded-full" />
                 <div className="flex items-center gap-3">
-                  <div className="relative h-7 w-7 rounded-full bg-indigo-600 text-white grid place-items-center text-xs font-bold shadow">
+                  <div className="relative h-8 w-8 rounded-full bg-gradient-to-tr from-brandAccent to-indigo-600 text-white grid place-items-center text-xs font-black shadow-md shadow-brandAccent/20">
                     UAI
-                    <span className="absolute -right-0 -bottom-0 h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-white" />
+                    <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-mainBg" />
                   </div>
                   <div className="leading-tight">
-                    <h3 className="font-semibold">UgaasAI</h3>
-                    <p className="text-xs text-gray-500">Online</p>
+                    <h3 className="font-extrabold text-sm text-primaryText">UgaasAI</h3>
+                    <p className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Online
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
                   <button
-                    className="btn btn-ghost btn-xs"
+                    className="p-1.5 rounded-lg text-mutedText hover:text-white hover:bg-borderSubtle/50 transition-colors"
                     onClick={handleToggleExpand}
                     aria-label={isExpanded ? "Contract" : "Expand"}
                   >
                     {isExpanded ? <BsArrowsAngleContract size={16} /> : <BsArrowsFullscreen size={16} />}
                   </button>
-                  <button className="btn btn-ghost btn-xs" onClick={() => setOpen(false)} aria-label="Close">
-                    <BsX size={18} />
+                  <button
+                    className="p-1.5 rounded-lg text-mutedText hover:text-white hover:bg-borderSubtle/50 transition-colors"
+                    onClick={() => setOpen(false)}
+                    aria-label="Close"
+                  >
+                    <BsX size={20} />
                   </button>
                 </div>
               </div>
 
-              {/* Messages */}
-              <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain h-full p-4 bg-white scrollbar-whatsapp flex flex-col">
+              {/* Messages Body */}
+              <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain h-full p-4 bg-mainBg/95 text-primaryText flex flex-col">
                 <div className="space-y-4 flex-1">
-                  {/* Minimal center helper with DaisyUI avatar */}
+                  {/* Minimal center helper card */}
                   {messages.length < 1 && !typing && (
-                    <div className="h-full flex flex-col justify-end items-center text-center text-gray-600">
-                      <p className="font-bold text-lg mt-2">👋 Hi, I&apos;m UgaasAI!</p>
-                      <p className="text-sm mt-2">I&apos;m here to help you Know everything about Eng.Aweis.</p>
-                      <p className="text-sm">Ask me about his skills, projects, or experience. 🚀</p>
+                    <div className="h-full flex flex-col justify-end items-center text-center p-4">
+                      <div className="bg-surface/80 border border-borderSubtle rounded-2xl p-5 shadow-xl max-w-xs space-y-2">
+                        <p className="font-extrabold text-base text-primaryText">👋 Hi, I&apos;m UgaasAI!</p>
+                        <p className="text-xs text-mutedText leading-relaxed">
+                          I&apos;m here to answer questions about Eng.Aweis&apos;s skills, projects, and architecture experience. 🚀
+                        </p>
+                      </div>
                     </div>
                   )}
                   {messages.map((m) => (
                     <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                       <div className={`flex items-end gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-                        {/* Avatar (fixed circle, non-stretch) */}
+                        {/* Avatar */}
                         <div className="avatar self-end shrink-0">
                           <div
                             className={`w-7 h-7 rounded-full ${
-                              m.role === "user" ? "bg-blue-600 text-white" : "bg-indigo-600 text-white"
-                            } ring ring-base-300 ring-offset-1 grid place-items-center`}
+                              m.role === "user"
+                                ? "bg-gradient-to-r from-brandAccent to-secondaryAccent text-white"
+                                : "bg-gradient-to-tr from-indigo-600 to-purple-600 text-white"
+                            } ring-1 ring-borderSubtle grid place-items-center shadow-sm`}
                           >
-                            <span className="text-[10px] font-bold leading-none">
+                            <span className="text-[10px] font-black leading-none">
                               {m.role === "user" ? "You" : "UAI"}
                             </span>
                           </div>
@@ -177,20 +189,16 @@ export default function ChatWidget() {
                         {/* Bubble + meta */}
                         <div className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
                           <div
-                            className={`w-fit max-w-[78%] sm:max-w-[90%] px-3 py-2 rounded-2xl text-sm shadow whitespace-pre-wrap break-words overflow-hidden cursor-pointer ${
+                            className={`w-fit max-w-[78%] sm:max-w-[90%] px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium shadow-md whitespace-pre-wrap break-words overflow-hidden ${
                               m.role === "user"
-                                ? "bg-blue-600 text-white rounded-br-sm"
-                                : "bg-indigo-600 text-white rounded-bl-sm"
+                                ? "bg-gradient-to-r from-brandAccent to-secondaryAccent text-white rounded-br-xs"
+                                : "bg-surface border border-borderSubtle text-primaryText rounded-bl-xs"
                             }`}
                             style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
                           >
                             {m.content}
                           </div>
-                          <div
-                            className={`mt-1 text-[10px] ${
-                              m.role === "user" ? "text-right text-gray-400" : "text-gray-400"
-                            }`}
-                          >
+                          <div className="mt-1 text-[10px] text-mutedText font-semibold">
                             12:30 · {m.role === "user" ? "Delivered ✓✓" : "Seen"}
                           </div>
                         </div>
@@ -201,14 +209,14 @@ export default function ChatWidget() {
                   {typing && (
                     <div className="flex justify-start">
                       <div className="flex items-end gap-2">
-                        <div className="h-7 w-7 rounded-full grid place-items-center text-[10px] font-bold shadow bg-indigo-600 text-white">
+                        <div className="h-7 w-7 rounded-full grid place-items-center text-[10px] font-black shadow bg-gradient-to-tr from-indigo-600 to-purple-600 text-white">
                           UAI
                         </div>
-                        <div className="w-fit max-w-[78%] sm:max-w-[70%] px-3 py-2 rounded-2xl text-sm bg-indigo-600 text-white shadow">
-                          <span className="inline-flex gap-1">
-                            <span className="h-1.5 w-1.5 bg-white/90 rounded-full animate-bounce [animation-delay:-0.2s]" />
-                            <span className="h-1.5 w-1.5 bg-white/90 rounded-full animate-bounce [animation-delay:0s]" />
-                            <span className="h-1.5 w-1.5 bg-white/90 rounded-full animate-bounce [animation-delay:0.2s]" />
+                        <div className="w-fit max-w-[78%] sm:max-w-[70%] px-3.5 py-2.5 rounded-2xl text-xs bg-surface border border-borderSubtle text-primaryText shadow-md">
+                          <span className="inline-flex gap-1.5 items-center">
+                            <span className="h-1.5 w-1.5 bg-brandAccent rounded-full animate-bounce [animation-delay:-0.2s]" />
+                            <span className="h-1.5 w-1.5 bg-brandAccent rounded-full animate-bounce [animation-delay:0s]" />
+                            <span className="h-1.5 w-1.5 bg-brandAccent rounded-full animate-bounce [animation-delay:0.2s]" />
                           </span>
                         </div>
                       </div>
@@ -221,13 +229,13 @@ export default function ChatWidget() {
               </div>
 
               {/* Input area */}
-              <div className="sticky bottom-0 z-10 flex-shrink-0 p-3 border-t border-base-200 bg-gray-100 rounded-b-3xl">
-                <div className="flex items-end gap-2">
-                  <div className="flex items-center bg-white border border-base-200 rounded-lg px-3 py-2 flex-1 shadow-sm">
+              <div className="sticky bottom-0 z-10 flex-shrink-0 p-3 border-t border-borderSubtle bg-surface/95 rounded-b-3xl">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center bg-mainBg border border-borderSubtle focus-within:border-brandAccent rounded-2xl px-3 py-2 flex-1 shadow-inner transition-colors">
                     <textarea
                       rows={1}
-                      className="flex-1 resize-none bg-transparent outline-none placeholder:text-gray-400 text-sm px-1"
-                      placeholder="Say something..."
+                      className="flex-1 resize-none bg-transparent outline-none text-primaryText placeholder:text-mutedText text-xs sm:text-sm px-1"
+                      placeholder="Ask UgaasAI something..."
                       value={message}
                       ref={textareaRef}
                       onChange={(e) => {
@@ -245,12 +253,12 @@ export default function ChatWidget() {
                     />
                   </div>
                   <button
-                    className="btn btn-primary btn-circle shadow disabled:opacity-50 self-center"
+                    className="p-2.5 rounded-2xl bg-gradient-to-r from-brandAccent to-secondaryAccent text-white shadow-md disabled:opacity-40 hover:scale-105 transition-transform shrink-0"
                     onClick={handleSend}
                     disabled={!message.trim()}
                     aria-label="Send"
                   >
-                    <BsSend />
+                    <BsSend className="text-sm" />
                   </button>
                 </div>
               </div>

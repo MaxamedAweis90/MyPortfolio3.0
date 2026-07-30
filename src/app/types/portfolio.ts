@@ -55,4 +55,11 @@ export type Project = {
   playStoreUrl?: string;
   appStoreUrl?: string;
   screenshots?: string[];
+
+  // Sorting & Flagging Schema Additions
+  isBest?: boolean;
+  isFeatured?: boolean;
+  createdAt?: string;
+  popularity?: number;
+  isPopular?: boolean;
 };

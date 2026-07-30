@@ -63,6 +63,11 @@ export const projectsData: Project[] = [
     category: "Web",
     shortTagline: "A fast, scalable e-commerce application built with Next.js & React",
     description: "Full-featured online store with responsive UI, cart state management, and product filtering.",
+    isBest: true,
+    isFeatured: true,
+    createdAt: "2026-03-15T10:00:00Z",
+    popularity: 98,
+    isPopular: true,
     longDescription: [
       "This project showcases a complete e-commerce solution designed for seamless online shopping.",
       "Key features include dynamic product search, category filtering, cart management, and sleek UI animations for enhanced user conversion."
@@ -84,6 +89,11 @@ export const projectsData: Project[] = [
     category: "Mobile",
     shortTagline: "Sleek iOS and Android app built with Flutter & Firebase",
     description: "Intuitive mobile app providing real-time data sync and offline support.",
+    isBest: false,
+    isFeatured: true,
+    createdAt: "2026-04-20T14:30:00Z",
+    popularity: 92,
+    isPopular: true,
     longDescription: [
       "A cross-platform mobile application engineered for optimal performance on both iOS and Android.",
       "Features state management with Provider/Riverpod, secure user authentication, and push notifications."
@@ -105,6 +115,11 @@ export const projectsData: Project[] = [
     category: "Design",
     shortTagline: "Creative visual identity and UI/UX design components",
     description: "Collection of vector graphics, logo designs, and interactive UI prototypes.",
+    isBest: false,
+    isFeatured: true,
+    createdAt: "2026-02-10T09:15:00Z",
+    popularity: 85,
+    isPopular: false,
     longDescription: [
       "A creative design showcase highlighting brand identity development, typography systems, and UI component libraries created in Figma and Photoshop."
     ],

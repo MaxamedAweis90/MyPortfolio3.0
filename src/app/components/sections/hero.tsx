@@ -17,6 +17,7 @@ import {
   RiSmartphoneLine,
   RiServerLine,
   RiLightbulbLine,
+  RiCloseLine,
 } from "react-icons/ri";
 
 const Hero = () => {
@@ -167,74 +168,79 @@ const Hero = () => {
             craft remarkable digital products.
           </p>
 
-          {/* Row 5: Action Buttons (View Work + Request A Project Dropdown + Resume) */}
-          <div className="pt-3 flex flex-wrap items-center gap-3 sm:gap-4 z-40">
-            {/* Button 1: View Work */}
-            <button
-              onClick={() => router.push("/work")}
-              className="inline-flex items-center gap-2.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-brandAccent to-secondaryAccent text-white font-extrabold text-xs sm:text-base hover:shadow-brandAccent/30 transition-all duration-300 shadow-lg shadow-brandAccent/20 hover:scale-105 border border-brandAccent/40"
-            >
-              <span>View Work</span>
-              <RiEyeLine className="text-base sm:text-lg" />
-            </button>
-
-            {/* Button 2: Request A Project Dropdown */}
-            <div className="relative inline-block" ref={dropdownRef}>
+          {/* Row 5: Action Buttons Layout (Mobile: Row 1 = 2 side-by-side buttons, Row 2 = Full-width Resume button) */}
+          <div className="pt-3 flex flex-col w-full max-w-md lg:max-w-none space-y-3 lg:space-y-0 lg:flex-row lg:items-center lg:gap-4 z-40">
+            {/* Line 1 (Mobile): Side-by-side row containing View Work & Request A Project */}
+            <div className="flex flex-row w-full gap-2.5 sm:gap-4 lg:w-auto lg:inline-flex">
+              {/* Button 1: View Work */}
               <button
-                onClick={() => setDropdownOpen((prev) => !prev)}
-                className="inline-flex items-center gap-2.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-surface border border-borderSubtle text-primaryText font-extrabold text-xs sm:text-base hover:bg-borderSubtle hover:border-brandAccent transition-all duration-300 shadow-md group"
+                onClick={() => router.push("/work")}
+                className="flex-1 w-1/2 lg:w-auto inline-flex items-center justify-center gap-2 px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-brandAccent to-secondaryAccent text-white font-extrabold text-xs sm:text-base hover:shadow-brandAccent/30 transition-all duration-300 shadow-lg shadow-brandAccent/20 hover:scale-105 border border-brandAccent/40 whitespace-nowrap"
               >
-                <RiSendPlaneLine className="text-base sm:text-lg text-brandAccent group-hover:scale-110 transition-transform" />
-                <span>Request A Project</span>
-                <RiArrowDownSLine
-                  className={`text-base sm:text-lg transition-transform duration-300 ${
-                    dropdownOpen ? "rotate-180 text-brandAccent" : ""
-                  }`}
-                />
+                <span>View Work</span>
+                <RiEyeLine className="text-base sm:text-lg" />
               </button>
 
-              {/* Dropdown Options Card */}
-              <AnimatePresence>
-                {dropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-full left-0 mt-2 w-64 bg-surface/95 backdrop-blur-md border border-borderSubtle rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] p-2 z-50 overflow-hidden"
-                  >
-                    <div className="px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-mutedText border-b border-borderSubtle/60 mb-1">
-                      Select Project Type
-                    </div>
-                    {projectTypes.map((item) => (
-                      <button
-                        key={item.label}
-                        onClick={() => handleSelectProjectType(item)}
-                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-sm font-semibold text-primaryText hover:bg-mainBg hover:text-brandAccent transition-colors duration-200 group"
-                      >
-                        <span className="text-lg p-1.5 rounded-lg bg-mainBg group-hover:bg-surface border border-borderSubtle">
-                          {item.icon}
-                        </span>
-                        <span>{item.label}</span>
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Button 2: Request A Project Dropdown Trigger */}
+              <div className="flex-1 w-1/2 lg:w-auto relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen((prev) => !prev)}
+                  className="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-surface border border-borderSubtle text-primaryText font-extrabold text-xs sm:text-base hover:bg-borderSubtle hover:border-brandAccent transition-all duration-300 shadow-md group whitespace-nowrap"
+                >
+                  <RiSendPlaneLine className="text-base sm:text-lg text-brandAccent group-hover:scale-110 transition-transform" />
+                  <span>Request A Project</span>
+                  <RiArrowDownSLine
+                    className={`text-base sm:text-lg transition-transform duration-300 ${
+                      dropdownOpen ? "rotate-180 text-brandAccent" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Desktop Inline Dropdown Popup (hidden on mobile < lg) */}
+                <AnimatePresence>
+                  {dropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="hidden lg:block absolute top-full left-0 mt-2 w-64 bg-surface/95 backdrop-blur-md border border-borderSubtle rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] p-2 z-50 overflow-hidden"
+                    >
+                      <div className="px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-mutedText border-b border-borderSubtle/60 mb-1">
+                        Select Project Type
+                      </div>
+                      {projectTypes.map((item) => (
+                        <button
+                          key={item.label}
+                          onClick={() => handleSelectProjectType(item)}
+                          className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-sm font-semibold text-primaryText hover:bg-mainBg hover:text-brandAccent transition-colors duration-200 group"
+                        >
+                          <span className="text-lg p-1.5 rounded-lg bg-mainBg group-hover:bg-surface border border-borderSubtle">
+                            {item.icon}
+                          </span>
+                          <span>{item.label}</span>
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
-            {/* Resume Button inside mobile flex CTA row for mobile, hidden on lg desktop bottom-right grid */}
-            <Link
-              href={resume}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="lg:hidden inline-flex items-center gap-3 pl-5 pr-2 py-2 rounded-full bg-brandAccent/90 backdrop-blur-md border border-brandAccent/50 text-white font-extrabold text-xs hover:bg-brandAccent transition-all duration-300 shadow-xl shadow-brandAccent/30 hover:scale-105 group"
-            >
-              <span className="tracking-wider">RESUME</span>
-              <span className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white transition-all duration-300 group-hover:bg-white group-hover:text-brandAccent group-hover:rotate-12 shadow-sm">
-                <FaFileDownload className="text-xs" />
-              </span>
-            </Link>
+            {/* Line 2 (Mobile Only): Resume Button spanning exact combined width of Row 1 above */}
+            <div className="w-full lg:hidden">
+              <Link
+                href={resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-3 py-2.5 sm:py-3 rounded-full bg-brandAccent/90 backdrop-blur-md border border-brandAccent/50 text-white font-extrabold text-xs sm:text-sm hover:bg-brandAccent transition-all duration-300 shadow-xl shadow-brandAccent/30 hover:scale-[1.02] group"
+              >
+                <span className="tracking-wider">RESUME</span>
+                <span className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white transition-all duration-300 group-hover:bg-white group-hover:text-brandAccent group-hover:rotate-12 shadow-sm">
+                  <FaFileDownload className="text-xs" />
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -416,6 +422,60 @@ const Hero = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Top Sheet Modal Dropdown Picker (hidden on desktop lg:) */}
+      <AnimatePresence>
+        {dropdownOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="lg:hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-start justify-center pt-24 px-4 pointer-events-auto"
+            onClick={() => setDropdownOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ duration: 0.25 }}
+              className="w-full max-w-sm bg-surface border border-borderSubtle rounded-3xl shadow-2xl p-5 space-y-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between border-b border-borderSubtle/70 pb-3">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-brandAccent">
+                  Select Project Type
+                </span>
+                <button
+                  onClick={() => setDropdownOpen(false)}
+                  className="p-1.5 rounded-full bg-mainBg text-mutedText hover:text-white transition-colors"
+                >
+                  <RiCloseLine className="text-xl" />
+                </button>
+              </div>
+
+              <div className="space-y-2.5">
+                {projectTypes.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleSelectProjectType(item)}
+                    className="w-full flex items-center gap-3.5 p-3 rounded-2xl text-left bg-mainBg/80 border border-borderSubtle text-primaryText font-bold text-sm hover:bg-brandAccent hover:text-white transition-all duration-200 group"
+                  >
+                    <span className="text-xl p-2 rounded-xl bg-surface border border-borderSubtle group-hover:bg-white/20">
+                      {item.icon}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="font-extrabold text-sm">{item.label}</span>
+                      <span className="text-[11px] text-mutedText group-hover:text-white/80 font-normal">
+                        {item.defaultTitle}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Scroll indicator cue (z-50) floating over the bottom center */}
       <div className="scroll-container absolute bottom-2 left-1/2 -translate-x-1/2 z-50 pointer-events-auto hidden lg:flex">
