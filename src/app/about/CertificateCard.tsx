@@ -4,18 +4,17 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { FiClipboard } from "react-icons/fi";
 import { toast } from "react-toastify";
-import type { Certificate } from "@/types/sanity";
+import type { Certificate } from "@/types/portfolio";
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0 },
 };
 
-const formatDate = (dateStr: string) =>
-  new Date(dateStr).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-  });
+const formatDate = (dateStr: string) => {
+  const d = new Date(dateStr);
+  return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString("en-US", { year: "numeric", month: "short" });
+};
 
 type CertificateCardProps = {
   cert: Certificate;
@@ -38,10 +37,12 @@ export default function CertificateCard({ cert, index }: CertificateCardProps) {
     });
   };
 
+  const imageSrc = cert.imageUrl;
+
   return (
     <motion.div
       ref={ref}
-      className="rounded-lg overflow-hidden shadow-lg bg-amber-100"
+      className="rounded-xl overflow-hidden shadow-md bg-surface border border-borderSubtle hover:border-brandAccent/50 hover:shadow-xl transition-all duration-300 text-primaryText"
       variants={fadeUpVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
@@ -49,12 +50,12 @@ export default function CertificateCard({ cert, index }: CertificateCardProps) {
     >
       <div className="relative">
         {isLatest && (
-          <span className="absolute top-2 left-2 bg-amber-400 text-black text-xs font-semibold uppercase px-2 py-1 rounded">
+          <span className="absolute top-3 left-3 bg-brandAccent text-white text-xs font-bold uppercase px-2.5 py-1 rounded-full shadow-md z-10">
             Latest
           </span>
         )}
         <div className="aspect-w-full aspect-h-9">
-          {cert.imageRef?.image?.asset?.url ? (
+          {imageSrc ? (
             <a
               href={cert.link}
               target="_blank"
@@ -62,7 +63,7 @@ export default function CertificateCard({ cert, index }: CertificateCardProps) {
               className="block w-full h-full"
             >
               <img
-                src={cert.imageRef.image.asset.url}
+                src={imageSrc}
                 alt={`Certificate: ${cert.title}`}
                 className="w-full h-full object-cover"
               />
@@ -76,11 +77,11 @@ export default function CertificateCard({ cert, index }: CertificateCardProps) {
       </div>
 
       <div className="p-4 text-left">
-        <h3 className="font-semibold text-lg">{cert.title}</h3>
-        <p className="text-sm text-gray-600 mt-1">
-          Issued by <strong>{cert.issuer}</strong>{" "}
+        <h3 className="font-bold text-lg text-primaryText">{cert.title}</h3>
+        <p className="text-sm text-mutedText mt-1">
+          Issued by <strong className="text-primaryText">{cert.issuer}</strong>{" "}
           {cert.issuedDate && (
-            <span className="text-xs text-gray-500 ml-1">
+            <span className="text-xs text-mutedText/80 ml-1">
               ({formatDate(cert.issuedDate)})
             </span>
           )}
@@ -92,7 +93,7 @@ export default function CertificateCard({ cert, index }: CertificateCardProps) {
               href={cert.verificationUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-4 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition-colors text-sm"
+              className="inline-block px-4 py-2 border border-brandAccent text-brandAccent rounded-lg hover:bg-brandAccent hover:text-white transition-colors text-sm font-semibold"
             >
               Verify
             </a>
@@ -100,21 +101,21 @@ export default function CertificateCard({ cert, index }: CertificateCardProps) {
 
           {cert.verificationCode && (
             <div className="flex items-center space-x-2">
-              <p className="text-sm font-semibold text-gray-700">
-                Credential ID:
+              <p className="text-sm font-medium text-mutedText">
+                ID:
               </p>
-              <div className="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg shadow-sm">
-                <code className="text-sm font-mono text-gray-800">
+              <div className="flex items-center space-x-2 bg-mainBg border border-borderSubtle px-3 py-1.5 rounded-lg shadow-sm">
+                <code className="text-xs font-mono text-primaryText">
                   {cert.verificationCode}
                 </code>
                 <button
                   onClick={() =>
                     cert.verificationCode && handleCopy(cert.verificationCode)
                   }
-                  className="p-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  className="p-1 bg-brandAccent text-white rounded hover:bg-secondaryAccent transition-colors duration-200"
                   aria-label="Copy Credential ID"
                 >
-                  <FiClipboard className="w-5 h-5" />
+                  <FiClipboard className="w-4 h-4" />
                 </button>
               </div>
             </div>

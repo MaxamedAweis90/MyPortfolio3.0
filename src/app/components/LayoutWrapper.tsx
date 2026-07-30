@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import TargetCursor from "@/components/TargetCursor";
 import Footer from "./Footer";
+import SocialBar from "./SocialBar";
 import dynamic from "next/dynamic";
 import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
@@ -20,15 +21,13 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
-<ChatWidget />
+      <ChatWidget />
 
-    <div className="w-full ">
-    
-  
-
-      {!isStudioPage && <Navbar />}
-      {/* Main content */}
-      {children}
+      <div className="w-full ">
+        {!isStudioPage && <Navbar />}
+        {!isStudioPage && <SocialBar />}
+        {/* Main content */}
+        {children}
       
       <TargetCursor
   targetSelector="a, button, .cursor-target"

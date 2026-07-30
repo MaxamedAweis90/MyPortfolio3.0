@@ -1,172 +1,432 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import { motion, useInView, useAnimation } from "framer-motion";
-import Image from "next/image";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import "@/styles/hero.css";
-import Socials from "@/components/socials";
 import TextType from "@/components/TextType";
-import { client as sanityClient } from '../../../sanity/lib/client';
-import { FaExternalLinkAlt } from "react-icons/fa";
-import type { AppContext, SocialLinks } from "@/types/sanity";
+import { appContextData } from "@/data/portfolioData";
+import { FaFileDownload } from "react-icons/fa";
+import { SiNextdotjs, SiReact } from "react-icons/si";
+import {
+  RiCodeSSlashLine,
+  RiEyeLine,
+  RiSendPlaneLine,
+  RiArrowDownSLine,
+  RiGlobalLine,
+  RiSmartphoneLine,
+  RiServerLine,
+  RiLightbulbLine,
+} from "react-icons/ri";
 
 const Hero = () => {
-  const [baseRotation, setBaseRotation] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+  const resume = appContextData.resume || "/resume.pdf";
+  const displayName = appContextData.name || "Eng_Aweis";
 
-  // Ref and InView detection
-  const flipRef = useRef<HTMLDivElement | null>(null);
-  const infoRef = useRef<HTMLDivElement | null>(null);
-  const isFlipInView = useInView(flipRef, { once: false, margin: "-100px" });
-  const isInfoInView = useInView(infoRef, { once: false, margin: "-100px" });
-
-  const [resume, setResume] = useState<string | null>(null);
-  const [socialLinks, setSocialLinks] = useState<SocialLinks>({});
-  const [name, setName] = useState<string>("");
   const greetings = [
-    "Asc, Magacyku waa Mo!", // Somali (Aniga waa = I am)
-    "Hello, I am Mo!", // English
-    "Marhaban, Ana Mo!", // Arabic (Ana = I am)
-    "Ohayo, Watashi wa Mo desu!", // Japanese (Watashi wa = I am)
-    "Namaste, Main Mo hoon!", // Hindi (Main ... hoon = I am)
-    "Hallo, Ich bin Mo!", // German (Ich bin = I am)
-    "Bonjour, Je suis Mo!", // French (Je suis = I am)
+    "Hello, I'm",
+    "Asc, waa",
+    "مرحبا, انا",
+    "Ohayo, Watashi wa",
+    "Hallo, Ich bin",
+    "Bonjour, Je suis",
   ];
-  const [greetIdx, setGreetIdx] = useState(2); // Start with Japanese
+
+  // Dynamic Role Rotator array
+  const roles = ["Software Engineer", "Mobile App Developer"];
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setGreetIdx((prev) => (prev + 1) % greetings.length);
-    }, 2200);
+      setRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [roles.length]);
 
+  // Close dropdown on outside click
   useEffect(() => {
-    const fetchSanityData = async () => {
-      const query = '*[_type == "appContext"][0]{resume, socialLinks, name}';
-      const result = await sanityClient.fetch<AppContext>(query);
-      setResume(result?.resume || null);
-      setSocialLinks(result?.socialLinks || {});
-      setName(result?.name || "");
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
     };
-    fetchSanityData();
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleClick = () => setBaseRotation((prev) => prev + 180);
-  const handleMouseEnter = () => setTimeout(() => setIsHovered(true), 100);
-  const handleMouseLeave = () => setIsHovered(false);
+  const projectTypes = [
+    {
+      label: "Web Application",
+      icon: <RiGlobalLine className="text-brandAccent" />,
+      projectType: "Web Development",
+      defaultTitle: "Web Application Project",
+      defaultMessage:
+        "Hi Eng_Aweis, I would like to request a high-performance Web Application project tailored to my business requirements.",
+    },
+    {
+      label: "Mobile App",
+      icon: <RiSmartphoneLine className="text-secondaryAccent" />,
+      projectType: "Mobile Development",
+      defaultTitle: "Mobile App Project",
+      defaultMessage:
+        "Hi Eng_Aweis, I am looking to build a cross-platform Mobile Application using React Native / Flutter.",
+    },
+    {
+      label: "System",
+      icon: <RiServerLine className="text-cyan-400" />,
+      projectType: "Software Engineering",
+      defaultTitle: "Enterprise System Project",
+      defaultMessage:
+        "Hi Eng_Aweis, I need an Enterprise System solution engineered for high performance and scalability.",
+    },
+    {
+      label: "Custom Solution",
+      icon: <RiLightbulbLine className="text-amber-400" />,
+      projectType: "Custom Solution",
+      defaultTitle: "Custom Solution Project",
+      defaultMessage:
+        "Hi Eng_Aweis, I have a custom digital solution requirement that I would like to discuss with you.",
+    },
+  ];
+
+  const handleSelectProjectType = (item: (typeof projectTypes)[0]) => {
+    setDropdownOpen(false);
+    // Dispatch custom event to pre-fill contact form
+    window.dispatchEvent(
+      new CustomEvent("select-project-type", {
+        detail: {
+          projectType: item.projectType,
+          defaultTitle: item.defaultTitle,
+          defaultMessage: item.defaultMessage,
+        },
+      }),
+    );
+    // Smooth scroll down to contact section
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
-    <div className="bg-amber-100 md:h-lvh hero section relative border-b-4 border-amber-100 shadow-[0px_10px_20px_rgba(0,0,0,0.2)] before:content-[''] before:absolute before:bottom-[-10px] before:left-0 before:w-full before:h-6 before:bg-gradient-to-b before:from-transparent before:to-amber-100 before:opacity-50">
-      <section className="flex flex-col-reverse md:flex-row items-center justify-center h-full text-black px-4 md:gap-12">
-
-        {/* Flip Image Container */}
-        <motion.div
-          ref={flipRef}
-          className="flip-container md:mt-16 mt-0 relative w-full max-w-[600px] h-[600px] cursor-pointer"
-          onClick={handleClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          initial={{ opacity: 0, x: -100 }}
-          animate={isFlipInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -100 }}
-          transition={{ duration: 1 }}
-        >
-          <motion.div
-            className="flip-card"
-            animate={{ rotateY: baseRotation + (isHovered ? 180 : 0) }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-          >
-            <div className="flip-card-front">
-              <img src="/Hero3DMe.png" alt="Hero Front" className="hero-image" />
-            </div>
-            <div className="flip-card-back">
-              <img src="/HeroMe.png" alt="Hero Back" className="hero-image" />
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* Info Section */}
-        <motion.div
-          ref={infoRef}
-          className="info w-full max-w-[600px] md:mt-16 mt-32 flex flex-col items-center md:items-start gap-4 px-4 md:px-0"
-          initial={{ opacity: 0, x: 100 }}
-          animate={isInfoInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 100 }}
-          transition={{ duration: 1 }}
-        >
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold flex flex-row items-center mb-3">
-            <motion.span
-              style={{ display: "inline-block", transformOrigin: "bottom" }}
-              animate={{ rotate: [-20, 20, -20, 20, 0] }}
-              transition={{
-                duration: 1,
-                repeat: Infinity,
-                repeatDelay: 2,
-                ease: "easeInOut",
-              }}
-            >
-              👋🏼
-            </motion.span>
+    <div className="bg-mainBg min-h-screen lg:h-screen relative flex flex-col justify-between overflow-x-hidden border-b border-borderSubtle shadow-2xl">
+      {/* 1. Hero Headline & CTAs Container */}
+      <div className="container mx-auto px-6 sm:px-10 lg:px-16 min-h-fit lg:min-h-0 lg:h-full flex flex-col justify-between relative z-20 pointer-events-none">
+        {/* Left-Aligned Headline Stack */}
+        <div className="w-full max-w-xl lg:max-w-2xl pt-28 sm:pt-32 lg:pt-28 pb-6 my-auto text-left space-y-4 pointer-events-auto">
+          {/* Row 1: Animated Waving Hand 👋🏼 + High-Contrast Yellow Greeting Text */}
+          <div className="inline-flex items-center gap-2.5 text-amber-300 font-semibold text-base sm:text-xl tracking-wide">
+            <span className="animate-wave text-2xl sm:text-3xl">👋🏼</span>
             <TextType
               text={greetings}
-              className="lobster-two-font ml-2  text-black  rounded"
-              typingSpeed={60}
-              pauseDuration={1800}
+              typingSpeed={70}
+              pauseDuration={2000}
               showCursor={true}
               cursorCharacter="|"
+              textColors={["#FACC15"]}
               as="span"
+              className="text-amber-300 font-bold"
             />
+          </div>
 
+          {/* Row 2: Main Prominent Name Heading (Eng_Aweis) */}
+          <h1 className="text-4xl sm:text-7xl lg:text-8xl font-extrabold text-primaryText leading-[1.02] tracking-tight">
+            <span>{displayName}</span>
           </h1>
 
-          <p className="text-lg md:text-xl lg:text-2xl text-start">
-            💻 A passionate tech enthusiast blending coding with creativity to craft innovative solutions.
-          </p>
-
-          <p className="text-lg md:text-xl lg:text-2xl text-start">
-            🎨 Graduate of Simad University [Coming soon!], Faculty of Computing (IT). Always striving for excellence in development & design.
-          </p>
-
-          <div className="links flex w-full flex-col-reverse md:gap-3 gap-2">
-            <Socials socialLinks={socialLinks} name={name} />
+          {/* Row 3: Dynamic Role Rotator Component */}
+          <div className="flex items-center gap-3 text-xl sm:text-4xl font-black h-12 my-1">
+            <span className="p-2 rounded-xl bg-surface border border-borderSubtle text-brandAccent shadow-md flex items-center justify-center">
+              <RiCodeSSlashLine className="text-lg sm:text-2xl" />
+            </span>
+            <div className="relative overflow-hidden h-full flex items-center">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={roles[roleIndex]}
+                  initial={{ y: 24, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -24, opacity: 0 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="bg-gradient-to-r from-brandAccent via-secondaryAccent to-sky-400 bg-clip-text text-transparent block whitespace-nowrap"
+                >
+                  {roles[roleIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </div>
           </div>
 
-          <div className="mt-4 md:mt-6 flex flex-wrap gap-14 md:gap-4 items-center w-full">
-            <Link href="/work" className="inline-block">
-              <button className="cursor-target px-6 py-2 bg-blue-500 text-white rounded border-2 border-blue-500 hover:bg-transparent hover:text-black transition-colors text-lg md:text-xl">
-                Work Done
-              </button>
-            </Link>
-            {resume && (
-              <Link
-                href={resume}
-                className="inline-block"
-                target="_blank"
-                rel="noopener noreferrer"
+          {/* Row 4: Brief Bio Summary */}
+          <p className="text-mutedText text-sm sm:text-lg max-w-lg leading-relaxed pt-1">
+            Blending clean architectural code with intuitive UI/UX design to
+            craft remarkable digital products.
+          </p>
+
+          {/* Row 5: Action Buttons (View Work + Request A Project Dropdown + Resume) */}
+          <div className="pt-3 flex flex-wrap items-center gap-3 sm:gap-4 z-40">
+            {/* Button 1: View Work */}
+            <button
+              onClick={() => router.push("/work")}
+              className="inline-flex items-center gap-2.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-brandAccent to-secondaryAccent text-white font-extrabold text-xs sm:text-base hover:shadow-brandAccent/30 transition-all duration-300 shadow-lg shadow-brandAccent/20 hover:scale-105 border border-brandAccent/40"
+            >
+              <span>View Work</span>
+              <RiEyeLine className="text-base sm:text-lg" />
+            </button>
+
+            {/* Button 2: Request A Project Dropdown */}
+            <div className="relative inline-block" ref={dropdownRef}>
+              <button
+                onClick={() => setDropdownOpen((prev) => !prev)}
+                className="inline-flex items-center gap-2.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-surface border border-borderSubtle text-primaryText font-extrabold text-xs sm:text-base hover:bg-borderSubtle hover:border-brandAccent transition-all duration-300 shadow-md group"
               >
-                <button className="cursor-target flex items-center gap-1 px-3 py-2 border-2 border-blue-500 text-black rounded hover:bg-blue-500 hover:text-white transition-colors text-lg md:text-xl">
-                  Resume <FaExternalLinkAlt />
-                </button>
-              </Link>
-            )}
-          </div>
-        </motion.div>
-      </section>
+                <RiSendPlaneLine className="text-base sm:text-lg text-brandAccent group-hover:scale-110 transition-transform" />
+                <span>Request A Project</span>
+                <RiArrowDownSLine
+                  className={`text-base sm:text-lg transition-transform duration-300 ${
+                    dropdownOpen ? "rotate-180 text-brandAccent" : ""
+                  }`}
+                />
+              </button>
 
-      {/* Scroll Cue */}
-      <motion.div
-        className="scroll-container"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <div className="mouse">
-          <span className="scroll-ball"></span>
+              {/* Dropdown Options Card */}
+              <AnimatePresence>
+                {dropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 mt-2 w-64 bg-surface/95 backdrop-blur-md border border-borderSubtle rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] p-2 z-50 overflow-hidden"
+                  >
+                    <div className="px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-mutedText border-b border-borderSubtle/60 mb-1">
+                      Select Project Type
+                    </div>
+                    {projectTypes.map((item) => (
+                      <button
+                        key={item.label}
+                        onClick={() => handleSelectProjectType(item)}
+                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left text-sm font-semibold text-primaryText hover:bg-mainBg hover:text-brandAccent transition-colors duration-200 group"
+                      >
+                        <span className="text-lg p-1.5 rounded-lg bg-mainBg group-hover:bg-surface border border-borderSubtle">
+                          {item.icon}
+                        </span>
+                        <span>{item.label}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Resume Button inside mobile flex CTA row for mobile, hidden on lg desktop bottom-right grid */}
+            <Link
+              href={resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg:hidden inline-flex items-center gap-3 pl-5 pr-2 py-2 rounded-full bg-brandAccent/90 backdrop-blur-md border border-brandAccent/50 text-white font-extrabold text-xs hover:bg-brandAccent transition-all duration-300 shadow-xl shadow-brandAccent/30 hover:scale-105 group"
+            >
+              <span className="tracking-wider">RESUME</span>
+              <span className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white transition-all duration-300 group-hover:bg-white group-hover:text-brandAccent group-hover:rotate-12 shadow-sm">
+                <FaFileDownload className="text-xs" />
+              </span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Resume CTA Button Pinned Inside Container Grid at Bottom-Right for Desktop lg: */}
+        <div className="hidden lg:flex w-full justify-end pb-6 sm:pb-8 pointer-events-auto z-40">
+          <Link
+            href={resume}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3.5 pl-5 pr-2 py-2 rounded-full bg-brandAccent/90 backdrop-blur-md border border-brandAccent/50 text-white font-extrabold text-xs sm:text-sm hover:bg-brandAccent transition-all duration-300 shadow-xl shadow-brandAccent/30 hover:scale-105 group"
+          >
+            <span className="tracking-wider">RESUME</span>
+            <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white transition-all duration-300 group-hover:bg-white group-hover:text-brandAccent group-hover:rotate-12 shadow-sm">
+              <FaFileDownload className="text-xs" />
+            </span>
+          </Link>
+        </div>
+      </div>
+
+      {/* 2. Avatar Showcase (Positioned directly below text on mobile, merged side-by-side on desktop lg:) */}
+      <div className="min-h-[75vh] lg:min-h-0 w-full flex flex-col justify-end items-center relative lg:absolute lg:inset-0 pointer-events-none overflow-hidden mt-2 lg:mt-0">
+        {/* Rectangle Card Background Base Layer (z-5) */}
+        <div className="hidden lg:flex absolute top-[44%] left-[63%] -translate-y-1/2 z-5 pointer-events-none items-center">
+          {/* Background Card Base */}
+          <div className="absolute top-0 bottom-0 right-0 -left-28 sm:-left-32 md:-left-36 lg:-left-40 xl:-left-44 bg-surface/95 backdrop-blur-md border border-borderSubtle shadow-[0_20px_40px_rgba(0,0,0,0.5)] rounded-[28px] sm:rounded-[32px] -z-10" />
+
+          {/* Dummy layout spacer */}
+          <div className="relative flex flex-col items-center gap-1.5 sm:gap-2 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 opacity-0">
+            <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider block text-center">
+              Main Tools
+            </span>
+            <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full" />
+            </div>
+          </div>
+        </div>
+
+        {/* Avatar Image Layer anchored flush to bottom-0 (z-10) */}
+        <div className="absolute bottom-0 left-1/2 lg:left-[54%] -translate-x-1/2 z-10 flex justify-center items-end w-full max-w-[380px] sm:max-w-[440px] lg:max-w-2xl h-[78vh] lg:h-[88vh] pointer-events-none">
+          {/* Glowing Electric Blue aura backdrop */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] sm:w-[420px] sm:h-[420px] lg:w-[500px] lg:h-[500px] bg-brandAccent/20 rounded-full blur-[120px] -z-0 pointer-events-none animate-pulse" />
+
+          {/* Main Portrait Image anchored directly at bottom 0 */}
+          <img
+            src="/me.png"
+            alt="Eng_Aweis"
+            className="h-full w-auto object-contain object-bottom align-bottom block drop-shadow-[0_25px_40px_rgba(0,0,0,0.6)] pointer-events-auto transition-transform duration-500 hover:scale-[1.01]"
+          />
+        </div>
+
+        {/* Interactive Main Tools Card & Responsive Line Pointer Tooltips (z-30) */}
+        <div className="absolute bottom-10 lg:bottom-auto lg:top-[44%] left-1/2 lg:left-[63%] -translate-x-1/2 lg:-translate-x-0 lg:-translate-y-1/2 z-30 pointer-events-auto flex items-center">
+          <div className="relative flex flex-col items-center gap-1.5 sm:gap-2 px-5 sm:px-6 lg:px-8 py-3.5 sm:py-4 lg:py-5 bg-surface/95 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-borderSubtle lg:border-none rounded-2xl lg:rounded-none shadow-2xl lg:shadow-none">
+            <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-brandAccent block text-center">
+              Main Tools
+            </span>
+            <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
+              {/* Circle 1: Next.js */}
+              <div className="relative group cursor-pointer">
+                {/* Pulsing Hint Radius Aura */}
+                <div className="absolute inset-0 rounded-full bg-brandAccent/30 scale-100 opacity-0 group-hover:scale-150 group-hover:opacity-100 transition-all duration-500 pointer-events-none" />
+
+                {/* Tool Icon Badge */}
+                <div className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-mainBg border border-borderSubtle flex items-center justify-center text-white shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:border-brandAccent group-hover:shadow-[0_0_20px_rgba(11,130,236,0.5)]">
+                  <SiNextdotjs className="text-xl sm:text-2xl lg:text-3xl" />
+                </div>
+
+                {/* Mobile Responsive Floating Tooltip (hidden on lg) */}
+                <div className="flex lg:hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 flex-col items-center">
+                  <div className="bg-surface/95 backdrop-blur-md border border-borderSubtle text-primaryText p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.9)] whitespace-nowrap min-w-[140px] text-center space-y-0.5">
+                    <div className="flex items-center justify-center gap-1.5 text-brandAccent font-extrabold text-xs">
+                      <SiNextdotjs />
+                      <span>Next.js 15</span>
+                    </div>
+                    <p className="text-[10px] text-mutedText font-medium">
+                      Full-Stack Web App Framework
+                    </p>
+                  </div>
+                  <div className="w-[2px] h-3 bg-gradient-to-b from-brandAccent to-transparent relative">
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-brandAccent shadow-[0_0_4px_#0B82EC]" />
+                  </div>
+                </div>
+
+                {/* Desktop 1-to-1 Angled Pointer Line & Far-Right Text Box Tooltip (hidden below lg) */}
+                <div className="hidden lg:flex absolute bottom-1/2 left-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 items-end">
+                  <div className="relative left-2 w-64 h-32 flex flex-col justify-end">
+                    {/* SVG Diagonal to Horizontal Line Path */}
+                    <svg
+                      className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
+                      viewBox="0 0 240 100"
+                    >
+                      <path
+                        d="M 12 88 L 68 28 L 220 28"
+                        fill="none"
+                        stroke="#0B82EC"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="drop-shadow-[0_0_8px_#0B82EC]"
+                      />
+                      <circle cx="12" cy="88" r="3" fill="#0B82EC" />
+                    </svg>
+
+                    {/* Text Box Resting Directly Above the Horizontal Line */}
+                    <div className="relative ml-[68px] mb-[74px] bg-surface/95 backdrop-blur-md border border-borderSubtle text-primaryText p-3 rounded-xl shadow-[0_12px_35px_rgba(0,0,0,0.9)] whitespace-nowrap min-w-[160px] space-y-1">
+                      <div className="flex items-center gap-1.5 text-brandAccent font-extrabold text-sm">
+                        <SiNextdotjs />
+                        <span>Next.js 15</span>
+                      </div>
+                      <p className="text-[11px] text-mutedText font-medium leading-tight">
+                        Full-Stack Web App Framework
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Circle 2: React Native */}
+              <div className="relative group cursor-pointer">
+                {/* Pulsing Hint Radius Aura */}
+                <div className="absolute inset-0 rounded-full bg-secondaryAccent/30 scale-100 opacity-0 group-hover:scale-150 group-hover:opacity-100 transition-all duration-500 pointer-events-none" />
+
+                {/* Tool Icon Badge */}
+                <div className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-secondaryAccent/15 border border-secondaryAccent/40 flex items-center justify-center text-secondaryAccent shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:bg-secondaryAccent/30 group-hover:border-secondaryAccent group-hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]">
+                  <SiReact className="text-xl sm:text-2xl lg:text-3xl" />
+                </div>
+
+                {/* Mobile Responsive Floating Tooltip (hidden on lg) */}
+                <div className="flex lg:hidden absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 flex-col items-center">
+                  <div className="bg-surface/95 backdrop-blur-md border border-borderSubtle text-primaryText p-2.5 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.9)] whitespace-nowrap min-w-[140px] text-center space-y-0.5">
+                    <div className="flex items-center justify-center gap-1.5 text-secondaryAccent font-extrabold text-xs">
+                      <SiReact />
+                      <span>React Native</span>
+                    </div>
+                    <p className="text-[10px] text-mutedText font-medium">
+                      Cross-Platform Mobile Apps
+                    </p>
+                  </div>
+                  <div className="w-[2px] h-3 bg-gradient-to-b from-secondaryAccent to-transparent relative">
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-secondaryAccent shadow-[0_0_4px_#3B82F6]" />
+                  </div>
+                </div>
+
+                {/* Desktop 1-to-1 Angled Pointer Line & Far-Right Text Box Tooltip (hidden below lg) */}
+                <div className="hidden lg:flex absolute bottom-1/2 left-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-50 items-end">
+                  <div className="relative left-2 w-64 h-32 flex flex-col justify-end">
+                    {/* SVG Diagonal to Horizontal Line Path */}
+                    <svg
+                      className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
+                      viewBox="0 0 240 100"
+                    >
+                      <path
+                        d="M 12 88 L 68 28 L 220 28"
+                        fill="none"
+                        stroke="#3B82F6"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="drop-shadow-[0_0_8px_#3B82F6]"
+                      />
+                      <circle cx="12" cy="88" r="3" fill="#3B82F6" />
+                    </svg>
+
+                    {/* Text Box Resting Directly Above the Horizontal Line */}
+                    <div className="relative ml-[68px] mb-[74px] bg-surface/95 backdrop-blur-md border border-borderSubtle text-primaryText p-3 rounded-xl shadow-[0_12px_35px_rgba(0,0,0,0.9)] whitespace-nowrap min-w-[160px] space-y-1">
+                      <div className="flex items-center gap-1.5 text-secondaryAccent font-extrabold text-sm">
+                        <SiReact />
+                        <span>React Native</span>
+                      </div>
+                      <p className="text-[11px] text-mutedText font-medium leading-tight">
+                        Cross-Platform Mobile Apps
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll indicator cue (z-50) floating over the bottom center */}
+      <div className="scroll-container absolute bottom-2 left-1/2 -translate-x-1/2 z-50 pointer-events-auto hidden lg:flex">
+        <div className="mouse shadow-md bg-surface/60 backdrop-blur-sm border border-borderSubtle">
+          <span className="scroll-ball bg-primaryText"></span>
         </div>
         <div className="chevrons">
-          <div className="chevrondown"></div>
-          <div className="chevrondown"></div>
+          <div className="chevrondown border-primaryText"></div>
+          <div className="chevrondown border-primaryText"></div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

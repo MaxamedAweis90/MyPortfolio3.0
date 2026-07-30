@@ -6,9 +6,6 @@
   z-index: 10;
   padding: 1.5rem;
 }
-.dark .filterBarContainer {
-  background-color: #0f172a;
-}
 
 .filterBar {
   display: flex;
@@ -17,37 +14,30 @@
 
 .filterButtons {
   display: inline-flex;
-  background-color: #f3f4f6;
+  background-color: #1D2631;
+  border: 1px solid #2C394B;
   padding: 0.5rem 1rem;
   border-radius: 9999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   gap: 0.5rem;
-}
-.dark .filterButtons {
-  background-color: #1e293b;
 }
 
 .filterButton {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 9999px;
-  font-weight: 500;
+  font-weight: 600;
   transition: background 0.3s, color 0.3s;
-  background: white;
-  color: #374151;
-}
-.dark .filterButton {
-  background: #0f172a;
-  color: white;
+  background: #11161D;
+  color: #94A3B8;
 }
 .filterButton:hover {
-  background-color: #dbeafe;
-}
-.dark .filterButton:hover {
-  background-color: #334155;
+  background-color: #2C394B;
+  color: #E2E8F0;
 }
 .filterButtonActive {
-  background-color: #2563eb;
-  color: white;
+  background-color: #0B82EC !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(11, 130, 236, 0.3);
 }
 
 .projectGrid {
@@ -58,24 +48,26 @@
 }
 
 .mobileAppCard {
-  background: #ffffff;
+  background: #1D2631;
+  border: 1px solid #2C394B;
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   cursor: pointer;
 }
 
 .mobileAppCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
+  border-color: #0B82EC;
+  box-shadow: 0 12px 32px rgba(11, 130, 236, 0.15);
 }
 
 .mobileAppBanner {
   position: relative;
   height: 240px;
   width: 100%;
-  background: #e5e7eb;
+  background: #11161D;
 }
 
 .mobileAppBannerImage {
@@ -87,7 +79,7 @@
 .mobileAppBannerOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(15, 23, 42, 0.35) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(29, 38, 49, 0.8) 100%);
 }
 
 .mobileAppMeta {
@@ -116,8 +108,9 @@
   height: 56px;
   border-radius: 12px;
   object-fit: cover;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  background: #f8fafc;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  background: #11161D;
+  border: 1px solid #2C394B;
 }
 
 .mobileAppText {
@@ -128,19 +121,19 @@
 .mobileAppTitle {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #E2E8F0;
 }
 
 .mobileAppTagline {
   font-size: 0.9rem;
-  color: #64748b;
+  color: #94A3B8;
   margin-top: 0.2rem;
 }
 
 .mobileInstallButton {
-  padding: 0.45rem 1rem;
+  padding: 0.45rem 1.25rem;
   border-radius: 9999px;
-  background: #1a73e8;
+  background: #0B82EC;
   color: #fff;
   font-weight: 600;
   font-size: 0.85rem;
@@ -149,25 +142,23 @@
 }
 
 .mobileInstallButton:hover {
-  background: #155fc0;
+  background: #3B82F6;
 }
 
 .projectCard {
   position: relative;
-  background-color: white;
+  background-color: #1D2631;
+  border: 1px solid #2C394B;
   border-radius: 1rem;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
 .projectCard:hover {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 30px rgba(11, 130, 236, 0.2);
+  border-color: #0B82EC;
   scale: 1.02;
-}
-.dark .projectCard {
-  background-color: #1e293b;
 }
 
 .imageWrapper {
@@ -184,7 +175,7 @@
 .cardOverlay {
   position: absolute;
   inset: 0;
-  color: white;
+  color: #E2E8F0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -197,25 +188,27 @@
 
 .cardTitle {
   font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(29, 38, 49, 0.9);
   backdrop-filter: blur(14px);
   padding: 0.25rem 0.75rem;
   border-radius: 0.75rem;
   font-size: 1rem;
+  border: 1px solid #2C394B;
 }
 
 .cardDescription {
   margin-top: 1rem;
   font-size: 0.875rem;
-  color: #d1d5db;
+  color: #94A3B8;
   display: none;
 }
 
 .cardFooter {
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(29, 38, 49, 0.9);
   backdrop-filter: blur(14px);
+  border: 1px solid #2C394B;
   padding: 0.5rem;
   border-radius: 0.5rem;
   align-items: center;
@@ -230,20 +223,24 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 9999px;
   backdrop-filter: blur(4px);
-  background-color: rgb(232, 250, 188);
+  background-color: #11161D;
+  border: 1px solid #2C394B;
+  color: #E2E8F0;
   position: relative;
 }
 
 .cardLiveLink {
-  background-color: #fad6d650;
-  color: #93c5fd;
+  background-color: #0B82EC;
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
 }
 .cardLiveLink:hover {
-  background-color: #a6ff00;
-  color: #000000;
+  background-color: #3B82F6;
+  color: #ffffff;
 }
 
 /* ---------- Responsive Tool Label Visibility ---------- */
@@ -281,42 +278,6 @@
   .toolList.manyToolsTablet .toolLabel {
     display: none;
   }
-
-  .cardFooter {
-    display: flex;
-    justify-content: space-between;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(14px);
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    align-items: center;
-    font-size: 0.75rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .cardTool,
-  .cardLiveLink {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    backdrop-filter: blur(4px);
-    background-color: rgb(232, 250, 188);
-  }
-
-  
-
-  .cardLiveLink {
-    background-color: #fad6d650;
-    color: #93c5fd;
-  }
-  .cardLiveLink:hover {
-    background-color: #a6ff00;
-    color: #000000;
-  }
 }
 
 @media (max-width: 639px) {
@@ -352,7 +313,8 @@
   }
 
   .cardOverlay.hovering {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(17, 22, 29, 0.88);
+    backdrop-filter: blur(8px);
     opacity: 1;
     pointer-events: auto;
   }
@@ -368,26 +330,8 @@
     padding: 0.25rem 0.75rem;
     border-radius: 0.75rem;
     font-size: 1rem;
+    border: none;
   }
-
-  .toolList.fewToolsDesktop .toolLabel {
-    display: inline;
-  }
-
-  .toolList.manyToolsDesktop .toolLabel {
-    display: none;
-  }
-
-  .cardFooter {
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    align-items: center;
-    font-size: 0.75rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
 }
 
 /* ------------------ Tooltip Styling ------------------ */
@@ -397,8 +341,9 @@
   bottom: 130%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: lightgray;
-  color: #000050 !important;
+  background-color: #1D2631;
+  color: #E2E8F0 !important;
+  border: 1px solid #2C394B;
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -418,7 +363,7 @@
   height: 0;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 6px solid lightgray;
+  border-top: 6px solid #1D2631;
 }
 
 .cardTool:hover .tooltip {

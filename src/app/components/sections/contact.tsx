@@ -35,6 +35,24 @@ const ProjectRequest = () => {
   });
   const [loading, setLoading] = useState(false);
 
+  React.useEffect(() => {
+    const handleSelectType = (
+      e: CustomEvent<{ projectType: string; defaultMessage: string; defaultTitle: string }>
+    ) => {
+      if (e.detail) {
+        setFormData((prev) => ({
+          ...prev,
+          projectType: e.detail.projectType || prev.projectType,
+          projectName: e.detail.defaultTitle || prev.projectName,
+          message: e.detail.defaultMessage || prev.message,
+        }));
+      }
+    };
+    window.addEventListener("select-project-type", handleSelectType as EventListener);
+    return () =>
+      window.removeEventListener("select-project-type", handleSelectType as EventListener);
+  }, []);
+
   // Today's date for min deadline
   const today = new Date().toISOString().split("T")[0];
 
@@ -122,7 +140,7 @@ const ProjectRequest = () => {
   return (
     <>
       {/* ToastContainer must be present once at root of this tree */}
-      <div className="py-16 px-4 md:px-10 bg-amber-100">
+      <div id="contact" className="py-16 px-4 md:px-10 bg-mainBg">
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="text-center mb-12"
@@ -130,24 +148,24 @@ const ProjectRequest = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h3 className="text-primary text-sm uppercase tracking-wider">
+            <h3 className="text-brandAccent font-bold text-sm uppercase tracking-wider">
               Let’s Start Your Project
             </h3>
-            <h2 className="section-header after:bg-white">Project Request</h2>
-            <p className="text-gray-600">Have a project in mind? Share your details with me!</p>
+            <h2 className="section-header after:bg-surface">Project Request</h2>
+            <p className="text-mutedText">Have a project in mind? Share your details with me!</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <motion.form
               onSubmit={handleSubmit}
-              className="md:col-span-2 space-y-6 bg-white p-8 rounded-lg shadow"
+              className="md:col-span-2 space-y-6 bg-surface p-8 rounded-xl shadow-xl border border-borderSubtle"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
               {/* Project Name */}
               <div className="flex flex-col">
-                <label htmlFor="projectName" className="mb-2 font-medium text-gray-800">
+                <label htmlFor="projectName" className="mb-2 font-medium text-primaryText">
                   Project Name
                 </label>
                 <input
@@ -158,14 +176,14 @@ const ProjectRequest = () => {
                   value={formData.projectName}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full border border-borderSubtle bg-mainBg text-primaryText rounded-lg px-4 py-3 focus:outline-none focus:border-brandAccent focus:ring-1 focus:ring-brandAccent transition-all placeholder:text-mutedText/60"
                 />
               </div>
 
               {/* Name & Email */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label htmlFor="name" className="mb-2 font-medium text-gray-800">Your Name</label>
+                  <label htmlFor="name" className="mb-2 font-medium text-primaryText">Your Name</label>
                   <input
                     id="name"
                     name="name"
@@ -174,11 +192,11 @@ const ProjectRequest = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-borderSubtle bg-mainBg text-primaryText rounded-lg px-4 py-3 focus:outline-none focus:border-brandAccent focus:ring-1 focus:ring-brandAccent transition-all placeholder:text-mutedText/60"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="email" className="mb-2 font-medium text-gray-800">Your Email</label>
+                  <label htmlFor="email" className="mb-2 font-medium text-primaryText">Your Email</label>
                   <input
                     id="email"
                     name="email"
@@ -187,7 +205,7 @@ const ProjectRequest = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-borderSubtle bg-mainBg text-primaryText rounded-lg px-4 py-3 focus:outline-none focus:border-brandAccent focus:ring-1 focus:ring-brandAccent transition-all placeholder:text-mutedText/60"
                   />
                 </div>
               </div>
@@ -195,7 +213,7 @@ const ProjectRequest = () => {
               {/* Phone & Project Type */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label htmlFor="phone" className="mb-2 font-medium text-gray-800">Your Phone</label>
+                  <label htmlFor="phone" className="mb-2 font-medium text-primaryText">Your Phone</label>
                   <input
                     id="phone"
                     name="phone"
@@ -204,18 +222,18 @@ const ProjectRequest = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-borderSubtle bg-mainBg text-primaryText rounded-lg px-4 py-3 focus:outline-none focus:border-brandAccent focus:ring-1 focus:ring-brandAccent transition-all placeholder:text-mutedText/60"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="projectType" className="mb-2 font-medium text-gray-800">Project Type</label>
+                  <label htmlFor="projectType" className="mb-2 font-medium text-primaryText">Project Type</label>
                   <select
                     id="projectType"
                     name="projectType"
                     value={formData.projectType}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-borderSubtle bg-mainBg text-primaryText rounded-lg px-4 py-3 focus:outline-none focus:border-brandAccent focus:ring-1 focus:ring-brandAccent transition-all"
                   >
                     <option value="">Select Project Type</option>
                     <option value="Web Development">Web Development</option>
@@ -230,7 +248,7 @@ const ProjectRequest = () => {
               {/* Budget & Deadline */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label htmlFor="budget" className="mb-2 font-medium text-gray-800">Estimated Budget</label>
+                  <label htmlFor="budget" className="mb-2 font-medium text-primaryText">Estimated Budget</label>
                   <input
                     id="budget"
                     name="budget"
@@ -238,11 +256,11 @@ const ProjectRequest = () => {
                     placeholder="Estimated Budget"
                     value={formData.budget}
                     onChange={handleChange}
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-borderSubtle bg-mainBg text-primaryText rounded-lg px-4 py-3 focus:outline-none focus:border-brandAccent focus:ring-1 focus:ring-brandAccent transition-all placeholder:text-mutedText/60"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="deadline" className="mb-2 font-medium text-gray-800">Project Deadline</label>
+                  <label htmlFor="deadline" className="mb-2 font-medium text-primaryText">Project Deadline</label>
                   <input
                     id="deadline"
                     name="deadline"
@@ -250,14 +268,14 @@ const ProjectRequest = () => {
                     value={formData.deadline}
                     onChange={handleChange}
                     min={today}
-                    className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-borderSubtle bg-mainBg text-primaryText rounded-lg px-4 py-3 focus:outline-none focus:border-brandAccent focus:ring-1 focus:ring-brandAccent transition-all"
                   />
                 </div>
               </div>
 
               {/* Message */}
               <div className="flex flex-col">
-                <label htmlFor="message" className="mb-2 font-medium text-gray-800">
+                <label htmlFor="message" className="mb-2 font-medium text-primaryText">
                   Additional Project Details
                 </label>
                 <textarea
@@ -268,15 +286,15 @@ const ProjectRequest = () => {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 bg-amber-100 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full border border-borderSubtle bg-mainBg text-primaryText rounded-lg px-4 py-3 focus:outline-none focus:border-brandAccent focus:ring-1 focus:ring-brandAccent transition-all placeholder:text-mutedText/60"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className={` text-white px-6 py-3 rounded font-semibold transition ${
-                  loading ? "bg-gray-400" : "bg-red-600 hover:opacity-90"
+                className={` text-white px-6 py-3 rounded-lg font-semibold transition shadow-md ${
+                  loading ? "bg-gray-600" : "bg-brandAccent hover:bg-secondaryAccent shadow-brandAccent/20 hover:shadow-lg"
                 }`}
               >
                 {loading ? "Sending…" : "Send Request"}
@@ -291,12 +309,12 @@ const ProjectRequest = () => {
             >
               {contactItems.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-4">
-                  <div className="w-16 h-20 flex items-center justify-center rounded-md bg-white shadow border border-gray-200">
+                  <div className="w-16 h-20 flex items-center justify-center rounded-xl bg-surface shadow-md border border-borderSubtle text-brandAccent">
                     {item.icon}
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">{item.label}</p>
-                    <p className="text-gray-700">{item.value}</p>
+                    <p className="font-bold text-primaryText">{item.label}</p>
+                    <p className="text-mutedText">{item.value}</p>
                   </div>
                 </div>
               ))}
@@ -304,7 +322,7 @@ const ProjectRequest = () => {
           </div>
 
           <motion.div
-            className="mt-12 p-3 rounded-md bg-white shadow border border-gray-200"
+            className="mt-12 p-3 rounded-2xl bg-surface shadow-xl border border-borderSubtle"
             initial={{ opacity: 0, y: 100 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}

@@ -82,7 +82,18 @@ const TargetCursor = ({
 
     createSpinTimeline();
 
-    const moveHandler = (e: MouseEvent) => moveCursor(e.clientX, e.clientY);
+    const moveHandler = (e: MouseEvent) => {
+      if (!cursorRef.current) return;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const isNav = !!(el && (el.closest("nav") || el.closest("header") || el.closest(".navbar")));
+      if (isNav) {
+        gsap.to(cursorRef.current, { opacity: 0, duration: 0.1 });
+        return;
+      } else {
+        gsap.to(cursorRef.current, { opacity: 1, duration: 0.1 });
+      }
+      moveCursor(e.clientX, e.clientY);
+    };
     window.addEventListener("mousemove", moveHandler);
 
     const scrollHandler = () => {
@@ -108,6 +119,10 @@ const TargetCursor = ({
 
     const enterHandler = (e: MouseEvent) => {
       const directTarget = e.target as Element | null;
+      if (directTarget && (directTarget.closest("nav") || directTarget.closest("header") || directTarget.closest(".navbar"))) {
+        if (cursorRef.current) gsap.to(cursorRef.current, { opacity: 0, duration: 0.1 });
+        return;
+      }
 
       const allTargets: Element[] = [];
       let current = directTarget;

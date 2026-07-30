@@ -1,60 +1,47 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { client as sanityClient } from '../../sanity/lib/client'; // Correct import
-import type { AppContext } from "@/types/sanity";
+import { appContextData } from "@/data/portfolioData";
 
 const Footer = () => {
-  const [footerData, setFooterData] = useState<AppContext | null>(null);
-
-  useEffect(() => {
-    const fetchFooterData = async () => {
-      const query = '*[_type == "appContext"][0]';
-      const result = await sanityClient.fetch<AppContext>(query); // Use sanityClient.fetch instead of client.fetch
-      setFooterData(result);
-    };
-
-    fetchFooterData();
-  }, []);
-
-  if (!footerData) return <p>Loading...</p>;
+  const footerData = appContextData;
 
   return (
     <div className="footer mt-0 py-6 text-center backdrop-blur-md rounded-lg">
       <div className="container wrapper flex items-center justify-between flex-col">
-        <p className="text-yellow-400">Thank you for stopping by! 👋</p>
-        <p className="text-yellow-400 mt-2">Let&apos;s connect:</p>
-        <div className="socials flex space-x-8 max-md:space-x-0 text-nowrap max-md:text-sm justify-center">
+        <p className="text-brandAccent font-bold text-lg">Thank you for stopping by! 👋</p>
+        <p className="text-mutedText mt-2 font-medium">Let&apos;s connect:</p>
+        <div className="socials flex space-x-8 max-md:space-x-0 text-nowrap max-md:text-sm justify-center text-primaryText">
           {footerData.email && (
-            <a href={`mailto:${footerData.email}`} className="hover:text-gray-300 text-nowrap">
+            <a href={`mailto:${footerData.email}`} className="hover:text-brandAccent text-nowrap transition-colors">
               📧 Email Me
             </a>
           )}
           {footerData.socialLinks?.linkedin && (
-            <a href={footerData.socialLinks.linkedin} className="hover:text-gray-300">
+            <a href={footerData.socialLinks.linkedin} className="hover:text-brandAccent transition-colors">
               🔗 Linkedin
             </a>
           )}
           {footerData.resume && (
-            <a href={footerData.resume} className="hover:text-gray-300">
+            <a href={footerData.resume} className="hover:text-brandAccent transition-colors">
               📝 Resume
             </a>
           )}
-          <Link href="/work" className="hover:text-gray-300">
+          <Link href="/work" className="hover:text-brandAccent transition-colors">
             💼 Work
           </Link>
           {footerData.socialLinks?.youtube && (
-            <a href={footerData.socialLinks.youtube} className="hover:text-gray-300">
+            <a href={footerData.socialLinks.youtube} className="hover:text-brandAccent transition-colors">
               🎬 Youtube
             </a>
           )}
           {footerData.socialLinks?.instagram && (
-            <a href={footerData.socialLinks.instagram} className="hover:text-gray-300">
+            <a href={footerData.socialLinks.instagram} className="hover:text-brandAccent transition-colors">
               📸 Instagram
             </a>
           )}
         </div>
-        <p className="text-white mt-4">&copy; {new Date().getFullYear()} {footerData.name}. All rights reserved. ⚡</p>
+        <p className="text-mutedText mt-4 text-sm">&copy; {new Date().getFullYear()} {footerData.name}. All rights reserved. ⚡</p>
       </div>
     </div>
   );

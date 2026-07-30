@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import styles from "./ClientProjectGrid.module.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { TOOL_ICONS } from "@/components/toolIcons";
-import type { Project, Tool } from "@/types/sanity";
+import type { Project, Tool } from "@/types/portfolio";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20, scale: 0.95 },

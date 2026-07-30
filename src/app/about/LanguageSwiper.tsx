@@ -11,22 +11,22 @@ const LanguageSwiperMotion = () => {
   const languages: Language[] = [
     {
       name: "Somali",
-      flag: "https://cdn.sanity.io/images/yf7fdygw/production/15cf319492ff27593cdbf23cba4477452e6b6053-900x600.svg",
+      flag: "https://flagcdn.com/w160/so.png",
       proficiency: "Native",
     },
     {
       name: "English",
-      flag: "https://cdn.sanity.io/images/yf7fdygw/production/185cc04330ab35086485332ad93a27cfce298a01-4693x2470.gif",
+      flag: "https://flagcdn.com/w160/gb.png",
       proficiency: "Fluent",
     },
     {
       name: "Arabic",
-      flag: "https://cdn.sanity.io/images/yf7fdygw/production/5349f152eed497f696305d83fad7927e3ecf7477-1600x1067.png",
+      flag: "https://flagcdn.com/w160/sa.png",
       proficiency: "Fluent",
     },
     {
       name: "Japanese",
-      flag: "https://cdn.sanity.io/images/yf7fdygw/production/2258514b4b9dc5fdcf8be8aefba40c858760a906-4685x3123.jpg",
+      flag: "https://flagcdn.com/w160/jp.png",
       proficiency: "Basic",
     }
   ];

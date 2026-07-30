@@ -1,35 +1,11 @@
-export const revalidate = 60;
-
 import { notFound } from "next/navigation";
-import { PortableText } from "@portabletext/react";
-import type { PortableTextBlock } from "@portabletext/types";
-import { client as sanityClient } from "../../../sanity/lib/client";
-import { urlFor } from "../../../sanity/lib/image";
-import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import AutoDownload from "./AutoDownload";
 import { TOOL_ICONS } from "@/components/toolIcons";
 import { FaApple, FaGooglePlay } from "react-icons/fa";
-
-type ProjectDetails = {
-	title: string;
-	description?: string;
-	longDescription?: PortableTextBlock[];
-	category?: string;
-	tools?: { _id?: string; title?: string; icon?: string; color?: string }[];
-	images?: SanityImageSource[];
-	screenshots?: SanityImageSource[];
-	appIcon?: unknown;
-	apkFile?: { asset?: { url?: string } };
-	shortTagline?: string;
-	playStoreUrl?: string;
-	appStoreUrl?: string;
-};
+import { projectsData } from "@/data/portfolioData";
 
 export async function generateStaticParams() {
-	const slugs = await sanityClient.fetch<string[]>(
-		`*[_type in ["webProject", "mobileProject", "designProject"]].slug.current`
-	);
-	return slugs.map((slug) => ({ slug }));
+	return projectsData.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({
@@ -38,10 +14,7 @@ export async function generateMetadata({
 	params: Promise<{ slug: string }>;
 }) {
 	const { slug } = await params;
-	const project = await sanityClient.fetch<{ title?: string; description?: string }>(
-		`*[_type in ["webProject", "mobileProject", "designProject"] && slug.current == $slug][0]{ title, description }`,
-		{ slug }
-	);
+	const project = projectsData.find((p) => p.slug === slug);
 	if (!project) return {};
 	return {
 		title: project.title ? `${project.title} | My Portfolio` : "My Portfolio",
@@ -59,38 +32,18 @@ export default async function ProjectDetails({
 	const { slug } = await params;
 	const resolvedSearchParams = searchParams ? await searchParams : undefined;
 
-	const project = await sanityClient.fetch<ProjectDetails>(
-		`*[_type in ["webProject", "mobileProject", "designProject"] && slug.current == $slug][0]{
-			title,
-			description,
-			longDescription,
-			tools[]->{ _id, title, icon, color },
-			images,
-			screenshots,
-			appIcon,
-			apkFile,
-			shortTagline,
-			playStoreUrl,
-			appStoreUrl
-		}`,
-		{ slug }
-	);
+	const project = projectsData.find((p) => p.slug === slug);
 
 	if (!project) {
 		notFound();
 	}
 
-	const appIconUrl = project.appIcon
-		? urlFor(project.appIcon).width(160).height(160).url()
-		: undefined;
-	const apkUrl = project.apkFile?.asset?.url;
+	const appIconUrl = project.appIconUrl;
+	const apkUrl = project.apkUrl;
 	const playStoreUrl = project.playStoreUrl;
 	const appStoreUrl = project.appStoreUrl;
 
-	const galleryImages = (project.screenshots?.length ? project.screenshots : project.images) || [];
-	const galleryUrls = galleryImages.map((img) =>
-		urlFor(img).width(900).height(1800).fit("max").url()
-	);
+	const galleryUrls = (project.screenshots?.length ? project.screenshots : project.images) || [];
 
 	const shouldAutoDownload = resolvedSearchParams?.install === "1";
 
@@ -136,7 +89,7 @@ export default async function ProjectDetails({
 		ctaCount === 1 ? "col-span-6" : ctaCount === 2 ? "col-span-3" : "col-span-2";
 
 	return (
-		<section className="bg-amber-100 py-20 md:py-20">
+		<section className="bg-mainBg py-20 md:py-20 min-h-screen text-primaryText">
 			<div className="container mx-auto px-2 md:px-6 max-w-6xl">
 				<AutoDownload shouldDownload={shouldAutoDownload} apkUrl={apkUrl} />
 
@@ -148,15 +101,15 @@ export default async function ProjectDetails({
 								<img
 									src={appIconUrl}
 									alt={`${project.title} icon`}
-									className="w-20 h-20 sm:w-24 sm:h-24 rounded-[24px] shadow-xl border border-white/60 object-cover"
+									className="w-20 h-20 sm:w-24 sm:h-24 rounded-[24px] shadow-xl border border-borderSubtle object-cover"
 								/>
 							)}
 							<div className="flex-1 min-w-0">
-								<h1 className="text-3xl font-extrabold text-slate-900 leading-tight truncate">
+								<h1 className="text-3xl font-extrabold text-primaryText leading-tight truncate">
 									{project.title}
 								</h1>
 								{project.shortTagline && (
-									<p className="text-slate-700 text-base leading-snug line-clamp-2">
+									<p className="text-mutedText text-base leading-snug line-clamp-2">
 										{project.shortTagline}
 									</p>
 								)}
@@ -165,11 +118,11 @@ export default async function ProjectDetails({
 
 						{/* Main content with CTAs */}
 						<div className="flex-1 flex flex-col gap-3">
-							<h1 className="hidden md:block text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+							<h1 className="hidden md:block text-3xl md:text-5xl font-extrabold text-primaryText leading-tight">
 								{project.title}
 							</h1>
 							{project.shortTagline && (
-								<p className="hidden md:block text-slate-700 text-base md:text-lg">{project.shortTagline}</p>
+								<p className="hidden md:block text-mutedText text-base md:text-lg">{project.shortTagline}</p>
 							)}
 
 							{ctaCount > 0 && (
@@ -177,10 +130,10 @@ export default async function ProjectDetails({
 									{ctaLinks.map((cta) => {
 										const baseButton =
 											cta.variant === "primary"
-												? "bg-blue-600 hover:bg-blue-700 text-white"
+												? "bg-brandAccent hover:bg-secondaryAccent text-white"
 											: cta.variant === "dark"
-												? "bg-slate-900 hover:bg-slate-800 text-white"
-												: "bg-white hover:bg-slate-100 text-slate-900 border border-slate-200";
+												? "bg-surface hover:bg-borderSubtle text-primaryText border border-borderSubtle"
+												: "bg-surface hover:bg-borderSubtle text-primaryText border border-borderSubtle";
 
 										return (
 											<a
@@ -204,7 +157,7 @@ export default async function ProjectDetails({
 								<img
 									src={appIconUrl}
 									alt={`${project.title} icon`}
-									className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-[28px] shadow-xl border border-white/60 object-cover"
+									className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-[28px] shadow-xl border border-borderSubtle object-cover"
 								/>
 							</div>
 						)}
@@ -213,13 +166,12 @@ export default async function ProjectDetails({
 
 					{galleryUrls.length > 0 && (
 						<div className="mt-8 md:mt-10">
-							{/* <h3 className="text-2xl font-semibold mb-4">Screenshots</h3> */}
 							<div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 md:static md:left-auto md:right-auto md:w-auto md:translate-x-0">
 								<div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 snap-x snap-mandatory scrollbar-screenshots px-0 md:px-0">
 									{galleryUrls.map((url, index) => (
 										<div
 											key={`${project.title}-shot-${index}`}
-											className="min-w-[150px] sm:min-w-[180px] md:min-w-[280px] snap-start rounded-2xl overflow-hidden border border-amber-200 bg-amber-50/60 p-2 shadow-lg"
+											className="min-w-[150px] sm:min-w-[180px] md:min-w-[280px] snap-start rounded-2xl overflow-hidden border border-borderSubtle bg-surface p-2 shadow-lg"
 										>
 											<img
 												src={url}
@@ -233,18 +185,24 @@ export default async function ProjectDetails({
 						</div>
 					)}
 
-					{project.longDescription && (
+					{(project.description || project.longDescription?.length) && (
 						<div className="max-w-none mt-10">
-							<div className="bg-white/80 border border-amber-200/70 rounded-2xl p-5 sm:p-6 md:p-8 shadow-sm">
-								<h3 className="text-2xl font-semibold mb-3">About this app</h3>
+							<div className="bg-surface border border-borderSubtle rounded-2xl p-5 sm:p-6 md:p-8 shadow-md">
+								<h3 className="text-2xl font-semibold mb-3 text-primaryText">About this app</h3>
 								{project.description && (
-									<p className="text-slate-700 leading-relaxed mb-4 text-sm sm:text-base">
+									<p className="text-mutedText leading-relaxed mb-4 text-sm sm:text-base">
 										{project.description}
 									</p>
 								)}
-								<div className="prose max-w-none text-slate-800 prose-p:leading-relaxed prose-ul:list-disc prose-ul:pl-6">
-									<PortableText value={project.longDescription} />
-								</div>
+								{project.longDescription && (
+									<div className="prose max-w-none text-mutedText space-y-3">
+										{project.longDescription.map((paragraph, idx) => (
+											<p key={idx} className="leading-relaxed">
+												{paragraph}
+											</p>
+										))}
+									</div>
+								)}
 							</div>
 						</div>
 					)}

@@ -5,13 +5,13 @@
   font-size: 1.2rem;
   font-weight: 600;
   text-decoration: none;
-  color: #333;
+  color: inherit;
   transition: color 0.3s ease-in-out;
 }
 
 /* Hover effect: Changes color and triggers the underline animation */
 .nav-link:hover {
-  color: #e63946;
+  color: #0B82EC;
 }
 
 /* Underline animation effect */
@@ -22,7 +22,7 @@
   bottom: -2px;
   width: 0;
   height: 2px;
-  background-color: #e63946;
+  background-color: #0B82EC;
   transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
 }
 
@@ -31,7 +31,6 @@
   width: 100%;
   left: 0;
 }
-
 
 /* Hamburger Icon Styles */
 .bar {
@@ -44,7 +43,7 @@
   display: block;
   height: 3px;
   border-radius: 50px;
-  background-color: black;
+  background-color: #E2E8F0;
   transition: all 0.4s;
 }
 
@@ -54,12 +53,13 @@
   left: 50%;
   transform: translateX(-50%);
   bottom: -1.5rem;
-  background-color: #333;
-  color: white;
+  background-color: #1D2631;
+  border: 1px solid #2C394B;
+  color: #E2E8F0;
   padding: 2px 6px;
   font-size: 0.75rem;
   border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }

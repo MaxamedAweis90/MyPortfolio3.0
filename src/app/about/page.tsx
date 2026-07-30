@@ -14,9 +14,7 @@ import { LucideVerified } from "lucide-react";
 import { GiSpeaker, GiSpeakerOff } from "react-icons/gi";
 
 import Certificates from "./certificates";
-import { client as sanityClient } from "../../sanity/lib/client";
-import { getCertificatesQuery } from "@/lib/queries";
-import type { Certificate } from "@/types/sanity";
+import { certificatesData } from "@/data/portfolioData";
 
 import {
   SiVite,
@@ -32,7 +30,7 @@ import {
   SiAdobepremierepro,
   SiCanva,
   SiGithub,
-  SiSanity,
+  SiVercel,
   SiFirebase,
   SiSupabase,
 } from "react-icons/si";
@@ -45,28 +43,21 @@ export default function Page() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [played, setPlayed] = useState(0);
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
-
-  useEffect(() => {
-    sanityClient
-      .fetch<Certificate[]>(getCertificatesQuery)
-      .then((data) => setCertificates(data))
-      .catch((err) => console.error("Sanity fetch error:", err));
-  }, []);
+  const certificates = certificatesData;
 
   const togglePlayPause = () => setIsPlaying((prev) => !prev);
   const toggleMute = () => setIsMuted((prev) => !prev);
 
   return (
     <>
-      <div className="flex justify-center items-center text-center w-full bg-amber-100 md:py-32 py-24">
+      <div className="flex justify-center items-center text-center w-full bg-surface border-b border-borderSubtle md:py-32 py-24 shadow-xl">
         
         <BlurText
   text="About Me!"
   delay={600}
   animateBy="words"
   direction="top"
-  className="text-5xl md:mt-0 mt-10 font-extrabold text-black"
+  className="text-5xl md:mt-0 mt-10 font-extrabold text-primaryText"
 />
 
       </div>
@@ -75,7 +66,7 @@ export default function Page() {
         {/* Left - Video + Info */}
         <div className="flex-1">
   {/* Video Player */}
-  <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-xl shadow-lg">
+  <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-xl shadow-lg border border-borderSubtle">
     <ReactPlayer
       url="https://youtu.be/cVsY9-SPrRc"
       playing={isPlaying}
@@ -97,18 +88,18 @@ export default function Page() {
     {/* Progress bar */}
     <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20">
       <div
-        className="h-full bg-amber-400"
+        className="h-full bg-brandAccent"
         style={{ width: `${played * 100}%` }}
       ></div>
     </div>
   </div>
 
   {/* Info Section (Left Aligned) */}
-<div className="leftside bg-white text-black p-6 mt-6 rounded-xl shadow-md text-left space-y-6">
-  <img src="./myProfile.png" alt="" className="w-32 h-32 rounded-full mb-4" />
+<div className="leftside bg-surface border border-borderSubtle text-primaryText p-6 mt-6 rounded-xl shadow-md text-left space-y-6">
+  <img src="./myProfile.png" alt="" className="w-32 h-32 rounded-full mb-4 border-2 border-brandAccent/40" />
 
   <ScrollReveal>
-    <h2 className="text-lg font-semibold text-amber-700">A BRIEF ABOUT ME</h2>
+    <h2 className="text-lg font-bold text-brandAccent uppercase tracking-wider">A BRIEF ABOUT ME</h2>
   </ScrollReveal>
 
   <ScrollReveal>
@@ -143,63 +134,63 @@ export default function Page() {
   </ScrollReveal>
 
   <ScrollReveal>
-    <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
-      <IoCreate /> <u>What I Do</u>
+    <h2 className="text-xl font-semibold flex gap-2 items-center text-primaryText">
+      <IoCreate className="text-brandAccent" /> <u>What I Do</u>
     </h2>
-    <p className="mt-2">
-      I specialize in the <strong>MERN stack</strong> (MongoDB, Express, React, Node.js) for
+    <p className="mt-2 text-mutedText">
+      I specialize in the <strong className="text-primaryText">MERN stack</strong> (MongoDB, Express, React, Node.js) for
       building scalable and efficient web applications.
     </p>
-    <p>
-      I&apos;m also advancing in <strong>mobile app development using Flutter</strong>, creating cross-platform apps.
+    <p className="text-mutedText">
+      I&apos;m also advancing in <strong className="text-primaryText">mobile app development using Flutter</strong>, creating cross-platform apps.
     </p>
-    <p>
-      Beyond coding, I engage in <strong>graphic design and video editing</strong> to build strong digital brands.
+    <p className="text-mutedText">
+      Beyond coding, I engage in <strong className="text-primaryText">graphic design and video editing</strong> to build strong digital brands.
     </p>
   </ScrollReveal>
 
   <ScrollReveal>
-    <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
-      <FaRegEye /> <u>Vision</u>
+    <h2 className="text-xl font-semibold flex gap-2 items-center text-primaryText">
+      <FaRegEye className="text-brandAccent" /> <u>Vision</u>
     </h2>
-    <p className="mt-2">
-      To <strong>innovate and create impactful digital solutions</strong> that improve efficiency,
+    <p className="mt-2 text-mutedText">
+      To <strong className="text-primaryText">innovate and create impactful digital solutions</strong> that improve efficiency,
       </p>
-      <p>
+      <p className="text-mutedText">
       enhance user experiences, and simplify everyday tasks through{" "}
     </p>
-    <p>
-      <strong>cutting-edge technology and design</strong>.
+    <p className="text-mutedText">
+      <strong className="text-primaryText">cutting-edge technology and design</strong>.
     </p>
     </ScrollReveal>
 
   <ScrollReveal>
-    <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
-      <GoGoal /> <u>Mission</u>
+    <h2 className="text-xl font-semibold flex gap-2 items-center text-primaryText">
+      <GoGoal className="text-brandAccent" /> <u>Mission</u>
     </h2>
     </ScrollReveal>
-    <ul className="mt-2 space-y-1 list-disc list-inside">
+    <ul className="mt-2 space-y-1 list-disc list-inside text-mutedText">
     <ScrollReveal>
-      <li><strong>Build high-quality web and mobile applications</strong> that solve real-world problems.</li>
+      <li><strong className="text-primaryText">Build high-quality web and mobile applications</strong> that solve real-world problems.</li>
       </ScrollReveal>
       <ScrollReveal>
-      <li><strong>Enhance user experiences</strong> with intuitive UI/UX design and engaging visuals.</li>
+      <li><strong className="text-primaryText">Enhance user experiences</strong> with intuitive UI/UX design and engaging visuals.</li>
       </ScrollReveal>
       <ScrollReveal>
-      <li><strong>Continuously learn and adapt</strong> to emerging technologies.</li>
+      <li><strong className="text-primaryText">Continuously learn and adapt</strong> to emerging technologies.</li>
       </ScrollReveal>
       <ScrollReveal>
-      <li><strong>Empower brands and individuals</strong> through creative graphic design and video editing.</li>
+      <li><strong className="text-primaryText">Empower brands and individuals</strong> through creative graphic design and video editing.</li>
       </ScrollReveal>
     </ul>
   
 
   <ScrollReveal>
-    <h2 className="text-xl font-semibold flex gap-2 items-center text-gray-800">
-      <LucideVerified /> <u>Values</u>
+    <h2 className="text-xl font-semibold flex gap-2 items-center text-primaryText">
+      <LucideVerified className="text-brandAccent" /> <u>Values</u>
     </h2>
   </ScrollReveal>
-    <ul className="mt-2 space-y-1 list-disc list-inside">
+    <ul className="mt-2 space-y-1 list-disc list-inside text-mutedText">
     <ScrollReveal>
       <li>🚀 <strong>Innovation</strong> – Always pushing boundaries to explore new possibilities.</li>
       </ScrollReveal>
@@ -303,7 +294,7 @@ export default function Page() {
         </h4>
         <div className="grid grid-cols-3 gap-3 justify-items-center">
           <ToolCard icon={SiGithub} color="text-gray-300" text="Git & GitHub" percent={85} />
-          <ToolCard icon={SiSanity} color="text-orange-400" text="Sanity CMS" percent={70} />
+          <ToolCard icon={SiVercel} color="text-white" text="Vercel" percent={90} />
           <ToolCard icon={SiFirebase} color="text-yellow-500" text="Firebase" percent={76} />
           <ToolCard icon={SiSupabase} color="text-emerald-400" text="Supabase" percent={78} />
         </div>

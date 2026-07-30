@@ -1,43 +1,25 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import CertificateCard from "./CertificateCard";
-import { client as sanityClient } from '../../sanity/lib/client';
 import "react-toastify/dist/ReactToastify.css";
-import type { Certificate } from "@/types/sanity";
+import type { Certificate, CertificateCategory } from "@/types/portfolio";
+import { categoriesData } from "@/data/portfolioData";
 
-// reuse the same fadeUpVariants
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0 },
 };
-
-type Category = { _id: string; title: string };
 
 type CertificatesProps = {
   certificates?: Certificate[];
 };
 
 export default function Certificates({ certificates = [] }: CertificatesProps) {
-  // categories as array of objects [{ _id, title }]
-  const [categories, setCategories] = useState<Category[]>([
-    { _id: "all", title: "All" },
-  ]);
-  const [activeCategory, setActiveCategory] = useState("all"); // store selected category _id
+  const [categories] = useState<CertificateCategory[]>(categoriesData);
+  const [activeCategory, setActiveCategory] = useState("all");
 
-  // fetch categories from Sanity on mount
-  useEffect(() => {
-    async function loadCategories() {
-      const cats = await sanityClient.fetch<Category[]>(`
-        *[_type == "category"] | order(orderRank asc) { _id, title }
-      `);
-      setCategories([{ _id: "all", title: "All" }, ...cats]);
-    }
-    loadCategories();
-  }, []);
-
-  // filter by category, 'all' shows all certificates
   const filtered =
     activeCategory === "all"
       ? certificates
@@ -45,12 +27,10 @@ export default function Certificates({ certificates = [] }: CertificatesProps) {
           (c) => c.category?._ref === activeCategory
         );
 
-  // refs for scroll and animation
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const toggleRef = useRef<HTMLDivElement | null>(null);
   const toggleInView = useInView(toggleRef, { once: false, margin: "-100px" });
 
-  // scroll active pill into view when clicked
   const handleCategoryClick = (catId: string) => {
     setActiveCategory(catId);
     const el = document.getElementById(`cat-${catId}`);
@@ -85,7 +65,7 @@ export default function Certificates({ certificates = [] }: CertificatesProps) {
       >
         <div
           ref={scrollRef}
-          className=" flex md:inline-flex items-center space-x-3 bg-gray-100 rounded-full shadow py-2
+          className=" flex md:inline-flex items-center space-x-3 bg-surface border border-borderSubtle rounded-full shadow-lg py-2
                      overflow-x-auto scrollbar-hide -mx-4 px-4
                      md:overflow-visible md:mx-2 md:px-2 md:justify-center"
         >
@@ -100,8 +80,8 @@ export default function Certificates({ certificates = [] }: CertificatesProps) {
               onClick={() => handleCategoryClick(cat._id)}
               className={`flex md-shrink-0 whitespace-nowrap px-4 py-2 rounded-full font-medium transition ${
                 activeCategory === cat._id
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-blue-100"
+                  ? "bg-brandAccent text-white shadow-md shadow-brandAccent/30"
+                  : "bg-mainBg text-mutedText hover:bg-borderSubtle hover:text-primaryText"
               }`}
               whileTap={{ scale: 0.95 }}
             >

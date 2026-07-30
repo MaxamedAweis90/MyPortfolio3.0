@@ -1,7 +1,7 @@
 import React from "react";
 import { FaLinkedin, FaYoutube, FaBehance, FaDribbble, FaFacebook } from "react-icons/fa";
 import "@/styles/socials.css";
-import type { SocialLinks } from "@/types/sanity";
+import type { SocialLinks } from "@/types/portfolio";
 import type { ReactNode } from "react";
 
 type SocialKey = "linkedin" | "youtube" | "behance";
