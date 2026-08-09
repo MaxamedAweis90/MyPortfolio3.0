@@ -38,12 +38,12 @@ export default function Navbar() {
     const active = isLinkActive(href);
     if (active) {
       return isScrolled
-        ? "nav-link bg-blue-600/10 text-blue-600 font-bold px-3.5 py-1 rounded-xl border border-blue-600/20 shadow-sm relative overflow-hidden"
-        : "nav-link bg-surface/90 text-brandAccent font-bold px-3.5 py-1 rounded-xl border border-borderSubtle shadow-sm relative overflow-hidden";
+        ? "nav-link cursor-pointer bg-blue-600/10 text-blue-600 font-bold px-3.5 py-1 rounded-xl border border-blue-600/20 shadow-sm relative overflow-hidden"
+        : "nav-link cursor-pointer bg-surface/90 text-brandAccent font-bold px-3.5 py-1 rounded-xl border border-borderSubtle shadow-sm relative overflow-hidden";
     }
     return isScrolled
-      ? "nav-link text-slate-700 hover:text-blue-600 px-3.5 py-1 font-semibold transition-colors duration-200"
-      : "nav-link text-mutedText hover:text-brandAccent px-3.5 py-1 font-semibold transition-colors duration-200";
+      ? "nav-link cursor-pointer text-slate-700 hover:text-blue-600 px-3.5 py-1 font-semibold transition-colors duration-200"
+      : "nav-link cursor-pointer text-mutedText hover:text-brandAccent px-3.5 py-1 font-semibold transition-colors duration-200";
   };
 
   return (

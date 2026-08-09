@@ -1,4 +1,9 @@
 /* General link styles */
+.nav-link,
+.nav-link * {
+  cursor: pointer !important;
+}
+
 .nav-link {
   position: relative;
   display: inline-block;
@@ -7,6 +12,7 @@
   text-decoration: none;
   color: inherit;
   transition: color 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 /* Hover effect: Changes color and triggers the underline animation */
