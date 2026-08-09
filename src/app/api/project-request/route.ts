@@ -1,20 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-// Ensure required env variables exist
-const { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER } = process.env;
-if (!RESEND_API_KEY || !EMAIL_RECEIVER || !EMAIL_SENDER) {
-  console.error("❌ Missing env vars!", { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER });
-  throw new Error(
-    "Missing required environment variables: RESEND_API_KEY, EMAIL_RECEIVER or EMAIL_SENDER"
-  );
-}
-
-const EMAIL_SENDER_VALUE = EMAIL_SENDER;
-const EMAIL_RECEIVER_VALUE = EMAIL_RECEIVER;
-
-const resend = new Resend(RESEND_API_KEY);
-
 type ProjectRequestPayload = {
   projectName: string;
   name: string;
@@ -100,6 +86,17 @@ const customerTemplate = ({
 export async function POST(request: Request) {
   console.log("🟢 [project-request] POST invoked");
 
+  const { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER } = process.env;
+  if (!RESEND_API_KEY || !EMAIL_RECEIVER || !EMAIL_SENDER) {
+    console.error("❌ Missing env vars!", { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER });
+    return NextResponse.json(
+      { success: false, error: "Missing required email configuration on server." },
+      { status: 500 }
+    );
+  }
+
+  const resend = new Resend(RESEND_API_KEY);
+
   let data: ProjectRequestPayload;
   try {
     data = (await request.json()) as ProjectRequestPayload;
@@ -113,17 +110,17 @@ export async function POST(request: Request) {
 
   try {
     // 1️⃣ Send notification to site owner
-    const ownerResp = await resend.emails.send({
-      from: EMAIL_SENDER_VALUE,
-      to: EMAIL_RECEIVER_VALUE,
+    await resend.emails.send({
+      from: EMAIL_SENDER,
+      to: EMAIL_RECEIVER,
       subject: `New Project Request: ${projectName}`,
       html: ownerTemplate({ projectName, name, email, phone, projectType, budget, deadline, sent_time, message }),
     });
     console.log("✉️ Owner email sent.");
 
     // 2️⃣ Send auto‑reply to customer
-    const customerResp = await resend.emails.send({
-      from: EMAIL_SENDER_VALUE,
+    await resend.emails.send({
+      from: EMAIL_SENDER,
       to: email,
       subject: "We received your project request 🎉",
       html: customerTemplate({ name, projectName }),

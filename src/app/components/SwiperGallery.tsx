@@ -1,5 +1,6 @@
 // app/work/[slug]/SwiperGallery.jsx
 'use client';
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -24,11 +25,16 @@ export default function SwiperGallery({ images, title }: SwiperGalleryProps) {
       >
         {images.map((img, idx) => (
           <SwiperSlide key={idx}>
-            <img
-              src={img}
-              alt={`${title} image ${idx + 1}`}
-              className="rounded-xl w-full h-96 shadow-lg object-cover"
-            />
+            <div className="relative w-full h-96 rounded-xl overflow-hidden shadow-lg">
+              <Image
+                src={img}
+                alt={`${title} image ${idx + 1}`}
+                fill
+                loading="lazy"
+                sizes="(max-width: 768px) 100vw, 80vw"
+                className="object-cover"
+              />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>

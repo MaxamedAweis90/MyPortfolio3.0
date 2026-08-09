@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RiExternalLinkLine, RiEyeLine } from "react-icons/ri";
@@ -68,10 +69,13 @@ export default function ProjectCard({ proj, index }: ProjectCardProps) {
 
         {/* 3. Bottom Preview Slot: Rounded Image Preview Container */}
         <div className="relative w-full h-48 sm:h-52 rounded-2xl overflow-hidden mt-4 border border-borderSubtle bg-mainBg shrink-0">
-          <img
+          <Image
             src={proj.images?.[0] || proj.screenshots?.[0] || "/Hero3DMe.png"}
             alt={proj.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            fill
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
 
           {/* Hover overlay with action buttons */}

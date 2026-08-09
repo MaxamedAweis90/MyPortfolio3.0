@@ -290,10 +290,10 @@ const Hero = () => {
             src="/me.png"
             alt="Eng_Aweis"
             priority={true}
-            quality={85}
+            quality={75}
             placeholder="blur"
             blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzA5MGUxNiIvPjwvc3ZnPg=="
-            sizes="(max-width: 640px) 380px, (max-width: 1024px) 440px, 672px"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             width={672}
             height={800}
             className="h-full w-auto object-contain object-bottom align-bottom block drop-shadow-[0_25px_40px_rgba(0,0,0,0.6)] pointer-events-auto transition-transform duration-500 hover:scale-[1.01]"

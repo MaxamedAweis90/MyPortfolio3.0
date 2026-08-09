@@ -1,7 +1,11 @@
-// next.config.mjs
-export default {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   images: {
-    unoptimized: true, // Prevent Next.js from optimizing images on static export (if using Netlify/Vercel)
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 2592000,
   },
-  // If using next.js with Sanity Studio, do not use 'output: export'
 };
+
+export default nextConfig;

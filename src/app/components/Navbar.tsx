@@ -101,7 +101,7 @@ export default function Navbar() {
                         transition={{ duration: 0.3 }}
                         className="absolute inset-0 flex items-center justify-center"
                       >
-                        <img
+                        <Image
                           src="/myLogo.png"
                           alt="Hovered Logo"
                           width={150}
@@ -117,7 +117,7 @@ export default function Navbar() {
                         transition={{ duration: 0.3 }}
                         className="absolute inset-0 flex items-center justify-center"
                       >
-                        <img
+                        <Image
                           src="/logoR2.png"
                           alt="Logo"
                           width={50}
