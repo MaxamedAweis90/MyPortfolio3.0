@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import "@/styles/hero.css";
@@ -285,9 +286,16 @@ const Hero = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] sm:w-[420px] sm:h-[420px] lg:w-[500px] lg:h-[500px] bg-brandAccent/20 rounded-full blur-[120px] -z-0 pointer-events-none animate-pulse" />
 
           {/* Main Portrait Image anchored directly at bottom 0 */}
-          <img
+          <Image
             src="/me.png"
             alt="Eng_Aweis"
+            priority={true}
+            quality={85}
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzA5MGUxNiIvPjwvc3ZnPg=="
+            sizes="(max-width: 640px) 380px, (max-width: 1024px) 440px, 672px"
+            width={672}
+            height={800}
             className="h-full w-auto object-contain object-bottom align-bottom block drop-shadow-[0_25px_40px_rgba(0,0,0,0.6)] pointer-events-auto transition-transform duration-500 hover:scale-[1.01]"
           />
         </div>

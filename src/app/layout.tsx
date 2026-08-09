@@ -1,10 +1,10 @@
 // app/layout.js
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./styles/globals.css";
 import LayoutWrapper from "./components/LayoutWrapper";
-import Script from "next/script"; // ✅ Import this from Next.js
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,6 +14,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -50,35 +56,28 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable}`}
+    >
       <head>
-        {/* ✅ Remix Icons CDN & Google Fonts */}
+        {/* ✅ Remix Icons CDN */}
         <link
           href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css"
           rel="stylesheet"
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-        {/* ✅ Anime.js CDN Script */}
+        {/* ✅ Anime.js CDN Script - deferred to avoid render blocking */}
         <Script
           src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
-          strategy="beforeInteractive"
+          strategy="lazyOnload"
         />
-        {/* ✅ Google Analytics Scripts */}
+        {/* ✅ Google Analytics Scripts - deferred to lazyOnload */}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-Z3BYCZVYN0"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -87,7 +86,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           `}
         </Script>
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased">
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
