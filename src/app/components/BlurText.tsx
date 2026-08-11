@@ -52,10 +52,19 @@ const BlurText = ({
   stepDuration = 0.35,
 }: BlurTextProps) => {
   const elements = animateBy === 'words' ? text.split(' ') : text.split('');
-  const [inView, setInView] = useState(false);
+  const [inView, setInView] = useState(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return true;
+    }
+    return false;
+  });
   const ref = useRef<HTMLParagraphElement | null>(null);
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setInView(true);
+      return;
+    }
     if (!ref.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -122,13 +131,17 @@ const BlurText = ({
         };
         spanTransition.ease = easing;
 
+        const isMobileScreen = typeof window !== 'undefined' && window.innerWidth < 768;
+        const initialStyle = isMobileScreen ? { filter: 'blur(0px)', opacity: 1, y: 0 } : fromSnapshot;
+        const animateStyle = isMobileScreen ? { filter: 'blur(0px)', opacity: 1, y: 0 } : (inView ? animateKeyframes : fromSnapshot);
+
         return (
           <motion.span
             className="inline-block will-change-[transform,filter,opacity]"
             key={index}
-            initial={fromSnapshot}
-            animate={inView ? animateKeyframes : fromSnapshot}
-            transition={spanTransition}
+            initial={initialStyle}
+            animate={animateStyle}
+            transition={isMobileScreen ? { duration: 0 } : spanTransition}
             onAnimationComplete={
               index === elements.length - 1 ? onAnimationComplete : undefined
             }

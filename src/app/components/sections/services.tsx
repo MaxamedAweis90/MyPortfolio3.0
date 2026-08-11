@@ -82,6 +82,12 @@ const Services = () => {
   useEffect(() => {
     if (!sectionRef.current || hasAnimated.current) return;
 
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    if (isMobile) {
+      hasAnimated.current = true;
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -91,7 +97,7 @@ const Services = () => {
               observer.unobserve(sectionRef.current);
             }
 
-            // Trigger Anime.js animations ONCE cleanly when scrolled into view
+            // Trigger Anime.js animations ONCE cleanly on desktop (>= 768px)
             if (typeof window !== "undefined" && (window as any).anime) {
               const anime = (window as any).anime;
 
@@ -180,7 +186,7 @@ const Services = () => {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="services-header-anim text-center max-w-2xl mx-auto mb-16 opacity-0 space-y-3">
+        <div className="services-header-anim text-center max-w-2xl mx-auto mb-16 opacity-100 md:opacity-0 space-y-3">
           <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-brandAccent">
             What I Offer
           </span>
@@ -198,7 +204,7 @@ const Services = () => {
           {servicesData.map((service) => (
             <div
               key={service.id}
-              className={`service-card-item opacity-0 bg-surface/90 backdrop-blur-md border border-borderSubtle ${service.borderColor} rounded-3xl p-7 sm:p-8 flex flex-col justify-between shadow-2xl relative group transition-all duration-500 hover:-translate-y-2 cursor-pointer overflow-hidden`}
+              className={`service-card-item opacity-100 md:opacity-0 bg-surface/90 backdrop-blur-md border border-borderSubtle ${service.borderColor} rounded-3xl p-7 sm:p-8 flex flex-col justify-between shadow-2xl relative group transition-all duration-500 hover:-translate-y-2 cursor-pointer overflow-hidden`}
               onClick={() => handleCardClick(service)}
               onMouseEnter={() => handleMouseEnter(service.id)}
               onMouseLeave={() => handleMouseLeave(service.id)}

@@ -1,6 +1,6 @@
-// app/components/CertificateCard.jsx
 "use client";
-import React, { useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { FiClipboard } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -23,7 +23,16 @@ type CertificateCardProps = {
 
 export default function CertificateCard({ cert, index }: CertificateCardProps) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(ref, { once: false, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "0px" });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const isLatest = index === 0;
 
   const handleCopy = (text: string) => {
@@ -38,15 +47,16 @@ export default function CertificateCard({ cert, index }: CertificateCardProps) {
   };
 
   const imageSrc = cert.imageUrl;
+  const showCardState = isMobile || isInView;
 
   return (
     <motion.div
       ref={ref}
       className="rounded-xl overflow-hidden shadow-md bg-surface border border-borderSubtle hover:border-brandAccent/50 hover:shadow-xl transition-all duration-300 text-primaryText"
       variants={fadeUpVariants}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      initial={isMobile ? "visible" : "hidden"}
+      animate={showCardState ? "visible" : "hidden"}
+      transition={{ duration: 0.6, delay: isMobile ? 0 : index * 0.1 }}
     >
       <div className="relative">
         {isLatest && (
@@ -60,12 +70,15 @@ export default function CertificateCard({ cert, index }: CertificateCardProps) {
               href={cert.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full h-full"
+              className="block w-full h-full relative"
             >
-              <img
+              <Image
                 src={imageSrc}
                 alt={`Certificate: ${cert.title}`}
-                className="w-full h-full object-cover"
+                fill
+                loading="lazy"
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover"
               />
             </a>
           ) : (

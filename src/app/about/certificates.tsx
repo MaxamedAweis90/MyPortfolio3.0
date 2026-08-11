@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import CertificateCard from "./CertificateCard";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,6 +19,14 @@ type CertificatesProps = {
 export default function Certificates({ certificates = [] }: CertificatesProps) {
   const [categories] = useState<CertificateCategory[]>(categoriesData);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const filtered =
     activeCategory === "all"
@@ -29,7 +37,7 @@ export default function Certificates({ certificates = [] }: CertificatesProps) {
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const toggleRef = useRef<HTMLDivElement | null>(null);
-  const toggleInView = useInView(toggleRef, { once: false, margin: "-100px" });
+  const toggleInView = useInView(toggleRef, { once: true, margin: "0px" });
 
   const handleCategoryClick = (catId: string) => {
     setActiveCategory(catId);
@@ -41,14 +49,17 @@ export default function Certificates({ certificates = [] }: CertificatesProps) {
     }
   };
 
+  const isVisibleState = isMobile || toggleInView;
+
   return (
     <div className="Certificates mt-12 px-4">
       {/* Animated Title */}
       <motion.h2
         className="section-header mb-8 text-2xl font-bold text-center"
         variants={fadeUpVariants}
-        initial="hidden"
+        initial={isMobile ? "visible" : "hidden"}
         whileInView="visible"
+        viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
         My Certificates
@@ -59,8 +70,8 @@ export default function Certificates({ certificates = [] }: CertificatesProps) {
         ref={toggleRef}
         className="sticky top-0 z-10 mb-6 py-4"
         variants={fadeUpVariants}
-        initial="hidden"
-        animate={toggleInView ? "visible" : "hidden"}
+        initial={isMobile ? "visible" : "hidden"}
+        animate={isVisibleState ? "visible" : "hidden"}
         transition={{ duration: 0.6 }}
       >
         <div
@@ -74,9 +85,9 @@ export default function Certificates({ certificates = [] }: CertificatesProps) {
               id={`cat-${cat._id}`}
               key={cat._id}
               variants={fadeUpVariants}
-              initial="hidden"
-              animate={toggleInView ? "visible" : "hidden"}
-              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              initial={isMobile ? "visible" : "hidden"}
+              animate={isVisibleState ? "visible" : "hidden"}
+              transition={{ duration: 0.4, delay: isMobile ? 0 : idx * 0.1 }}
               onClick={() => handleCategoryClick(cat._id)}
               className={`flex md-shrink-0 whitespace-nowrap px-4 py-2 rounded-full font-medium transition ${
                 activeCategory === cat._id

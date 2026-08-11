@@ -34,6 +34,29 @@ const ProjectRequest = () => {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const getMotionProps = (initialY = 50, duration = 0.6) => {
+    if (isMobile) {
+      return {
+        initial: { opacity: 1, y: 0 },
+        animate: { opacity: 1, y: 0 },
+      };
+    }
+    return {
+      initial: { opacity: 0, y: initialY },
+      whileInView: { opacity: 1, y: 0 },
+      viewport: { once: true },
+      transition: { duration },
+    };
+  };
 
   React.useEffect(() => {
     const handleSelectType = (
@@ -144,9 +167,7 @@ const ProjectRequest = () => {
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="text-center mb-12"
-            initial={{ opacity: 0, y: -50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            {...getMotionProps(-50, 0.6)}
           >
             <h3 className="text-brandAccent font-bold text-sm uppercase tracking-wider">
               Let’s Start Your Project
@@ -159,9 +180,7 @@ const ProjectRequest = () => {
             <motion.form
               onSubmit={handleSubmit}
               className="md:col-span-2 space-y-6 bg-surface p-8 rounded-xl shadow-xl border border-borderSubtle"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              {...getMotionProps(50, 0.8)}
             >
               {/* Project Name */}
               <div className="flex flex-col">
@@ -303,9 +322,7 @@ const ProjectRequest = () => {
 
             <motion.div
               className="space-y-6 flex flex-col justify-center gap-4 md:gap-12"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              {...getMotionProps(50, 0.8)}
             >
               {contactItems.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-4">
@@ -323,9 +340,7 @@ const ProjectRequest = () => {
 
           <motion.div
             className="mt-12 p-3 rounded-2xl bg-surface shadow-xl border border-borderSubtle"
-            initial={{ opacity: 0, y: 100 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            {...getMotionProps(100, 0.8)}
           >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.835401413405!2d45.31860357581237!3d2.0529041979735487!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3d58ab1f37ac52e7%3A0x70ed7ff3a3a8477a!2sSuug%20Bacaad!5e0!3m2!1sen!2sso!4v1715142619231!5m2!1sen!2sso"

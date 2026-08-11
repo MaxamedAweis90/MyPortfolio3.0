@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import AutoDownload from "./AutoDownload";
 import { TOOL_ICONS } from "@/components/toolIcons";
 import { FaApple, FaGooglePlay } from "react-icons/fa";
@@ -98,9 +99,11 @@ export default async function ProjectDetails({
 						{/* Mobile header: icon left, text right */}
 						<div className="flex items-center gap-4 sm:gap-5 md:hidden">
 							{appIconUrl && (
-								<img
+								<Image
 									src={appIconUrl}
 									alt={`${project.title} icon`}
+									width={96}
+									height={96}
 									className="w-20 h-20 sm:w-24 sm:h-24 rounded-[24px] shadow-xl border border-borderSubtle object-cover"
 								/>
 							)}
@@ -154,9 +157,11 @@ export default async function ProjectDetails({
 
 						{appIconUrl && (
 							<div className="hidden md:flex justify-start md:justify-end">
-								<img
+								<Image
 									src={appIconUrl}
 									alt={`${project.title} icon`}
+									width={144}
+									height={144}
 									className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-[28px] shadow-xl border border-borderSubtle object-cover"
 								/>
 							</div>
@@ -171,12 +176,15 @@ export default async function ProjectDetails({
 									{galleryUrls.map((url, index) => (
 										<div
 											key={`${project.title}-shot-${index}`}
-											className="min-w-[150px] sm:min-w-[180px] md:min-w-[280px] snap-start rounded-2xl overflow-hidden border border-borderSubtle bg-surface p-2 shadow-lg"
+											className="min-w-[150px] sm:min-w-[180px] md:min-w-[280px] snap-start rounded-2xl overflow-hidden border border-borderSubtle bg-surface p-2 shadow-lg relative aspect-[9/18]"
 										>
-											<img
+											<Image
 												src={url}
 												alt={`${project.title} screenshot ${index + 1}`}
-												className="w-full aspect-[9/18] object-contain"
+												fill
+												loading="lazy"
+												sizes="(max-width: 768px) 180px, 280px"
+												className="object-contain"
 											/>
 										</div>
 									))}

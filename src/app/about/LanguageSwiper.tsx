@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LanguageSwiperMotion = () => {
@@ -74,9 +75,12 @@ const LanguageSwiperMotion = () => {
             transition={{ duration: 0.6, ease: 'easeInOut' }}
             className="w-full h-full flex flex-col items-center justify-center bg-black/50 p-0 rounded-xl shadow-lg"
           >
-            <img
+            <Image
               src={languages[index].flag}
               alt={languages[index].name}
+              width={96}
+              height={96}
+              unoptimized
               className="w-24 h-24 object-cover rounded-full mb-4"
             />
             <h4 className="text-2xl text-white font-semibold mb-2">{languages[index].name}</h4>

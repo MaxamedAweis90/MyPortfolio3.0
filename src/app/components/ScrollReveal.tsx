@@ -29,9 +29,17 @@ const ScrollReveal = ({
     const el = containerRef.current;
     if (!el) return;
 
+    const isMobile = window.innerWidth < 768;
     const lines = el.querySelectorAll('.reveal-line');
 
-    // Fade in lines
+    if (isMobile) {
+      // On mobile screens: render all lines fully visible with zero blur/rotation
+      gsap.set(lines, { opacity: 1, filter: 'blur(0px)' });
+      gsap.set(el, { rotate: 0 });
+      return;
+    }
+
+    // On Desktop (>= 768px): run GSAP ScrollTrigger animations
     gsap.fromTo(
       lines,
       { opacity: baseOpacity },
@@ -48,7 +56,6 @@ const ScrollReveal = ({
       }
     );
 
-    // Blur lines
     if (enableBlur) {
       gsap.fromTo(
         lines,
@@ -67,7 +74,6 @@ const ScrollReveal = ({
       );
     }
 
-    // Rotate parent slightly
     gsap.fromTo(
       el,
       { rotate: rotation, transformOrigin: 'left center' },

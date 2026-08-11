@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import ReactPlayer from "react-player/youtube";
 import { motion } from "framer-motion";
 import type { IconType } from "react-icons";
@@ -96,7 +97,13 @@ export default function Page() {
 
   {/* Info Section (Left Aligned) */}
 <div className="leftside bg-surface border border-borderSubtle text-primaryText p-6 mt-6 rounded-xl shadow-md text-left space-y-6">
-  <img src="./myProfile.png" alt="" className="w-32 h-32 rounded-full mb-4 border-2 border-brandAccent/40" />
+  <Image
+    src="/myProfile.png"
+    alt="Mohamed Aweys Profile"
+    width={128}
+    height={128}
+    className="w-32 h-32 rounded-full mb-4 border-2 border-brandAccent/40 object-cover"
+  />
 
   <ScrollReveal>
     <h2 className="text-lg font-bold text-brandAccent uppercase tracking-wider">A BRIEF ABOUT ME</h2>
