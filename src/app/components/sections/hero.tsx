@@ -117,7 +117,10 @@ const Hero = () => {
   };
 
   return (
-    <div className="bg-mainBg min-h-screen lg:h-screen relative flex flex-col justify-between overflow-x-hidden border-b border-borderSubtle shadow-2xl">
+    <div
+      id="hero"
+      className="bg-mainBg min-h-screen lg:h-screen relative flex flex-col justify-between overflow-x-hidden border-b border-borderSubtle shadow-2xl"
+    >
       {/* 1. Hero Headline & CTAs Container */}
       <div className="container mx-auto px-6 sm:px-10 lg:px-16 min-h-fit lg:min-h-0 lg:h-full flex flex-col justify-between relative z-20 pointer-events-none">
         {/* Left-Aligned Headline Stack */}
@@ -165,8 +168,8 @@ const Hero = () => {
 
           {/* Row 4: Brief Bio Summary */}
           <p className="text-mutedText text-sm sm:text-lg max-w-lg leading-relaxed pt-1">
-            Blending clean architectural code with intuitive UI/UX design to
-            craft remarkable digital products.
+            Building scalable full-stack web applications, mobile apps, and
+            robust systems with clean modern architecture.
           </p>
 
           {/* Row 5: Action Buttons Layout (Mobile: Row 1 = 2 side-by-side buttons, Row 2 = Full-width Resume button) */}
@@ -175,7 +178,14 @@ const Hero = () => {
             <div className="flex flex-row w-full gap-2.5 sm:gap-4 lg:w-auto lg:inline-flex">
               {/* Button 1: View Work */}
               <button
-                onClick={() => router.push("/work")}
+                onClick={() => {
+                  const workEl = document.getElementById("work");
+                  if (workEl) {
+                    workEl.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    router.push("/#work");
+                  }
+                }}
                 className="flex-1 w-1/2 lg:w-auto inline-flex items-center justify-center gap-2 px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-brandAccent to-secondaryAccent text-white font-extrabold text-xs sm:text-base hover:shadow-brandAccent/30 transition-all duration-300 shadow-lg shadow-brandAccent/20 hover:scale-105 border border-brandAccent/40 whitespace-nowrap"
               >
                 <span>View Work</span>
@@ -183,7 +193,10 @@ const Hero = () => {
               </button>
 
               {/* Button 2: Request A Project Dropdown Trigger */}
-              <div className="flex-1 w-1/2 lg:w-auto relative" ref={dropdownRef}>
+              <div
+                className="flex-1 w-1/2 lg:w-auto relative"
+                ref={dropdownRef}
+              >
                 <button
                   onClick={() => setDropdownOpen((prev) => !prev)}
                   className="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-3.5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-surface border border-borderSubtle text-primaryText font-extrabold text-xs sm:text-base hover:bg-borderSubtle hover:border-brandAccent transition-all duration-300 shadow-md group whitespace-nowrap"
@@ -302,7 +315,7 @@ const Hero = () => {
 
         {/* Interactive Main Tools Card & Responsive Line Pointer Tooltips (z-30) */}
         <div className="absolute bottom-10 lg:bottom-auto lg:top-[44%] left-1/2 lg:left-[63%] -translate-x-1/2 lg:-translate-x-0 lg:-translate-y-1/2 z-30 pointer-events-auto flex items-center">
-          <div className="relative flex flex-col items-center gap-1.5 sm:gap-2 px-5 sm:px-6 lg:px-8 py-3.5 sm:py-4 lg:py-5 bg-surface/95 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-borderSubtle lg:border-none rounded-2xl lg:rounded-none shadow-2xl lg:shadow-none">
+          <div className="relative flex flex-col items-center gap-1.5 sm:gap-2 px-5 sm:px-6 lg:px-8 py-3.5 sm:py-4 lg:py-5  lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-borderSubtle lg:border-none rounded-2xl lg:rounded-none shadow-2xl lg:shadow-none">
             <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-brandAccent block text-center">
               Main Tools
             </span>
@@ -313,8 +326,8 @@ const Hero = () => {
                 <div className="absolute inset-0 rounded-full bg-brandAccent/30 scale-100 opacity-0 group-hover:scale-150 group-hover:opacity-100 transition-all duration-500 pointer-events-none" />
 
                 {/* Tool Icon Badge */}
-                <div className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-mainBg border border-borderSubtle flex items-center justify-center text-white shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:border-brandAccent group-hover:shadow-[0_0_20px_rgba(11,130,236,0.5)]">
-                  <SiNextdotjs className="text-xl sm:text-2xl lg:text-3xl" />
+                <div className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-mainBg border border-borderSubtle flex items-center justify-center text-primaryText shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:border-brandAccent group-hover:shadow-[0_0_20px_rgba(11,130,236,0.5)]">
+                  <SiNextdotjs className="text-xl sm:text-2xl lg:text-3xl text-primaryText" />
                 </div>
 
                 {/* Mobile Responsive Floating Tooltip (hidden on lg) */}
@@ -455,7 +468,7 @@ const Hero = () => {
                 </span>
                 <button
                   onClick={() => setDropdownOpen(false)}
-                  className="p-1.5 rounded-full bg-mainBg text-mutedText hover:text-white transition-colors"
+                  className="p-1.5 rounded-full bg-mainBg text-mutedText hover:text-primaryText transition-colors"
                 >
                   <RiCloseLine className="text-xl" />
                 </button>
@@ -466,13 +479,15 @@ const Hero = () => {
                   <button
                     key={item.label}
                     onClick={() => handleSelectProjectType(item)}
-                    className="w-full flex items-center gap-3.5 p-3 rounded-2xl text-left bg-mainBg/80 border border-borderSubtle text-primaryText font-bold text-sm hover:bg-brandAccent hover:text-white transition-all duration-200 group"
+                    className="w-full flex items-center gap-3.5 p-3 rounded-2xl text-left bg-mainBg/80 border border-borderSubtle text-primaryText font-bold text-sm hover:bg-brandAccent hover:text-white dark:hover:text-white transition-all duration-200 group"
                   >
                     <span className="text-xl p-2 rounded-xl bg-surface border border-borderSubtle group-hover:bg-white/20">
                       {item.icon}
                     </span>
                     <div className="flex flex-col">
-                      <span className="font-extrabold text-sm">{item.label}</span>
+                      <span className="font-extrabold text-sm">
+                        {item.label}
+                      </span>
                       <span className="text-[11px] text-mutedText group-hover:text-white/80 font-normal">
                         {item.defaultTitle}
                       </span>

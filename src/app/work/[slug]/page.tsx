@@ -226,7 +226,7 @@ export default async function ProjectDetails({
 									return (
 										<span
 											key={tool._id || tool.title}
-											className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-slate-50 ${
+											className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border border-borderSubtle bg-mainBg text-primaryText ${
 												isTailwind ? tool.color : ""
 											}`}
 											style={!isTailwind && tool.color ? { color: tool.color } : {}}

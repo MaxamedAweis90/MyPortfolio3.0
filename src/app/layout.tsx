@@ -23,8 +23,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Mohamed Aweys – Developer & Designer",
-  description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
+  title: "Mohamed Aweys – Software Engineer & Full-Stack Developer",
+  description: "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
   metadataBase: new URL("https://engaweis.space"),
   icons: {
     icon: "/favicon.png",
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
     apple: "/favicon.png",
   },
   openGraph: {
-    title: "Mohamed Aweys – Developer & Designer",
-    description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
+    title: "Mohamed Aweys – Software Engineer & Full-Stack Developer",
+    description: "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
     url: "https://engaweis.space",
     siteName: "EngAweis",
     images: [
@@ -41,15 +41,15 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Mohamed Aweys – Developer & Designer",
+        alt: "Mohamed Aweys – Software Engineer & Full-Stack Developer",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mohamed Aweys – Developer & Designer",
-    description: "Explore Mohamed Aweis’s portfolio, projects and design gallery.",
+    title: "Mohamed Aweys – Software Engineer & Full-Stack Developer",
+    description: "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
     images: ["/og-image.jpg"],
   },
 };

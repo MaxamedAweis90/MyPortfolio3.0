@@ -129,14 +129,14 @@ export default function Page() {
 
   <ScrollReveal>
     <p>
-      A passionate <strong>developer, designer, and tech enthusiast</strong> with a strong focus on
-      building seamless digital experiences.
+      A passionate <strong>software engineer and full-stack developer</strong> with a strong focus on
+      building scalable, high-performance digital products.
     </p>
     <p>
-      As an <strong>IT student at SIMAD University</strong>, I constantly seek new challenges and opportunities.
+      As an <strong>IT graduate & engineer</strong>, I constantly seek new challenges and technical opportunities.
     </p>
     <p>
-      I refine my skills in <strong>web and mobile development, UI/UX design, and problem-solving</strong>.
+      I continuously advance my skills in <strong>full-stack web development, mobile apps, database architecture, and software engineering</strong>.
     </p>
   </ScrollReveal>
 
@@ -145,14 +145,14 @@ export default function Page() {
       <IoCreate className="text-brandAccent" /> <u>What I Do</u>
     </h2>
     <p className="mt-2 text-mutedText">
-      I specialize in the <strong className="text-primaryText">MERN stack</strong> (MongoDB, Express, React, Node.js) for
+      I specialize in modern full-stack architectures (<strong className="text-primaryText">Next.js, React, Node.js, PostgreSQL, Prisma</strong>) for
       building scalable and efficient web applications.
     </p>
     <p className="text-mutedText">
-      I&apos;m also advancing in <strong className="text-primaryText">mobile app development using Flutter</strong>, creating cross-platform apps.
+      I engineer cross-platform mobile solutions using <strong className="text-primaryText">React Native & Flutter</strong>.
     </p>
     <p className="text-mutedText">
-      Beyond coding, I engage in <strong className="text-primaryText">graphic design and video editing</strong> to build strong digital brands.
+      I leverage <strong className="text-primaryText">AI-accelerated development workflows</strong> to maintain high code velocity and engineering rigor.
     </p>
   </ScrollReveal>
 
@@ -161,13 +161,13 @@ export default function Page() {
       <FaRegEye className="text-brandAccent" /> <u>Vision</u>
     </h2>
     <p className="mt-2 text-mutedText">
-      To <strong className="text-primaryText">innovate and create impactful digital solutions</strong> that improve efficiency,
+      To <strong className="text-primaryText">innovate and build impactful software solutions</strong> that improve operational efficiency,
       </p>
       <p className="text-mutedText">
-      enhance user experiences, and simplify everyday tasks through{" "}
+      enhance reliability, and simplify everyday digital workflows through{" "}
     </p>
     <p className="text-mutedText">
-      <strong className="text-primaryText">cutting-edge technology and design</strong>.
+      <strong className="text-primaryText">robust software engineering and modern architectures</strong>.
     </p>
     </ScrollReveal>
 
@@ -181,13 +181,13 @@ export default function Page() {
       <li><strong className="text-primaryText">Build high-quality web and mobile applications</strong> that solve real-world problems.</li>
       </ScrollReveal>
       <ScrollReveal>
-      <li><strong className="text-primaryText">Enhance user experiences</strong> with intuitive UI/UX design and engaging visuals.</li>
+      <li><strong className="text-primaryText">Deliver exceptional performance</strong> through clean architecture and optimized database systems.</li>
       </ScrollReveal>
       <ScrollReveal>
-      <li><strong className="text-primaryText">Continuously learn and adapt</strong> to emerging technologies.</li>
+      <li><strong className="text-primaryText">Continuously learn and adapt</strong> to emerging technologies and engineering practices.</li>
       </ScrollReveal>
       <ScrollReveal>
-      <li><strong className="text-primaryText">Empower brands and individuals</strong> through creative graphic design and video editing.</li>
+      <li><strong className="text-primaryText">Empower teams and businesses</strong> through reliable, production-ready software delivery.</li>
       </ScrollReveal>
     </ul>
   
@@ -264,7 +264,7 @@ export default function Page() {
           <ToolCard icon={SiReact} color="text-cyan-400" text="React" percent={88} />
           <ToolCard icon={SiNodedotjs} color="text-green-600" text="Node.js" percent={87} />
           <ToolCard icon={SiFigma} color="text-pink-500" text="Figma" percent={78} />
-          <ToolCard icon={FaLaptopCode} color="text-indigo-400" text="UI/UX Design" percent={75} />
+          <ToolCard icon={FaLaptopCode} color="text-indigo-400" text="REST APIs" percent={88} />
         </div>
       </div>
 
@@ -335,15 +335,15 @@ type ToolCardProps = {
 
 const ToolCard = ({ icon: Icon, text, percent, color = "text-purple-400" }: ToolCardProps) => (
   <div className=" cursor-target flex flex-col items-center gap-2 transition-all duration-200 cursor-pointer select-none group w-full max-w-[100px] xs:max-w-[110px] sm:max-w-[120px] md:max-w-[140px] lg:max-w-[150px]">
-    <div className="group-hover:bg-[#2a1454] w-full flex flex-col justify-center items-center gap-4 border-slate-800 group-hover:border-[#8750f7] bg-[#140b1c] px-4 py-6 border border-transparent rounded-3xl transition-all duration-500">
+    <div className="group-hover:bg-surface w-full flex flex-col justify-center items-center gap-4 group-hover:border-brandAccent/60 bg-mainBg px-4 py-6 border border-borderSubtle rounded-3xl transition-all duration-500">
       <div className="group-hover:scale-110 group-hover:grayscale-0 transition-all duration-500 sm:grayscale object-contain text-3xl sm:text-4xl md:text-5xl">
         <Icon className={color} />
       </div>
-      <p className="group-hover:text-purple-500 font-bold text-slate-500 text-sm sm:text-base transition-colors duration-500">
+      <p className="group-hover:text-brandAccent font-bold text-mutedText text-sm sm:text-base transition-colors duration-500">
         {percent}%
       </p>
     </div>
-    <p className="text-xs sm:text-sm md:text-base font-light text-cyan-200 group-hover:text-opacity-100 tracking-tight transition-colors duration-500 text-center">
+    <p className="text-xs sm:text-sm md:text-base font-light text-mutedText group-hover:text-brandAccent tracking-tight transition-colors duration-500 text-center">
       {text}
     </p>
   </div>

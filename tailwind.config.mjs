@@ -13,11 +13,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        mainBg: "#11161D",
-        surface: "#1D2631",
-        borderSubtle: "#2C394B",
-        primaryText: "#E2E8F0",
-        mutedText: "#94A3B8",
+        // Dark mode defaults (mytheme)
+        mainBg: "var(--color-mainBg)",
+        surface: "var(--color-surface)",
+        borderSubtle: "var(--color-borderSubtle)",
+        primaryText: "var(--color-primaryText)",
+        mutedText: "var(--color-mutedText)",
         brandAccent: "#0B82EC",
         secondaryAccent: "#3B82F6",
       },

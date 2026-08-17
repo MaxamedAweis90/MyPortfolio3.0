@@ -2,6 +2,162 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================
+   THEME TOKENS — Dark mode (mytheme) = DEFAULT
+   ============================================= */
+:root,
+[data-theme="mytheme"],
+[data-theme="dark"] {
+  --color-mainBg: #11161d;
+  --color-surface: #1d2631;
+  --color-borderSubtle: #2c394b;
+  --color-primaryText: #e2e8f0;
+  --color-mutedText: #94a3b8;
+}
+
+/* Light mode — all tokens flip */
+[data-theme="light"] {
+  --color-mainBg: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-borderSubtle: #cbd5e1;
+  --color-primaryText: #0f172a;
+  --color-mutedText: #475569;
+}
+
+/* =============================================
+   LIGHT MODE — Override Tailwind compiled utilities
+   Tailwind bakes in static hex at build time, so we
+   need CSS-level overrides scoped to data-theme=light
+   ============================================= */
+[data-theme="light"] .bg-mainBg {
+  background-color: #f1f5f9 !important;
+}
+[data-theme="light"] .bg-surface {
+  background-color: #ffffff !important;
+}
+[data-theme="light"] .text-primaryText {
+  color: #0f172a !important;
+}
+[data-theme="light"] .text-mutedText {
+  color: #475569 !important;
+}
+[data-theme="light"] .border-borderSubtle {
+  border-color: #cbd5e1 !important;
+}
+
+/* Opacity-modified variants */
+[data-theme="light"] .bg-surface\/85 {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+[data-theme="light"] .bg-surface\/90 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+[data-theme="light"] .bg-surface\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+[data-theme="light"] .bg-surface\/98 {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+}
+[data-theme="light"] .bg-mainBg\/80 {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+}
+[data-theme="light"] .bg-mainBg\/90 {
+  background-color: rgba(241, 245, 249, 0.9) !important;
+}
+[data-theme="light"] .bg-mainBg\/95 {
+  background-color: rgba(241, 245, 249, 0.95) !important;
+}
+[data-theme="light"] .border-borderSubtle\/50 {
+  border-color: rgba(203, 213, 225, 0.5) !important;
+}
+[data-theme="light"] .border-borderSubtle\/60 {
+  border-color: rgba(203, 213, 225, 0.6) !important;
+}
+[data-theme="light"] .border-borderSubtle\/80 {
+  border-color: rgba(203, 213, 225, 0.8) !important;
+}
+[data-theme="light"] .text-primaryText\/90 {
+  color: rgba(15, 23, 42, 0.9) !important;
+}
+[data-theme="light"] .text-mutedText\/80 {
+  color: rgba(71, 85, 105, 0.8) !important;
+}
+[data-theme="light"] .text-mutedText\/90 {
+  color: rgba(71, 85, 105, 0.9) !important;
+}
+
+/* Ring color (used on timeline nodes) */
+[data-theme="light"] .ring-mainBg {
+  --tw-ring-color: #f1f5f9 !important;
+}
+
+/* Body + html background */
+[data-theme="light"] body,
+[data-theme="light"] html {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* =============================================
+   WHOLE-APP THEME SWITCH ANIMATION
+   - Switching to Dark Mode: Circular wipe from TOP-RIGHT (Toggle Button)
+   - Switching to Light Mode: Circular wipe in reverse from BOTTOM-LEFT
+   ============================================= */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* Default / fallback wipe */
+::view-transition-new(root) {
+  z-index: 999999;
+  animation: theme-wipe-top-right 2.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 1. Switching to DARK MODE: Wipe expands from Top-Right (near toggle button) */
+[data-theme-transition="to-dark"]::view-transition-new(root) {
+  z-index: 999999;
+  animation: theme-wipe-top-right 2.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes theme-wipe-top-right {
+  0% {
+    clip-path: circle(0% at 90% 40px);
+  }
+  100% {
+    clip-path: circle(160% at 90% 40px);
+  }
+}
+
+/* 2. Switching to LIGHT MODE: Wipe expands in reverse from Bottom-Left */
+[data-theme-transition="to-light"]::view-transition-new(root) {
+  z-index: 999999;
+  animation: theme-wipe-bottom-left 1.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes theme-wipe-bottom-left {
+  0% {
+    clip-path: circle(0% at 0% 100%);
+  }
+  100% {
+    clip-path: circle(160% at 0% 100%);
+  }
+}
+
+/* Smooth color fallback for elements */
+body,
+section,
+nav {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+}
+
 /* Automatically apply .cursor-target styles to all buttons */
 button {
   /* This lets GSAP detect it as a cursor-target */
@@ -36,30 +192,30 @@ button {
   background: #333;
   color: #fff;
 
-/* WhatsApp-like thin scrollbar for chat areas */
-.scrollbar-whatsapp {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: rgba(0,0,0,0.25) transparent;
-}
-.scrollbar-whatsapp::-webkit-scrollbar {
-  width: 6px;
-}
-.scrollbar-whatsapp::-webkit-scrollbar-track {
-  background: transparent;
-}
-.scrollbar-whatsapp::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0,0.25);
-  border-radius: 9999px;
-}
-@media (max-width: 640px) {
-  /* Hide scrollbar on small screens for a cleaner mobile look */
+  /* WhatsApp-like thin scrollbar for chat areas */
   .scrollbar-whatsapp {
-    scrollbar-width: none;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
   }
   .scrollbar-whatsapp::-webkit-scrollbar {
-    display: none;
+    width: 6px;
   }
-}
+  .scrollbar-whatsapp::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-whatsapp::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 9999px;
+  }
+  @media (max-width: 640px) {
+    /* Hide scrollbar on small screens for a cleaner mobile look */
+    .scrollbar-whatsapp {
+      scrollbar-width: none;
+    }
+    .scrollbar-whatsapp::-webkit-scrollbar {
+      display: none;
+    }
+  }
   padding: 6px 10px;
   border-radius: 5px;
   font-size: 14px;
@@ -116,21 +272,44 @@ button {
 .tooltip-container:hover .tooltip {
   opacity: 1;
   visibility: visible;
-  animation: dropDown 0.3s ease-out forwards, shake 0.5s ease-in-out 0.3s forwards;
+  animation:
+    dropDown 0.3s ease-out forwards,
+    shake 0.5s ease-in-out 0.3s forwards;
 }
-
 
 body {
   width: 100%;
   height: 100%;
   --color: rgba(44, 57, 75, 0.25);
-  background-color: #11161D;
-  color: #E2E8F0;
-  background-image: linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent),
-      linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%,transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%,transparent);
-  background-size: 50px 50px; 
+  background-color: #11161d;
+  color: #e2e8f0;
+  background-image:
+    linear-gradient(
+      0deg,
+      transparent 24%,
+      var(--color) 25%,
+      var(--color) 26%,
+      transparent 27%,
+      transparent 74%,
+      var(--color) 75%,
+      var(--color) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      var(--color) 25%,
+      var(--color) 26%,
+      transparent 27%,
+      transparent 74%,
+      var(--color) 75%,
+      var(--color) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 50px 50px;
 }
-
 
 /* Hide the native browser cursor on body */
 body {
@@ -138,10 +317,17 @@ body {
 }
 
 /* Restore standard browser cursors on Navbar elements */
-nav, nav *, header, header * {
+nav,
+nav *,
+header,
+header * {
   cursor: auto !important;
 }
-nav a, nav button, nav [role="button"], header a, header button {
+nav a,
+nav button,
+nav [role="button"],
+header a,
+header button {
   cursor: pointer !important;
 }
 
@@ -153,14 +339,30 @@ nav a, nav button, nav [role="button"], header a, header button {
 }
 
 @keyframes wave-hand {
-  0% { transform: rotate(0deg); }
-  15% { transform: rotate(18deg); }
-  30% { transform: rotate(-12deg); }
-  45% { transform: rotate(18deg); }
-  60% { transform: rotate(-6deg); }
-  75% { transform: rotate(12deg); }
-  85% { transform: rotate(0deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(18deg);
+  }
+  30% {
+    transform: rotate(-12deg);
+  }
+  45% {
+    transform: rotate(18deg);
+  }
+  60% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(12deg);
+  }
+  85% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 /* Main custom cursor styling using CSS custom properties for positioning */
@@ -179,7 +381,10 @@ nav a, nav button, nav [role="button"], header a, header button {
   );
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, background 0.2s;
+  transition:
+    width 0.2s,
+    height 0.2s,
+    background 0.2s;
   z-index: 9999;
 }
 
@@ -212,12 +417,9 @@ nav a, nav button, nav [role="button"], header a, header button {
   z-index: 9998;
 }
 
-
-
 /* 🌟 Global Container for Consistency */
 .container {
   @apply max-w-screen-2xl  mx-auto px-4 sm:px-8 md:px-12;
-
 }
 
 /* 🌟 Responsive Font Sizes */
@@ -234,7 +436,7 @@ p {
 /* 🌟 Section Spacing */
 .section {
   height: 100%;
-  @apply py-12 md:py-16 lg:py-20 ;
+  @apply py-12 md:py-16 lg:py-20;
 }
 
 /* 🌟 Flexbox Centering */
@@ -246,7 +448,6 @@ p {
 .btn {
   @apply bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition;
 }
-
 
 /* 🌟 section-header */
 
@@ -268,7 +469,7 @@ p {
 
 /* Optional: Add a subtle decoration under the header */
 .section-header::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 80%; /* Match the text width */
   height: 30px;
@@ -282,53 +483,51 @@ p {
   /* Shadow effect */
   --tw-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
   --tw-shadow-colored: 0px 10px 20px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+    var(--tw-shadow);
 }
 
-
-
-
 /* 🌟 Footer */
-.footer{
-  background: #1D2631;
-  border-top: 1px solid #2C394B;
+.footer {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-borderSubtle);
+  color: var(--color-primaryText);
+}
+
+[data-theme="light"] .footer {
+  background-color: #ffffff !important;
+  border-top: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
 }
 
 @media screen and (max-width: 818px) {
-
-  .custom-cursor{
+  .custom-cursor {
     display: none;
   }
 
-  .cursor-tail{
+  .cursor-tail {
     display: none;
   }
-  
+
   body {
     cursor: default;
   }
 }
 
 @media screen and (max-width: 520px) {
-
-
   .footer .socials {
     display: grid;
     grid-template-columns: 1fr; /* Ensures one column */
     gap: 10px; /* Adjust space between links */
     text-align: left; /* Aligns text inside links to the left */
     justify-items: start; /* Ensures the links are aligned to the left */
-}
+  }
 
-.footer .socials a {
+  .footer .socials a {
     font-size: small;
+  }
 }
-
-
-  
-}
-
-
 
 /* Scroll down style */
 .scroll-container {
@@ -341,7 +540,6 @@ p {
 @media screen and (max-width: 818px) {
   .scroll-container {
     display: none;
-
   }
 }
 
@@ -426,7 +624,7 @@ p {
 }
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none;    /* Firefox */
+  scrollbar-width: none; /* Firefox */
 }
 
 .scrollbar-screenshots {
@@ -458,5 +656,31 @@ p {
   }
 }
 
+/* Infinite Looping Tech Marquee Animations */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
 
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
 
+.animate-marquee-left {
+  animation: marquee-left 45s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right {
+  animation: marquee-right 45s linear infinite;
+  will-change: transform;
+}
