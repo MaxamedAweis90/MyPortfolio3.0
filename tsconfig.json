@@ -21,6 +21,9 @@
     "paths": {
       "@/*": [
         "./src/app/*"
+      ],
+      "@ugaas/*": [
+        "./src/ugaas/*"
       ]
     },
     "plugins": [
