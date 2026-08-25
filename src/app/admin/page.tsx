@@ -1,9 +1,5 @@
-import React from 'react'
+import { redirect } from "next/navigation";
 
-const admin = () => {
-  return (
-    <div>Admin</div>
-  )
+export default function AdminRedirect() {
+  redirect("/ugaas");
 }
-
-export default admin

@@ -6,12 +6,17 @@ Welcome to the **MyPortfolio3.0** codebase. This document serves as a comprehens
 
 ## 1. Project Overview & Technology Stack
 
-**MyPortfolio3.0** is a modern, high-performance personal developer portfolio, administrative backend, and project showcase built for **Mohamed Aweys (Eng_Aweis)**, a Software Engineer and Full-Stack Developer.
+**MyPortfolio3.0** is a modern, high-performance personal developer portfolio, administrative dashboard, and project showcase built for **Mohamed Aweys (Eng_Aweis)**, a Software Engineer and Full-Stack Developer.
 
 ### Core Technologies
+
 - **Framework:** [Next.js](https://nextjs.org/) 15.5.x (App Router, Turbopack support)
 - **UI Library:** [React](https://react.dev/) 18.3.x
 - **Language:** [TypeScript](https://www.typescriptlang.org/) 5.6.x (Strict mode)
+- **Authentication & Security:**
+  - [Better Auth](https://www.better-auth.com/) 1.1.x (Server-side + React client hooks)
+  - Native MongoDB Adapter for Better Auth
+  - Edge-safe Route Protection Middleware (`src/middleware.ts`)
 - **Database & Backend Layer (`src/ugaas/`):**
   - [MongoDB Atlas](https://www.mongodb.com/atlas) (`cluster: ugaas`, `database: myportfolio`)
   - [Mongoose](https://mongoosejs.com/) 8.12.x (ODM with cached singleton connection pattern for Next.js HMR)
@@ -46,12 +51,18 @@ Welcome to the **MyPortfolio3.0** codebase. This document serves as a comprehens
 MyPortfolio3.0/
 ├── public/                     # Static assets (images, icons, resume.pdf, og-image)
 ├── scripts/
-│   └── seed-database.ts        # Database migration script (populates MongoDB from static data)
+│   ├── seed-database.ts        # Database migration script (populates MongoDB from static data)
+│   └── seed-admin.ts           # Admin provisioning CLI script (creates primary admin account)
+│
 ├── src/
+│   ├── middleware.ts           # 🛡️ Edge-safe route protection middleware (guards /ugaas/*)
+│   │
 │   ├── ugaas/                  # 🛡️ Dedicated Backend & Database Layer (@ugaas/*)
 │   │   ├── lib/
 │   │   │   ├── db.ts           # Mongoose singleton connection with global HMR cache
-│   │   │   └── mongodb.ts      # Native MongoClient singleton promise
+│   │   │   ├── mongodb.ts      # Native MongoClient singleton promise
+│   │   │   ├── auth.ts         # Server-side Better Auth instance (MongoDB adapter)
+│   │   │   └── auth-client.ts  # Client-side React auth helper (createAuthClient)
 │   │   └── models/
 │   │       ├── Project.ts      # Mongoose Project schema & interface
 │   │       ├── Experience.ts   # Mongoose Experience schema (career, education, certifications)
@@ -77,11 +88,18 @@ MyPortfolio3.0/
 │       │   │   └── [slug]/
 │       │   │       ├── AutoDownload.tsx
 │       │   │       └── page.tsx # Dynamic project detail (SSG)
+│       │   ├── ugaas/           # /ugaas management portal
+│       │   │   ├── login/
+│       │   │   │   └── page.tsx # Admin login portal (/ugaas/login)
+│       │   │   └── page.tsx     # Admin dashboard (/ugaas)
+│       │   ├── admin/           # Legacy redirect to /ugaas
 │       │   ├── blog/            # /blog page (WIP)
-│       │   ├── Gallery/         # /Gallery page (WIP)
-│       │   └── admin/           # /admin page (WIP)
+│       │   └── Gallery/         # /Gallery page (WIP)
 │       │
 │       ├── api/                 # Next.js Route Handlers
+│       │   ├── auth/
+│       │   │   └── [...all]/
+│       │   │       └── route.ts # Better Auth catch-all route handler
 │       │   ├── project-request/
 │       │   │   └── route.ts     # POST: Handles project inquiry email dispatch
 │       │   └── sanityLoadTools/
@@ -118,6 +136,8 @@ MyPortfolio3.0/
 │       │   └── experienceData.ts# Initial career, education, and certifications
 │       │
 │       ├── lib/                 # App utility & re-export bridges
+│       │   ├── auth.ts          # Bridge -> re-exports @ugaas/lib/auth
+│       │   ├── auth-client.ts   # Bridge -> re-exports @ugaas/lib/auth-client
 │       │   ├── db.ts            # Bridge -> re-exports @ugaas/lib/db
 │       │   ├── mongodb.ts       # Bridge -> re-exports @ugaas/lib/mongodb
 │       │   ├── queries.ts
@@ -155,51 +175,72 @@ MyPortfolio3.0/
 ## 3. Architecture & Backend Data Layer
 
 ### 3.1. Dedicated Backend Layer (`src/ugaas/`)
-All database connections, ORM models, seed scripts, and backend-specific logic are encapsulated within `src/ugaas/`:
-- **Path Mapping:** Imported via `@ugaas/lib/...` or `@ugaas/models/...`.
-- **Bridge Support:** Re-exports in `src/app/lib/` and `src/app/models/` ensure that any standard `@/lib/db` or `@/models` imports resolve seamlessly.
 
-### 3.2. MongoDB Connection Architecture (`src/ugaas/lib/db.ts`)
-- Utilizes a **global singleton pattern** (`global.mongoose`) to cache active connections across Next.js Hot Module Replacement (HMR) cycles in development.
-- In serverless environments, it prevents redundant handshakes and avoids connection pool exhaustion.
-- Features automatic logging and connection error isolation.
+All database connections, ORM models, authentication instances, seed scripts, and backend-specific logic are encapsulated within `src/ugaas/`:
+
+- **Path Mapping:** Imported via `@ugaas/lib/...` or `@ugaas/models/...`.
+- **Bridge Support:** Re-exports in `src/app/lib/` and `src/app/models/` ensure that any standard `@/lib/db`, `@/lib/auth`, or `@/models` imports resolve seamlessly.
+
+### 3.2. MongoDB Connection Architecture (`src/ugaas/lib/db.ts` & `mongodb.ts`)
+
+- **Mongoose Singleton (`db.ts`):** Utilizes a global singleton pattern (`global.mongoose`) to cache active connections across Next.js Hot Module Replacement (HMR) cycles in development and prevent connection pool exhaustion in serverless execution.
+- **Native MongoClient (`mongodb.ts`):** Singleton client instance utilized by the Better Auth MongoDB adapter.
 
 ### 3.3. Mongoose Schemas & Collections
 
-| Model | Schema File | Collection | Description | Key Fields |
-| :--- | :--- | :--- | :--- | :--- |
-| **`Project`** | `src/ugaas/models/Project.ts` | `projects` | Portfolio projects | `title`, `slug` (unique, indexed), `category`, `desc`, `fullDesc`, `image`, `tools`, `liveUrl`, `playStoreUrl`, `appStoreUrl`, `isFeatured`, `order` |
-| **`Experience`** | `src/ugaas/models/Experience.ts` | `experiences` | Career, education & certifications | `role`, `company`, `duration`, `badges`, `highlights`, `techStack`, `type` (`career` \| `education` \| `certification`), `order` |
-| **`Certificate`** | `src/ugaas/models/Certificate.ts` | `certificates` | Standalone verified credentials | `title`, `issuer`, `code`, `link`, `image`, `category`, `order` |
-| **`Inquiry`** | `src/ugaas/models/Inquiry.ts` | `inquiries` | Contact form inquiries | `projectName`, `name`, `email`, `phone`, `projectType`, `budget`, `deadline`, `message`, `status` (`unread` \| `read` \| `archived`) |
+| Model             | Schema File                       | Collection     | Description                        | Key Fields                                                                                                                                           |
+| :---------------- | :-------------------------------- | :------------- | :--------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`Project`**     | `src/ugaas/models/Project.ts`     | `projects`     | Portfolio projects                 | `title`, `slug` (unique, indexed), `category`, `desc`, `fullDesc`, `image`, `tools`, `liveUrl`, `playStoreUrl`, `appStoreUrl`, `isFeatured`, `order` |
+| **`Experience`**  | `src/ugaas/models/Experience.ts`  | `experiences`  | Career, education & certifications | `role`, `company`, `duration`, `badges`, `highlights`, `techStack`, `type` (`career` \| `education` \| `certification`), `order`                     |
+| **`Certificate`** | `src/ugaas/models/Certificate.ts` | `certificates` | Standalone verified credentials    | `title`, `issuer`, `code`, `link`, `image`, `category`, `order`                                                                                      |
+| **`Inquiry`**     | `src/ugaas/models/Inquiry.ts`     | `inquiries`    | Contact form inquiries             | `projectName`, `name`, `email`, `phone`, `projectType`, `budget`, `deadline`, `message`, `status` (`unread` \| `read` \| `archived`)                 |
 
-*All models are compiled with the Next.js hot-reload guard `mongoose.models.ModelName || mongoose.model('ModelName', Schema)`.*
-
-### 3.4. Page Rendering & Optimization Strategy
-1. **Lazy Loading on Home (`src/app/page.tsx`):**
-   - The `Hero` section renders immediately (above-the-fold).
-   - Below-the-fold sections (`AboutSection`, `SkillsSection`, `MyWorkSection`, `ExperienceSection`, `Services`, `Contact`) are dynamically imported with `next/dynamic` and minimum height placeholders.
-2. **Static Site Generation (SSG) on Work Details (`/work/[slug]`):**
-   - `generateStaticParams()` pre-renders all project detail pages at build time.
-   - `generateMetadata()` generates custom SEO titles and OpenGraph tags dynamically per project.
-3. **Smooth Page Transitions (`src/app/template.tsx`):**
-   - Wraps every route in a Framer Motion `motion.div` (`opacity: 0, y: 20` -> `opacity: 1, y: 0`).
-   - Automatically resets `window.scrollTo(0, 0)` on route changes.
+_All models are compiled with the Next.js hot-reload guard `mongoose.models.ModelName || mongoose.model('ModelName', Schema)`._
 
 ---
 
-## 4. State Management & Event Patterns
+## 4. Authentication & Route Protection (Better Auth)
+
+### 4.1. Better Auth Engine (`src/ugaas/lib/auth.ts`)
+
+- Configured with `betterAuth` and `mongodbAdapter` over MongoDB Atlas (`myportfolio` database).
+- Uses email & password authentication with 7-day session lifetimes and `nextCookies()` plugin.
+- Base URL configured from `BETTER_AUTH_URL` or `NEXT_PUBLIC_APP_URL`.
+
+### 4.2. API Catch-All Route (`src/app/api/auth/[...all]/route.ts`)
+
+- Delegates all incoming authentication requests (`/api/auth/sign-in/email`, `/api/auth/sign-out`, `/api/auth/session`, etc.) directly to Better Auth via `toNextJsHandler(auth)`.
+
+### 4.3. Client React Hooks (`src/ugaas/lib/auth-client.ts`)
+
+- Client-side helpers created using `createAuthClient`:
+  - `signIn.email({ email, password })`
+  - `signOut()`
+  - `useSession()`
+  - `signUp`
+
+### 4.4. Route Protection Middleware (`src/middleware.ts`)
+
+- Guards all `/ugaas/*` admin routes.
+- If a non-authenticated visitor attempts to access any route under `/ugaas` (except `/ugaas/login`), they are redirected to `/ugaas/login?callbackUrl=...`.
+- If an authenticated admin visits `/ugaas/login`, they are automatically redirected to `/ugaas`.
+
+---
+
+## 5. State Management & Event Patterns
 
 The application uses lightweight, decoupled client-side state without external store overhead:
 
-### 4.1. Theming & Theme Toggle
+### 5.1. Theming & Theme Toggle
+
 - **Default Theme:** Dark mode (`mytheme` via DaisyUI / `:root` dark CSS variables).
 - **Light Mode:** Triggered via `data-theme="light"` on `<html>`.
 - **View Transitions API:** `Navbar.tsx` uses `document.startViewTransition()` with `data-theme-transition="to-dark" | "to-light"` for smooth circular clip-path transitions.
 - **Persistence:** Stored in `localStorage.getItem("theme")`.
 - **CSS Utility Overrides:** `src/app/styles/globals.css` explicitly maps `.bg-mainBg`, `.bg-surface`, `.text-primaryText`, `.text-mutedText`, and `.border-borderSubtle` under `[data-theme="light"]` using `!important` to prevent static Tailwind compile-time collisions.
 
-### 4.2. Cross-Section Event Bus (`select-project-type`)
+### 5.2. Cross-Section Event Bus (`select-project-type`)
+
 - **Sender:** `Hero` dropdown & `Services` cards dispatch a custom browser event:
   ```typescript
   window.dispatchEvent(
@@ -209,20 +250,22 @@ The application uses lightweight, decoupled client-side state without external s
         defaultTitle: service.defaultTitle,
         defaultMessage: service.defaultMessage,
       },
-    })
+    }),
   );
   ```
 - **Receiver:** `Contact.tsx` listens for `"select-project-type"`, updates the multi-step form state with prefilled values, resets to Step 1, and focuses the inquiry flow.
 
-### 4.3. Navigation & ScrollSpy
+### 5.3. Navigation & ScrollSpy
+
 - `Navbar.tsx` tracks active sections (`hero`, `about`, `skills`, `work`, `experience`, `services`, `contact`) based on `window.scrollY` and element offsets.
 - Handles hash routing (`/#about`, `/#work`) with automatic navbar offset compensation (`80px`).
 
 ---
 
-## 5. API Route Handlers
+## 6. API Route Handlers
 
 ### `POST /api/project-request` (`src/app/api/project-request/route.ts`)
+
 - **Purpose:** Handles the submission of the multi-step project request form in `Contact.tsx`.
 - **Required Env Variables:** `RESEND_API_KEY`, `EMAIL_RECEIVER`, `EMAIL_SENDER`.
 - **Workflow:**
@@ -234,23 +277,27 @@ The application uses lightweight, decoupled client-side state without external s
 
 ---
 
-## 6. Conventions & Development Guidelines
+## 7. Conventions & Development Guidelines
 
 When modifying or extending this codebase, adhere to the following standards:
 
-### 6.1. Path Aliasing & Imports
+### 7.1. Path Aliasing & Imports
+
 - Use `@/*` for frontend app code (`import ProjectCard from "@/components/ProjectCard";`).
-- Use `@ugaas/*` for backend, database, and model code (`import { Project } from "@ugaas/models";`, `import { connectToDatabase } from "@ugaas/lib/db";`).
+- Use `@ugaas/*` for backend, database, auth, and model code (`import { Project } from "@ugaas/models";`, `import { auth } from "@ugaas/lib/auth";`).
 
-### 6.2. Backend Placement Rule
-- **All backend logic, database schemas, and connection utilities MUST be authored in `src/ugaas/`**.
+### 7.2. Backend Placement Rule
 
-### 6.3. Client vs. Server Components
+- **All backend logic, database schemas, auth instances, and connection utilities MUST be authored in `src/ugaas/`**.
+
+### 7.3. Client vs. Server Components
+
 - Next.js App Router defaults to Server Components.
 - Add `"use client";` at the top of components that use hooks (`useState`, `useEffect`, `useRef`), Framer Motion, event listeners, or browser APIs.
 - Keep route pages (`page.tsx`) as Server Components when possible for SEO and SSG metadata generation, delegating interactive UI to client sub-components.
 
-### 6.4. Styling & Color Tokens
+### 7.4. Styling & Color Tokens
+
 - Use semantic Tailwind classes mapped to CSS variables:
   - `bg-mainBg` (App background)
   - `bg-surface` (Card and modal surfaces)
@@ -262,15 +309,19 @@ When modifying or extending this codebase, adhere to the following standards:
 
 ---
 
-## 7. Scripts & Environment Variables
+## 8. Scripts & Environment Variables
 
 ### NPM Scripts
+
 ```bash
 # Start development server with Turbopack
 npm run dev
 
 # Run MongoDB database migration / seed script
 npm run db:seed
+
+# Provision primary admin user account
+npm run db:seed:admin
 
 # Create optimized production build
 npm run build
@@ -283,9 +334,20 @@ npm run lint
 ```
 
 ### Environment Variables (`.env.local`)
+
 ```env
 # MongoDB Atlas Database Connection
 MONGODB_URI="mongodb+srv://maxamedaweys90_db_user:<PASSWORD>@ugaas.smpx95l.mongodb.net/myportfolio?retryWrites=true&w=majority&appName=ugaas"
+
+# Better Auth Configuration
+BETTER_AUTH_SECRET="f6c8d1e3a5b7c9e0f2d4a6b8c0e2f4a6b8c0e2f4a6b8c0e2f4a6b8c0e2f4a6b8"
+BETTER_AUTH_URL="http://localhost:3000"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+# Initial Admin Credentials (used by scripts/seed-admin.ts)
+ADMIN_EMAIL="maxamedaweys90@gmail.com"
+ADMIN_PASSWORD="Admin@ugaas2026"
+ADMIN_NAME="Mohamed Aweys (Eng_Aweis)"
 
 # Resend & Email Service
 RESEND_API_KEY="re_xxxxxxxxxxxxxxxxxxxx"

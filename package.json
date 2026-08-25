@@ -7,11 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:seed": "npx tsx scripts/seed-database.ts"
+    "db:seed": "npx tsx scripts/seed-database.ts",
+    "db:seed:admin": "npx tsx scripts/seed-admin.ts",
+    "admin:seed": "npx tsx scripts/seed-admin.ts"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.5",
     "aos": "^2.3.4",
+    "better-auth": "^1.1.21",
     "dotenv": "^17.2.1",
     "framer-motion": "^12.10.3",
     "gsap": "^3.13.0",
