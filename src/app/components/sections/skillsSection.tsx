@@ -19,7 +19,6 @@ import {
   SiJavascript,
   SiTailwindcss,
   SiHtml5,
-  SiCss3,
   SiPostgresql,
   SiPrisma,
   SiOpenai,

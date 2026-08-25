@@ -6,7 +6,6 @@ import {
   RiExternalLinkLine,
   RiEyeLine,
   RiArrowRightUpLine,
-  RiSparklingFill,
 } from "react-icons/ri";
 import type { Project } from "@/types/portfolio";
 

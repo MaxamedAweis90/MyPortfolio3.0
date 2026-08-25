@@ -1,6 +1,6 @@
+import { FlatCompat } from "@eslint/eslintrc";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,13 +12,17 @@ const compat = new FlatCompat({
 const eslintConfig = [
   {
     ignores: [
-      "src/sanity/myportfolio/dist/**",
-      "src/sanity/myportfolio/static/**",
-      "src/sanity/myportfolio/script/**",
-      "src/sanity/myportfolio/**/vendor/**",
+      ".next/**",
+      "out/**",
+      "build/**",
+      "dist/**",
+      "node_modules/**",
+      "src/sanity/**",
+      "public/**",
+      "next-env.d.ts",
     ],
   },
-  ...compat.extends("next/core-web-vitals"),
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 
 export default eslintConfig;

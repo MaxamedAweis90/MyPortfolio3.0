@@ -41,7 +41,7 @@ export default function ClientProjectGrid({ projects }: ClientProjectGridProps) 
   // Filter & Sort Pipeline
   const filteredAndSortedProjects = useMemo(() => {
     // 1. Category Filter
-    let result =
+    const result =
       activeCategory === "All"
         ? [...projects]
         : projects.filter((p) => p.category === activeCategory);

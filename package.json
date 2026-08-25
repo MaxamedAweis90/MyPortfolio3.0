@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "db:seed": "npx tsx scripts/seed-database.ts",
     "db:seed:admin": "npx tsx scripts/seed-admin.ts",
     "admin:seed": "npx tsx scripts/seed-admin.ts"
@@ -35,7 +35,6 @@
     "swiper": "^11.2.6"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.7",

@@ -87,7 +87,10 @@ export default function Navbar() {
     };
 
     if (typeof document !== "undefined" && "startViewTransition" in document) {
-      const transition = (document as any).startViewTransition(() => {
+      const docWithTransition = document as Document & {
+        startViewTransition: (callback: () => void) => { finished: Promise<void> };
+      };
+      const transition = docWithTransition.startViewTransition(() => {
         applyTheme();
       });
       transition.finished.finally(() => {

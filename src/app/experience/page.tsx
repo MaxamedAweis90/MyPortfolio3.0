@@ -14,7 +14,6 @@ import {
   RiAwardLine,
   RiTimeLine,
   RiSparklingFill,
-  RiCheckDoubleLine,
   RiSendPlaneFill,
 } from "react-icons/ri";
 

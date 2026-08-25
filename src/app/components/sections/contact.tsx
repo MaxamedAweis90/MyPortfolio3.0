@@ -462,7 +462,6 @@ export default function Contact() {
                     {/* Step Nodes */}
                     <div className="relative z-10 flex items-center justify-between">
                       {stepLabels.map((step) => {
-                        const Icon = step.icon;
                         const isActive = currentStep === step.number;
                         const isDone = currentStep > step.number;
                         return (

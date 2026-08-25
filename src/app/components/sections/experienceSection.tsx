@@ -6,9 +6,7 @@ import { experiencesData } from "@/data/experienceData";
 import {
   RiBriefcase4Line,
   RiArrowRightLine,
-  RiCheckDoubleLine,
   RiTimeLine,
-  RiSparklingFill,
 } from "react-icons/ri";
 
 export default function ExperienceSection() {

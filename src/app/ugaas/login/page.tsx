@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "@ugaas/lib/auth-client";
 import { motion } from "framer-motion";
@@ -15,7 +15,7 @@ import {
 } from "react-icons/ri";
 import { toast } from "react-toastify";
 
-export default function UgaasLoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/ugaas";
@@ -52,8 +52,9 @@ export default function UgaasLoginPage() {
       toast.success("Welcome back, Admin!");
       router.push(callbackUrl);
       router.refresh();
-    } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred during sign-in.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An unexpected error occurred during sign-in.";
+      setError(message);
       toast.error("Failed to authenticate");
       setLoading(false);
     }
@@ -169,5 +170,19 @@ export default function UgaasLoginPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function UgaasLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-mainBg flex items-center justify-center">
+          <RiLoader4Line className="animate-spin text-3xl text-brandAccent" />
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

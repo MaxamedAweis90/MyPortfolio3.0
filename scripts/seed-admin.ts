@@ -33,12 +33,13 @@ async function seedAdmin() {
     } else {
       console.log("ℹ️ [Admin Seed] Provisioning result:", res);
     }
-  } catch (error: any) {
-    const errorMessage = error?.body?.message || error?.message || "";
+  } catch (error: unknown) {
+    const err = error as { body?: { message?: string }; message?: string; status?: number };
+    const errorMessage = err?.body?.message || err?.message || "";
     if (
       errorMessage.toLowerCase().includes("already exists") ||
       errorMessage.toLowerCase().includes("duplicate") ||
-      error?.status === 400
+      err?.status === 400
     ) {
       console.log("ℹ️ Admin account already registered.");
     } else {
