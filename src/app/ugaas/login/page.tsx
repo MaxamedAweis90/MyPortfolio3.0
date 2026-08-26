@@ -581,6 +581,110 @@ function TerminalLoginForm() {
         }
       }
 
+      // CHECK FOR ROUTE COMMAND: route home, route page, route <page>, route list, route -ls
+      if (
+        firstCmd === "route" ||
+        firstCmd.startsWith("route ") ||
+        firstCmd.startsWith("route/") ||
+        firstCmd.startsWith("goto ") ||
+        firstCmd.startsWith("navigate ")
+      ) {
+        const rawTarget = firstCmd
+          .replace(/^(route|goto|navigate)\s*/i, "")
+          .trim()
+          .toLowerCase();
+
+        const routeMap: Record<string, { path: string; label: string }> = {
+          home: { path: "/", label: "Home Landing" },
+          "/": { path: "/", label: "Home Landing" },
+          root: { path: "/", label: "Home Landing" },
+          main: { path: "/", label: "Home Landing" },
+          work: { path: "/work", label: "Projects & Work" },
+          projects: { path: "/work", label: "Projects & Work" },
+          project: { path: "/work", label: "Projects & Work" },
+          "/work": { path: "/work", label: "Projects & Work" },
+          "/projects": { path: "/work", label: "Projects & Work" },
+          about: { path: "/about", label: "About Mohamed" },
+          "/about": { path: "/about", label: "About Mohamed" },
+          bio: { path: "/about", label: "About Mohamed" },
+          experience: { path: "/experience", label: "Experience & Timeline" },
+          "/experience": { path: "/experience", label: "Experience & Timeline" },
+          career: { path: "/experience", label: "Experience & Timeline" },
+          blog: { path: "/blog", label: "Blog & Engineering Notes" },
+          "/blog": { path: "/blog", label: "Blog & Engineering Notes" },
+          articles: { path: "/blog", label: "Blog & Engineering Notes" },
+          gallery: { path: "/Gallery", label: "Gallery & Certificates" },
+          "/gallery": { path: "/Gallery", label: "Gallery & Certificates" },
+          certificates: { path: "/Gallery", label: "Gallery & Certificates" },
+          certs: { path: "/Gallery", label: "Gallery & Certificates" },
+          skills: { path: "/#skills", label: "Skills & Tech Stack" },
+          services: { path: "/#services", label: "Services & Capabilities" },
+          contact: { path: "/#contact", label: "Contact & Inquiries" },
+          "/contact": { path: "/#contact", label: "Contact & Inquiries" },
+          ugaas: { path: "/ugaas", label: "Ugaas Management Portal" },
+          "/ugaas": { path: "/ugaas", label: "Ugaas Management Portal" },
+          admin: { path: "/ugaas", label: "Ugaas Management Portal" },
+        };
+
+        if (
+          !rawTarget ||
+          rawTarget === "page" ||
+          rawTarget === "pages" ||
+          rawTarget === "list" ||
+          rawTarget === "-ls" ||
+          rawTarget === "--list" ||
+          rawTarget === "-l" ||
+          rawTarget === "help"
+        ) {
+          setLines((prev) => [
+            ...prev,
+            {
+              id: `route-list-${Date.now()}`,
+              type: "output",
+              text:
+                "Available Portfolio Routes:\n" +
+                "  • home         -> / (Main portfolio landing)\n" +
+                "  • work         -> /work (Projects & Work)\n" +
+                "  • about        -> /about (Biography & Story)\n" +
+                "  • experience   -> /experience (Career & Timeline)\n" +
+                "  • blog         -> /blog (Technical Articles)\n" +
+                "  • gallery      -> /Gallery (Certificates & Milestones)\n" +
+                "  • contact      -> /#contact (Direct Inquiries)\n" +
+                "  • ugaas        -> /ugaas (Admin Portal)\n\n" +
+                "Usage: route <page> (e.g. 'route home', 'route projects', 'route about')",
+            },
+          ]);
+          return;
+        }
+
+        const match =
+          routeMap[rawTarget] || routeMap[rawTarget.replace(/^\//, "")];
+        if (match) {
+          setLines((prev) => [
+            ...prev,
+            {
+              id: `route-ok-${Date.now()}`,
+              type: "boot",
+              text: `[NAV] Routing to ${match.path} (${match.label})...`,
+            },
+          ]);
+          setTimeout(() => {
+            router.push(match.path);
+          }, 350);
+          return;
+        } else {
+          setLines((prev) => [
+            ...prev,
+            {
+              id: `route-err-${Date.now()}`,
+              type: "error",
+              text: `Route '${rawTarget}' not found. Type 'route page' or 'route list' to see available destinations.`,
+            },
+          ]);
+          return;
+        }
+      }
+
       // If locked and not running override or status command
       if (isLocked) {
         setLines((prev) => [

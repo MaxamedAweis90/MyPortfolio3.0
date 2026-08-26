@@ -2,13 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Terminal, RefreshCw, Trash2, CheckCircle2, ShieldCheck, Database, Send, LogOut } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Terminal, RefreshCw, Trash2, Send, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/ugaas/lib/auth-client";
 
@@ -46,22 +41,12 @@ export function TerminalConsoleModal({
       setLogs([
         {
           type: "info",
-          text: "🚀 Eng_Aweis Developer Console CLI [v3.0.0-PROD]",
+          text: "[SYSTEM] Connected to Ugaas Management Kernel v3.0.4 [Node 20 / MongoDB Atlas]",
           timestamp: getTimestamp(),
         },
         {
           type: "info",
-          text: "Type 'help' or click quick actions to execute commands.",
-          timestamp: getTimestamp(),
-        },
-        {
-          type: "success",
-          text: "✓ Environment: Next.js 15 App Router | Node.js Runtime",
-          timestamp: getTimestamp(),
-        },
-        {
-          type: "success",
-          text: "✓ Database: MongoDB Atlas (Cluster: ugaas) Connected (~12ms)",
+          text: "Type 'help' to see active system commands, or 'route page' to navigate.",
           timestamp: getTimestamp(),
         },
       ]);
@@ -93,6 +78,7 @@ export function TerminalConsoleModal({
     if (lower === "help") {
       addLog(
         "Available commands:\n" +
+        "  route <page>  Navigate across admin modules & portfolio pages\n" +
         "  ping          Check database latency & cluster health\n" +
         "  stats         View system telemetry & CMS counts\n" +
         "  uptime        Display server uptime & node region\n" +
@@ -103,6 +89,116 @@ export function TerminalConsoleModal({
       );
       setRunning(false);
       return;
+    }
+
+    // ROUTE COMMAND: route home, route page, route <page>, route list, route -ls
+    if (
+      lower === "route" ||
+      lower.startsWith("route ") ||
+      lower.startsWith("route/") ||
+      lower.startsWith("goto ") ||
+      lower.startsWith("navigate ")
+    ) {
+      const rawTarget = lower
+        .replace(/^(route|goto|navigate)\s*/i, "")
+        .trim()
+        .toLowerCase();
+
+      const routeMap: Record<string, { path: string; label: string }> = {
+        // Public Portfolio Routes
+        home: { path: "/", label: "Portfolio Home" },
+        "/": { path: "/", label: "Portfolio Home" },
+        root: { path: "/", label: "Portfolio Home" },
+        portfolio: { path: "/", label: "Portfolio Home" },
+        work: { path: "/work", label: "Projects Portfolio" },
+        "/work": { path: "/work", label: "Projects Portfolio" },
+        about: { path: "/about", label: "About Mohamed" },
+        "/about": { path: "/about", label: "About Mohamed" },
+        blog: { path: "/blog", label: "Blog & Engineering" },
+        "/blog": { path: "/blog", label: "Blog & Engineering" },
+        gallery: { path: "/Gallery", label: "Gallery & Certificates" },
+        "/gallery": { path: "/Gallery", label: "Gallery & Certificates" },
+        certs: { path: "/Gallery", label: "Gallery & Certificates" },
+        contact: { path: "/#contact", label: "Contact Section" },
+        "/contact": { path: "/#contact", label: "Contact Section" },
+
+        // Admin CMS Modules
+        ugaas: { path: "/ugaas", label: "Admin Dashboard Overview" },
+        "/ugaas": { path: "/ugaas", label: "Admin Dashboard Overview" },
+        admin: { path: "/ugaas", label: "Admin Dashboard Overview" },
+        dashboard: { path: "/ugaas", label: "Admin Dashboard Overview" },
+        overview: { path: "/ugaas", label: "Admin Dashboard Overview" },
+        projects: { path: "/ugaas/projects", label: "Projects Management CMS" },
+        "/projects": { path: "/ugaas/projects", label: "Projects Management CMS" },
+        "ugaas/projects": { path: "/ugaas/projects", label: "Projects Management CMS" },
+        experience: { path: "/ugaas/experience", label: "Experience & Education CMS" },
+        "/experience": { path: "/ugaas/experience", label: "Experience & Education CMS" },
+        "ugaas/experience": { path: "/ugaas/experience", label: "Experience & Education CMS" },
+        inquiries: { path: "/ugaas/inquiries", label: "Inquiries & Inbox" },
+        "/inquiries": { path: "/ugaas/inquiries", label: "Inquiries & Inbox" },
+        "ugaas/inquiries": { path: "/ugaas/inquiries", label: "Inquiries & Inbox" },
+        inbox: { path: "/ugaas/inquiries", label: "Inquiries & Inbox" },
+        messages: { path: "/ugaas/inquiries", label: "Inquiries & Inbox" },
+        logs: { path: "/ugaas/logs", label: "System & Security Logs" },
+        "/logs": { path: "/ugaas/logs", label: "System & Security Logs" },
+        "ugaas/logs": { path: "/ugaas/logs", label: "System & Security Logs" },
+        audit: { path: "/ugaas/logs", label: "System & Security Logs" },
+        settings: { path: "/ugaas/settings", label: "Admin & Developer Settings" },
+        "/settings": { path: "/ugaas/settings", label: "Admin & Developer Settings" },
+        "ugaas/settings": { path: "/ugaas/settings", label: "Admin & Developer Settings" },
+        config: { path: "/ugaas/settings", label: "Admin & Developer Settings" },
+      };
+
+      if (
+        !rawTarget ||
+        rawTarget === "page" ||
+        rawTarget === "pages" ||
+        rawTarget === "list" ||
+        rawTarget === "-ls" ||
+        rawTarget === "--list" ||
+        rawTarget === "-l" ||
+        rawTarget === "help"
+      ) {
+        addLog(
+          "Available Navigation Destinations:\n" +
+            "  Admin Modules:\n" +
+            "    • dashboard / overview -> /ugaas\n" +
+            "    • projects             -> /ugaas/projects\n" +
+            "    • experience           -> /ugaas/experience\n" +
+            "    • inquiries / inbox    -> /ugaas/inquiries\n" +
+            "    • logs / audit         -> /ugaas/logs\n" +
+            "    • settings / config    -> /ugaas/settings\n" +
+            "  Portfolio Pages:\n" +
+            "    • home / portfolio     -> /\n" +
+            "    • work                 -> /work\n" +
+            "    • about                -> /about\n" +
+            "    • blog                 -> /blog\n" +
+            "    • gallery              -> /Gallery\n" +
+            "    • contact              -> /#contact\n\n" +
+            "Usage: route <page> (e.g. 'route home', 'route projects', 'route settings')",
+          "info"
+        );
+        setRunning(false);
+        return;
+      }
+
+      const match =
+        routeMap[rawTarget] || routeMap[rawTarget.replace(/^\//, "")];
+      if (match) {
+        addLog(`[NAV] Navigating to ${match.path} (${match.label})...`, "success");
+        setTimeout(() => {
+          onClose();
+          router.push(match.path);
+        }, 350);
+        return;
+      } else {
+        addLog(
+          `Route '${rawTarget}' not found. Type 'route page' or 'route list' to view available destinations.`,
+          "error"
+        );
+        setRunning(false);
+        return;
+      }
     }
 
     // EXIT / LOGOUT / QUIT / SIGNOUT

@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Trash2, AlertTriangle, Loader2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 
 export interface ProjectItem {

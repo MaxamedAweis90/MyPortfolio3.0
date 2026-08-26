@@ -1,6 +1,6 @@
 import React from "react";
 import { TOOL_ICONS } from "@/components/toolIcons";
-import { Code, Terminal, Cpu, Sparkles } from "lucide-react";
+import { Code, Terminal } from "lucide-react";
 import type { IconType } from "react-icons";
 
 // Popular tool preset catalogue mapped to exact/sanitized toolIcons keys

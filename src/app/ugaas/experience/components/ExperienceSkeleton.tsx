@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 export function ExperienceSkeleton() {
   return (

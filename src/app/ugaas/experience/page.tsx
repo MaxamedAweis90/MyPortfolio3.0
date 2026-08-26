@@ -11,18 +11,10 @@ import {
   Trash2,
   Calendar,
   Building2,
-  CheckCircle2,
   ExternalLink,
   Layers,
-  Sparkles,
 } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";

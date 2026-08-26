@@ -26,7 +26,6 @@ import {
   ArrowLeft,
   Check,
   Trash2,
-  Sparkles,
   Link2,
   Image as ImageIcon,
   X,

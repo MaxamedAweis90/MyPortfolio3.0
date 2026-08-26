@@ -21,20 +21,20 @@ export async function GET() {
         ...experiencesData.map((e, index) => ({
           role: e.role,
           company: e.company,
-          duration: e.duration || (e as any).period || "2025 - Present",
-          badges: e.badges || [(e as any).type].filter(Boolean),
+          duration: e.period || "Present",
+          badges: [e.type].filter(Boolean),
           highlights: e.highlights || [],
-          techStack: e.techStack || (e as any).technologies || [],
+          techStack: e.technologies || [],
           type: "career" as const,
           order: index + 1,
         })),
         ...educationData.map((ed, index) => ({
-          role: ed.role,
-          company: ed.company,
-          duration: ed.duration || (ed as any).period || "2021 - 2025",
-          badges: ed.badges || [(ed as any).type].filter(Boolean),
-          highlights: ed.highlights || [],
-          techStack: ed.techStack || (ed as any).technologies || [],
+          role: ed.degree,
+          company: ed.institution,
+          duration: ed.period || "2022 - 2026",
+          badges: [ed.location].filter(Boolean),
+          highlights: ed.details ? [ed.details] : [],
+          techStack: [],
           type: "education" as const,
           order: index + 10,
         })),
@@ -44,8 +44,36 @@ export async function GET() {
     }
 
     if (!certificates || certificates.length === 0) {
-      const allCerts = [...certificatesData, ...certificationsData];
-      const uniqueCertsMap = new Map();
+      const allCerts: Array<{
+        title: string;
+        issuer: string;
+        link?: string;
+        code?: string;
+        image?: string;
+        category?: string;
+      }> = [
+        ...certificatesData.map((c) => ({
+          title: c.title,
+          issuer: c.issuer || "Certificate Authority",
+          link: c.verificationUrl || "",
+          code: c.verificationCode || "",
+          image: c.imageUrl || "/Hero3DMe.png",
+          category:
+            typeof c.category === "object" && c.category?.title
+              ? c.category.title
+              : "Certification",
+        })),
+        ...certificationsData.map((c) => ({
+          title: c.name,
+          issuer: c.issuer || "Certificate Authority",
+          link: "",
+          code: "",
+          image: "/Hero3DMe.png",
+          category: "Certification",
+        })),
+      ];
+
+      const uniqueCertsMap = new Map<string, (typeof allCerts)[number]>();
       allCerts.forEach((c) => {
         if (c && c.title && !uniqueCertsMap.has(c.title)) {
           uniqueCertsMap.set(c.title, c);
@@ -56,12 +84,10 @@ export async function GET() {
         (c, index) => ({
           title: c.title,
           issuer: c.issuer,
-          issueDate: c.date || c.issuedDate || "2024",
-          credentialUrl: c.credentialUrl || c.link || c.verificationUrl || "",
-          credentialId: c.credentialId || c.verificationCode || "",
-          image: c.image || c.imageUrl || "/Hero3DMe.png",
-          category: c.category?.title || c.category || "Development",
-          skills: c.skills || [],
+          link: c.link || "",
+          code: c.code || "",
+          image: c.image || "/Hero3DMe.png",
+          category: c.category || "Certification",
           order: index + 1,
         })
       );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "@/ugaas/lib/auth-client";
@@ -8,8 +8,7 @@ import { AdminSidebar } from "./AdminSidebar";
 import { AdminHeader } from "./AdminHeader";
 import { AppsSwitcherModal } from "./AppsSwitcherModal";
 import { TerminalConsoleModal } from "./TerminalConsoleModal";
-import { Loader2, ShieldAlert, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AdminShellProps {
@@ -50,7 +49,7 @@ function matchesShortcut(e: KeyboardEvent, combo: string): boolean {
 export function AdminShell({ children }: AdminShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session, isPending, error } = useSession();
+  const { data: session, isPending } = useSession();
 
   // Collapsible Sidebar state
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -79,7 +78,7 @@ export function AdminShell({ children }: AdminShellProps) {
       // ignore
     }
 
-    const handleShortcutUpdate = (e: any) => {
+    const handleShortcutUpdate = (e: CustomEvent<{ shortcut: string }> | any) => {
       if (e.detail?.shortcut) {
         setAppsShortcut(e.detail.shortcut);
       }
@@ -92,12 +91,6 @@ export function AdminShell({ children }: AdminShellProps) {
   // Global Keyboard Shortcuts Listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if user is actively typing inside an input/textarea (unless pressing Ctrl/Cmd modifier)
-      const target = e.target as HTMLElement;
-      const isInput =
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable;
 
       // 1. Check Apps Launcher Shortcut
       if (matchesShortcut(e, appsShortcut)) {

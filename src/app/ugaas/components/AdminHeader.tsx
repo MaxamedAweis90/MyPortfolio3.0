@@ -14,7 +14,6 @@ import {
   LayoutDashboard,
   FolderKanban,
   Briefcase,
-  Award,
   Mail,
   History,
   Sliders,

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   User,
   Share2,
@@ -21,8 +20,6 @@ import {
   FileText,
   Command,
   LayoutGrid,
-  Bell,
-  Check,
   Eye,
   EyeOff,
   Sliders,
@@ -31,13 +28,13 @@ import {
   Smartphone,
   Tablet,
   MonitorSmartphone,
-  History,
   Trash2,
   RefreshCw,
   Globe,
   Clock,
   ShieldAlert,
-  ArrowUpRight,
+  Key,
+  Terminal as TerminalIcon,
 } from "lucide-react";
 import {
   Card,

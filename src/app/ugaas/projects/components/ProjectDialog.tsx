@@ -27,9 +27,7 @@ import {
   Loader2,
   Image as ImageIcon,
   Plus,
-  Layers,
   Star,
-  ExternalLink,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { ToolBadge, POPULAR_TOOLS, getToolIcon } from "./ToolIconHelper";

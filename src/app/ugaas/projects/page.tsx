@@ -13,16 +13,10 @@ import {
   ExternalLink,
   Star,
   Globe,
-  Sparkles,
   Layers,
-  ArrowUpDown,
-  CheckCircle2,
 } from "lucide-react";
 import {
   Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
   CardContent,
 } from "@/components/ui/card";
 import {

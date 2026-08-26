@@ -7,7 +7,6 @@ import {
   RefreshCw,
   Download,
   Trash2,
-  Filter,
   Eye,
   Copy,
   Check,
@@ -26,8 +25,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Database,
-  UserCheck,
-  CheckCircle2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
