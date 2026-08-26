@@ -8,6 +8,7 @@ import Footer from "./Footer";
 import SocialBar from "./SocialBar";
 import ScrollToTop from "./ScrollToTop";
 import dynamic from "next/dynamic";
+import RouteCommandPalette from "./RouteCommandPalette";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
@@ -33,6 +34,7 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
     <>
       {mounted && !isCustomLayout && <ChatWidget />}
       {mounted && !isCustomLayout && <ScrollToTop />}
+      {mounted && !isCustomLayout && <RouteCommandPalette />}
 
       <div className="w-full min-h-screen flex flex-col justify-between">
         {!isCustomLayout && <Navbar />}

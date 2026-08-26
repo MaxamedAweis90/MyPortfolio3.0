@@ -98,6 +98,110 @@
   color: #0f172a;
 }
 
+/* Admin Specific Light Mode Overrides */
+[data-theme="light"] .bg-\[\#111622\],
+[data-theme="light"] .bg-\[\#0E131D\],
+[data-theme="light"] .bg-\[\#161C2C\] {
+  background-color: #ffffff !important;
+}
+
+[data-theme="light"] .bg-\[\#111622\]\/80,
+[data-theme="light"] .bg-\[\#111622\]\/70,
+[data-theme="light"] .bg-\[\#111622\]\/60,
+[data-theme="light"] .bg-\[\#111622\]\/50,
+[data-theme="light"] .bg-\[\#111622\]\/90,
+[data-theme="light"] .bg-\[\#111622\]\/95,
+[data-theme="light"] .bg-\[\#0E131D\]\/90,
+[data-theme="light"] .bg-\[\#0E131D\]\/80,
+[data-theme="light"] .bg-\[\#0E131D\]\/60,
+[data-theme="light"] .bg-\[\#0E131D\]\/95 {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+}
+
+[data-theme="light"] .border-\[\#222938\],
+[data-theme="light"] .border-\[\#222938\]\/80,
+[data-theme="light"] .border-\[\#222938\]\/60,
+[data-theme="light"] .border-\[\#222938\]\/50,
+[data-theme="light"] .border-\[\#222938\]\/40 {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] aside.bg-\[\#111622\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Light Mode Typography & Text Refinements */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .text-white:not(
+  .bg-\[\#0B82EC\],
+  .bg-\[\#0B82EC\] *,
+  button.bg-\[\#0B82EC\],
+  button.bg-\[\#0B82EC\] *,
+  a.bg-\[\#0B82EC\],
+  a.bg-\[\#0B82EC\] *,
+  .bg-primary,
+  .bg-primary *,
+  .badge-primary,
+  .btn-primary
+) {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .text-gray-100,
+[data-theme="light"] .text-gray-200,
+[data-theme="light"] .text-gray-300 {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .text-gray-400 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] [data-tool-badge] {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] [data-tool-badge] span {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] tr.border-b {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] tr.bg-\[\#111622\]\/70,
+[data-theme="light"] tr.bg-\[\#111622\]\/80 {
+  background-color: #f8fafc !important;
+}
+
+[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]),
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+[data-theme="light"] .badge,
+[data-theme="light"] [class*="variant-secondary"] {
+  border-color: #cbd5e1 !important;
+}
+
 /* =============================================
    WHOLE-APP THEME SWITCH ANIMATION
    - Switching to Dark Mode: Circular wipe from TOP-RIGHT (Toggle Button)
@@ -683,4 +787,18 @@ p {
 .animate-marquee-right {
   animation: marquee-right 45s linear infinite;
   will-change: transform;
+}
+
+/* Shimmer Loading Skeleton Wave */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2.2s infinite ease-in-out;
 }

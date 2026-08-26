@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { connectToDatabase } from "@/ugaas/lib/db";
+import { Inquiry } from "@/ugaas/models/Inquiry";
 
 type ProjectRequestPayload = {
   projectName: string;
@@ -14,12 +16,12 @@ type ProjectRequestPayload = {
 };
 
 // Brand colours & shared styles
-const primary   = "#e11d48";  // red-600
-const darkText  = "#1f2937";  // gray-800
-const lightText = "#4b5563";  // gray-600
+const primary   = "#0B82EC";
+const darkText  = "#1f2937";
+const lightText = "#4b5563";
 const cardBg    = "#ffffff";
-const pageBg    = "#f3f4f6";  // gray-100
-const border    = "#e5e7eb";  // gray-200
+const pageBg    = "#f3f4f6";
+const border    = "#e5e7eb";
 const radius    = "10px";
 
 const baseStyles = `
@@ -86,17 +88,6 @@ const customerTemplate = ({
 export async function POST(request: Request) {
   console.log("🟢 [project-request] POST invoked");
 
-  const { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER } = process.env;
-  if (!RESEND_API_KEY || !EMAIL_RECEIVER || !EMAIL_SENDER) {
-    console.error("❌ Missing env vars!", { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER });
-    return NextResponse.json(
-      { success: false, error: "Missing required email configuration on server." },
-      { status: 500 }
-    );
-  }
-
-  const resend = new Resend(RESEND_API_KEY);
-
   let data: ProjectRequestPayload;
   try {
     data = (await request.json()) as ProjectRequestPayload;
@@ -108,35 +99,50 @@ export async function POST(request: Request) {
 
   const { projectName, name, email, phone, projectType, budget, deadline, message, sent_time } = data;
 
+  // 1️⃣ Save to MongoDB Inquiry collection
   try {
-    // 1️⃣ Send notification to site owner
-    await resend.emails.send({
-      from: EMAIL_SENDER,
-      to: EMAIL_RECEIVER,
-      subject: `New Project Request: ${projectName}`,
-      html: ownerTemplate({ projectName, name, email, phone, projectType, budget, deadline, sent_time, message }),
+    await connectToDatabase();
+    await Inquiry.create({
+      projectName: projectName || "General Inquiry",
+      name,
+      email,
+      phone,
+      projectType: projectType || "General",
+      budget: budget || "Not specified",
+      deadline: deadline || "Flexible",
+      message,
+      status: "unread",
     });
-    console.log("✉️ Owner email sent.");
-
-    // 2️⃣ Send auto‑reply to customer
-    await resend.emails.send({
-      from: EMAIL_SENDER,
-      to: email,
-      subject: "We received your project request 🎉",
-      html: customerTemplate({ name, projectName }),
-    });
-    console.log("✉️ Customer auto‑reply sent.");
-
-    return NextResponse.json(
-      { success:true },
-      { status:200 }
-    );
-  } catch (error) {
-    console.error("❌ Error sending emails:", error);
-    const message = error instanceof Error ? error.message : "Failed to send email(s)";
-    return NextResponse.json(
-      { success:false, error: message },
-      { status:500 }
-    );
+    console.log("✅ [Inquiry] Recorded into database.");
+  } catch (dbErr) {
+    console.error("⚠️ [Inquiry Save Warning] Could not save to DB:", dbErr);
   }
+
+  // 2️⃣ Optional Resend email delivery if keys are configured
+  const { RESEND_API_KEY, EMAIL_RECEIVER, EMAIL_SENDER } = process.env;
+  if (RESEND_API_KEY && EMAIL_RECEIVER && EMAIL_SENDER) {
+    try {
+      const resend = new Resend(RESEND_API_KEY);
+      // Owner email
+      await resend.emails.send({
+        from: EMAIL_SENDER,
+        to: EMAIL_RECEIVER,
+        subject: `New Project Request: ${projectName}`,
+        html: ownerTemplate({ projectName, name, email, phone, projectType, budget, deadline, sent_time, message }),
+      });
+
+      // Customer auto-reply
+      await resend.emails.send({
+        from: EMAIL_SENDER,
+        to: email,
+        subject: "We received your project request 🎉",
+        html: customerTemplate({ name, projectName }),
+      });
+      console.log("✉️ Emails dispatched successfully.");
+    } catch (emailErr) {
+      console.warn("⚠️ Email delivery warning:", emailErr);
+    }
+  }
+
+  return NextResponse.json({ success: true }, { status: 200 });
 }
