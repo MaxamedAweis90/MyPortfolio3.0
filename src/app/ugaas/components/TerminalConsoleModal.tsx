@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Terminal, RefreshCw, Trash2, Send, LogOut } from "lucide-react";
+import { Terminal, RefreshCw, Trash2, Send, LogOut, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/ugaas/lib/auth-client";
 
@@ -26,6 +26,7 @@ export function TerminalConsoleModal({
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [commandInput, setCommandInput] = useState("");
   const [running, setRunning] = useState(false);
+  const [isPrivacyBlurred, setIsPrivacyBlurred] = useState(false);
   const logEndRef = useRef<HTMLDivElement>(null);
 
   const getTimestamp = () => {
@@ -35,6 +36,13 @@ export function TerminalConsoleModal({
   const addLog = (text: string, type: LogEntry["type"] = "info") => {
     setLogs((prev) => [...prev, { text, type, timestamp: getTimestamp() }]);
   };
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("ugaas_terminal_privacy_blur");
+      if (saved === "true") setIsPrivacyBlurred(true);
+    } catch {}
+  }, []);
 
   useEffect(() => {
     if (isOpen && logs.length === 0) {
@@ -78,17 +86,77 @@ export function TerminalConsoleModal({
     if (lower === "help") {
       addLog(
         "Available commands:\n" +
-        "  route <page>  Navigate across admin modules & portfolio pages\n" +
-        "  ping          Check database latency & cluster health\n" +
-        "  stats         View system telemetry & CMS counts\n" +
-        "  uptime        Display server uptime & node region\n" +
-        "  auth          Verify active admin session credentials\n" +
-        "  exit / logout Graceful session unmount & redirect to portfolio\n" +
-        "  clear         Clear console buffer",
+          "  route <page>          Navigate across admin modules & portfolio pages\n" +
+          "  hide -terminal [t/f]  Toggle stealth privacy blur on active inputs\n" +
+          "  ping                  Check database latency & cluster health\n" +
+          "  stats                 View system telemetry & CMS counts\n" +
+          "  uptime                Display server uptime & node region\n" +
+          "  auth                  Verify active admin session credentials\n" +
+          "  exit / logout         Graceful session unmount & redirect to portfolio\n" +
+          "  clear                 Clear console buffer",
         "info"
       );
       setRunning(false);
       return;
+    }
+
+    // PRIVACY STEALTH BLUR: hide -terminal true / false
+    if (
+      lower === "hide -terminal" ||
+      lower.startsWith("hide -terminal ") ||
+      lower.startsWith("hide --terminal ") ||
+      lower === "hide -t" ||
+      lower.startsWith("hide -t ")
+    ) {
+      const arg = lower
+        .replace(/^hide\s+(-terminal|--terminal|-t)\s*/i, "")
+        .trim()
+        .toLowerCase();
+
+      if (
+        arg === "true" ||
+        arg === "1" ||
+        arg === "on" ||
+        arg === "enable" ||
+        arg === "yes"
+      ) {
+        setIsPrivacyBlurred(true);
+        try {
+          localStorage.setItem("ugaas_terminal_privacy_blur", "true");
+        } catch {}
+        addLog(
+          "✓ [PRIVACY] Terminal stealth blur mode enabled. Input is now blurred.",
+          "success"
+        );
+        setRunning(false);
+        return;
+      } else if (
+        arg === "false" ||
+        arg === "0" ||
+        arg === "off" ||
+        arg === "disable" ||
+        arg === "no"
+      ) {
+        setIsPrivacyBlurred(false);
+        try {
+          localStorage.setItem("ugaas_terminal_privacy_blur", "false");
+        } catch {}
+        addLog(
+          "✓ [PRIVACY] Terminal stealth blur mode disabled. Input is now visible.",
+          "success"
+        );
+        setRunning(false);
+        return;
+      } else {
+        addLog(
+          `Terminal stealth blur mode is currently: [${
+            isPrivacyBlurred ? "ENABLED" : "DISABLED"
+          }].\nUsage: hide -terminal true | hide -terminal false`,
+          "info"
+        );
+        setRunning(false);
+        return;
+      }
     }
 
     // ROUTE COMMAND: route home, route page, route <page>, route list, route -ls
@@ -322,7 +390,42 @@ export function TerminalConsoleModal({
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <Button
+              size="sm"
+              variant="ghost"
+              disabled={running}
+              onClick={() => {
+                const next = !isPrivacyBlurred;
+                setIsPrivacyBlurred(next);
+                try {
+                  localStorage.setItem("ugaas_terminal_privacy_blur", String(next));
+                } catch {}
+              }}
+              className={`h-7 px-2 text-[11px] transition-colors ${
+                isPrivacyBlurred
+                  ? "text-amber-400 bg-amber-500/15 border border-amber-500/30 hover:bg-amber-500/25"
+                  : "text-mutedText hover:text-white"
+              }`}
+              title={
+                isPrivacyBlurred
+                  ? "Stealth Blur Mode: ACTIVE (Click to reveal or run 'hide -terminal false')"
+                  : "Stealth Blur Mode: OFF (Click to blur or run 'hide -terminal true')"
+              }
+            >
+              {isPrivacyBlurred ? (
+                <>
+                  <EyeOff className="w-3 h-3 mr-1 text-amber-400" />
+                  <span className="text-[10px] font-bold text-amber-400">Blur On</span>
+                </>
+              ) : (
+                <>
+                  <Eye className="w-3 h-3 mr-1" />
+                  <span>Stealth</span>
+                </>
+              )}
+            </Button>
+
             <Button
               size="sm"
               variant="ghost"
@@ -376,7 +479,15 @@ export function TerminalConsoleModal({
               <span className="text-mutedText/50 select-none shrink-0 font-mono text-[10px]">
                 [{log.timestamp}]
               </span>
-              <pre className="font-mono whitespace-pre-wrap flex-1">{log.text}</pre>
+              <pre
+                className={`font-mono whitespace-pre-wrap flex-1 ${
+                  isPrivacyBlurred && log.type === "prompt"
+                    ? "blur-[5px] select-none hover:blur-none transition-all duration-200"
+                    : ""
+                }`}
+              >
+                {log.text}
+              </pre>
             </div>
           ))}
           <div ref={logEndRef} />
@@ -397,9 +508,13 @@ export function TerminalConsoleModal({
             type="text"
             value={commandInput}
             onChange={(e) => setCommandInput(e.target.value)}
-            placeholder="Type 'help', 'ping', 'stats', 'exit'..."
+            placeholder="Type 'help', 'route page', 'hide -terminal true'..."
             disabled={running}
-            className="flex-1 bg-transparent text-xs text-white placeholder:text-mutedText/40 focus:outline-none font-mono disabled:opacity-50"
+            className={`flex-1 bg-transparent text-xs text-white placeholder:text-mutedText/40 focus:outline-none font-mono disabled:opacity-50 transition-all duration-200 ${
+              isPrivacyBlurred
+                ? "blur-[5px] select-none hover:blur-none"
+                : ""
+            }`}
             autoFocus
           />
           <button

@@ -320,7 +320,7 @@ export default function ExperienceCMSPage() {
                         <span className="text-[11px] text-mutedText font-semibold mr-1 flex items-center gap-1">
                           <Layers className="w-3 h-3 text-[#2DD4BF]" /> Stack:
                         </span>
-                        {item.techStack.map((tech) => (
+                        {item.techStack.map((tech: string) => (
                           <ToolBadge
                             key={tech}
                             tool={tech}

@@ -321,7 +321,7 @@ export function ExperienceDialog({
                 id="badge"
                 placeholder="e.g. Verified Credential, Full-Time"
                 value={badgeText}
-                onChange={(e) => setsetBadgeText(e.target.value)}
+                onChange={(e) => setBadgeText(e.target.value)}
                 className="bg-[#111622] border-[#222938] text-white text-xs"
               />
             </div>

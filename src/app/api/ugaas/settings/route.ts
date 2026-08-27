@@ -10,7 +10,7 @@ export async function GET() {
 
     if (!settings) {
       // Create default settings if not exists
-      settings = await Settings.create({
+      const created = await Settings.create({
         fullName: "Mohamed Aweis",
         headline: "Full-Stack Software Engineer & Mobile Developer",
         email: "aweis90@example.com",
@@ -29,6 +29,7 @@ export async function GET() {
         defaultSidebarCollapsed: false,
         enableNotifications: true,
       });
+      settings = created.toObject();
     }
 
     return NextResponse.json({

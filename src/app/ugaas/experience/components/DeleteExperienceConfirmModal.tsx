@@ -47,8 +47,13 @@ export function DeleteExperienceConfirmModal({
   if (!item) return null;
 
   const handleDelete = async () => {
-    setLoading(true);
     const targetId = item.id || item._id;
+    if (!targetId) {
+      toast.error("Invalid record identifier");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const res = await fetch(`/api/ugaas/experience/${targetId}`, {

@@ -10,6 +10,9 @@ import {
   Loader2,
   Sun,
   Moon,
+  Eye,
+  EyeOff,
+  Shield,
 } from "lucide-react";
 import { signIn } from "@/ugaas/lib/auth-client";
 
@@ -131,6 +134,9 @@ function TerminalLoginForm() {
   const [emailBuffer, setEmailBuffer] = useState("");
   const [failedAttempts, setFailedAttempts] = useState(0);
 
+  // Privacy stealth blur state for concealing inputs (hide -terminal true / false)
+  const [isPrivacyBlurred, setIsPrivacyBlurred] = useState(false);
+
   // Command History (Arrow Up / Down)
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
@@ -200,6 +206,12 @@ function TerminalLoginForm() {
         const savedAttempts = localStorage.getItem("ugaas_failed_attempts");
         if (savedAttempts) {
           setFailedAttempts(Number(savedAttempts));
+        }
+
+        // Load saved privacy stealth blur setting
+        const savedBlur = localStorage.getItem("ugaas_terminal_privacy_blur");
+        if (savedBlur === "true") {
+          setIsPrivacyBlurred(true);
         }
       } catch {
         // ignore
@@ -685,6 +697,76 @@ function TerminalLoginForm() {
         }
       }
 
+      // CHECK FOR PRIVACY BLUR COMMAND: hide -terminal true / false
+      if (
+        firstCmd === "hide -terminal" ||
+        firstCmd.startsWith("hide -terminal ") ||
+        firstCmd.startsWith("hide --terminal ") ||
+        firstCmd === "hide -t" ||
+        firstCmd.startsWith("hide -t ")
+      ) {
+        const arg = firstCmd
+          .replace(/^hide\s+(-terminal|--terminal|-t)\s*/i, "")
+          .trim()
+          .toLowerCase();
+
+        if (
+          arg === "true" ||
+          arg === "1" ||
+          arg === "on" ||
+          arg === "enable" ||
+          arg === "yes"
+        ) {
+          setIsPrivacyBlurred(true);
+          try {
+            localStorage.setItem("ugaas_terminal_privacy_blur", "true");
+          } catch {}
+          setLines((prev) => [
+            ...prev,
+            {
+              id: `privacy-on-${Date.now()}`,
+              type: "boot",
+              text: "[PRIVACY] Terminal stealth blur mode enabled. Inputs & typed credentials are now blurred.",
+            },
+          ]);
+          return;
+        } else if (
+          arg === "false" ||
+          arg === "0" ||
+          arg === "off" ||
+          arg === "disable" ||
+          arg === "no"
+        ) {
+          setIsPrivacyBlurred(false);
+          try {
+            localStorage.setItem("ugaas_terminal_privacy_blur", "false");
+          } catch {}
+          setLines((prev) => [
+            ...prev,
+            {
+              id: `privacy-off-${Date.now()}`,
+              type: "boot",
+              text: "[PRIVACY] Terminal stealth blur mode disabled. Inputs are now visible.",
+            },
+          ]);
+          return;
+        } else {
+          setLines((prev) => [
+            ...prev,
+            {
+              id: `privacy-status-${Date.now()}`,
+              type: "output",
+              text:
+                `Terminal stealth blur mode is currently: [${
+                  isPrivacyBlurred ? "ENABLED" : "DISABLED"
+                }].\n` +
+                "Usage: hide -terminal true (to blur input) | hide -terminal false (to reveal input)",
+            },
+          ]);
+          return;
+        }
+      }
+
       // If locked and not running override or status command
       if (isLocked) {
         setLines((prev) => [
@@ -1092,8 +1174,48 @@ function TerminalLoginForm() {
             <span className="truncate">terminal ~ bash</span>
           </div>
 
-          {/* Right Action: Quick Theme Toggle Button */}
-          <div className="flex items-center justify-end">
+          {/* Right Action: Privacy Stealth Mode & Quick Theme Toggle Button */}
+          <div className="flex items-center gap-1.5 justify-end">
+            {/* Stealth Blur Privacy Toggle Button */}
+            <button
+              onClick={() => {
+                const next = !isPrivacyBlurred;
+                setIsPrivacyBlurred(next);
+                try {
+                  localStorage.setItem(
+                    "ugaas_terminal_privacy_blur",
+                    String(next)
+                  );
+                } catch {}
+              }}
+              type="button"
+              title={
+                isPrivacyBlurred
+                  ? "Stealth Blur: ACTIVE (Click to unblur or run 'hide -terminal false')"
+                  : "Stealth Blur: OFF (Click to blur or run 'hide -terminal true')"
+              }
+              aria-label="Toggle Privacy Blur"
+              className={`p-1.5 rounded-lg border transition-all duration-200 flex items-center gap-1 text-xs ${
+                isPrivacyBlurred
+                  ? "bg-amber-500/15 border-amber-500/40 text-amber-400 hover:bg-amber-500/25"
+                  : isDarkMode
+                  ? "bg-[#161D2B] border-[#2A374A] text-slate-400 hover:text-white hover:bg-[#1E283A]"
+                  : "bg-[#F1F5F9] border-[#CBD5E1] text-slate-600 hover:text-slate-900 hover:bg-[#E2E8F0]"
+              }`}
+            >
+              {isPrivacyBlurred ? (
+                <>
+                  <EyeOff className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="hidden sm:inline text-[10px] font-bold text-amber-400 tracking-wider">
+                    BLUR ON
+                  </span>
+                </>
+              ) : (
+                <Eye className="w-3.5 h-3.5" />
+              )}
+            </button>
+
+            {/* Quick Theme Toggle Button */}
             <button
               onClick={toggleTheme}
               type="button"
@@ -1139,8 +1261,12 @@ function TerminalLoginForm() {
                       {line.path}
                     </span>
                     <span
-                      className={`font-bold whitespace-pre-wrap ${
+                      className={`font-bold whitespace-pre-wrap transition-all duration-200 ${
                         isDarkMode ? "text-white" : "text-slate-900"
+                      } ${
+                        isPrivacyBlurred
+                          ? "blur-[5px] select-none hover:blur-none"
+                          : ""
                       }`}
                     >
                       {cmdSubLines[0]}
@@ -1156,8 +1282,12 @@ function TerminalLoginForm() {
                         &gt;&gt;
                       </span>
                       <span
-                        className={`font-bold whitespace-pre-wrap ${
+                        className={`font-bold whitespace-pre-wrap transition-all duration-200 ${
                           isDarkMode ? "text-white" : "text-slate-900"
+                        } ${
+                          isPrivacyBlurred
+                            ? "blur-[5px] select-none hover:blur-none"
+                            : ""
                         }`}
                       >
                         {sub}
@@ -1312,8 +1442,12 @@ function TerminalLoginForm() {
                   <div className="relative inline-flex items-center">
                     {/* Visual text mirror that dynamically expands the container width */}
                     <span
-                      className={`font-bold whitespace-pre font-mono text-xs sm:text-sm leading-relaxed ${
+                      className={`font-bold whitespace-pre font-mono text-xs sm:text-sm leading-relaxed transition-all duration-200 ${
                         isDarkMode ? "text-white" : "text-slate-900"
+                      } ${
+                        isPrivacyBlurred
+                          ? "blur-[5px] select-none hover:blur-none"
+                          : ""
                       }`}
                     >
                       {stage === "ENTER_PASSWORD" && inputSubLines.length <= 1
@@ -1371,8 +1505,12 @@ function TerminalLoginForm() {
                       &gt;&gt;
                     </span>
                     <span
-                      className={`font-bold whitespace-pre font-mono text-xs sm:text-sm ${
+                      className={`font-bold whitespace-pre font-mono text-xs sm:text-sm transition-all duration-200 ${
                         isDarkMode ? "text-white" : "text-slate-900"
+                      } ${
+                        isPrivacyBlurred
+                          ? "blur-[5px] select-none hover:blur-none"
+                          : ""
                       }`}
                     >
                       {sub}
