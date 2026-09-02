@@ -1,6 +1,7 @@
 // app/layout.js
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./styles/globals.css";
 import LayoutWrapper from "./components/LayoutWrapper";
@@ -24,7 +25,8 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: "Mohamed Aweys – Software Engineer & Full-Stack Developer",
-  description: "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
+  description:
+    "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
   metadataBase: new URL("https://engaweis.space"),
   icons: {
     icon: "/favicon.png",
@@ -33,7 +35,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Mohamed Aweys – Software Engineer & Full-Stack Developer",
-    description: "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
+    description:
+      "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
     url: "https://engaweis.space",
     siteName: "EngAweis",
     images: [
@@ -49,7 +52,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Mohamed Aweys – Software Engineer & Full-Stack Developer",
-    description: "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
+    description:
+      "Explore Mohamed Aweys’s software engineering portfolio, production web and mobile apps.",
     images: ["/og-image.jpg"],
   },
 };
