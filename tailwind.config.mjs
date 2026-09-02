@@ -24,6 +24,7 @@ const config = {
   },
   daisyui: {
     themes: [
+      "light",
       {
         mytheme: {
           primary: "#0B82EC",
@@ -38,7 +39,6 @@ const config = {
         },
       },
       "dark",
-      "light",
     ],
   },
 };

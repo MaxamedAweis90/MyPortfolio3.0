@@ -28,7 +28,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -50,17 +50,17 @@ export default function Navbar() {
 
   const allNavItems = [...leftNavItems, ...rightNavItems, contactItem];
 
-  // Initialize theme from localStorage / system preference
+  // Initialize theme from localStorage / defaults to light mode
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "light") {
-      setIsDarkMode(false);
-      document.documentElement.setAttribute("data-theme", "light");
-      document.documentElement.classList.add("light");
-    } else {
+    if (savedTheme === "dark" || savedTheme === "mytheme") {
       setIsDarkMode(true);
       document.documentElement.setAttribute("data-theme", "mytheme");
       document.documentElement.classList.remove("light");
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.setAttribute("data-theme", "light");
+      document.documentElement.classList.add("light");
     }
   }, []);
 

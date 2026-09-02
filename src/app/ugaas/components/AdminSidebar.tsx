@@ -73,24 +73,26 @@ export function AdminSidebar({
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [appsShortcut, setAppsShortcut] = useState("Ctrl+K");
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Initialize theme from localStorage / DOM attribute
+  // Initialize theme from localStorage / DOM attribute (defaults to light mode)
   useEffect(() => {
     const checkTheme = () => {
       const savedTheme = localStorage.getItem("theme");
+      const domTheme = document.documentElement.getAttribute("data-theme");
       const isCurrentDark =
-        savedTheme === "light"
-          ? false
-          : document.documentElement.getAttribute("data-theme") !== "light";
+        savedTheme === "dark" ||
+        savedTheme === "mytheme" ||
+        domTheme === "mytheme" ||
+        domTheme === "dark";
 
       setIsDarkMode(isCurrentDark);
-      if (!isCurrentDark) {
-        document.documentElement.setAttribute("data-theme", "light");
-        document.documentElement.classList.add("light");
-      } else {
+      if (isCurrentDark) {
         document.documentElement.setAttribute("data-theme", "mytheme");
         document.documentElement.classList.remove("light");
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+        document.documentElement.classList.add("light");
       }
     };
 

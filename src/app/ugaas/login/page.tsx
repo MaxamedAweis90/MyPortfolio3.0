@@ -113,7 +113,7 @@ function TerminalLoginForm() {
   const callbackUrl = searchParams.get("callbackUrl") || "/ugaas";
 
   // Light / Dark mode state
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Host domain resolution (e.g. localhost:3000 or aweis.dev)
   const [domain, setDomain] = useState("portfolio.dev");
@@ -144,14 +144,18 @@ function TerminalLoginForm() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const terminalBottomRef = useRef<HTMLDivElement>(null);
 
-  // Sync theme with DOM and localStorage
+  // Sync theme with DOM and localStorage (defaults to light mode)
   useEffect(() => {
     const checkTheme = () => {
       if (typeof window === "undefined") return;
       const savedTheme = localStorage.getItem("theme");
       const domTheme = document.documentElement.getAttribute("data-theme");
-      const isLight = savedTheme === "light" || domTheme === "light";
-      setIsDarkMode(!isLight);
+      const isDark =
+        savedTheme === "dark" ||
+        savedTheme === "mytheme" ||
+        domTheme === "mytheme" ||
+        domTheme === "dark";
+      setIsDarkMode(isDark);
     };
 
     checkTheme();

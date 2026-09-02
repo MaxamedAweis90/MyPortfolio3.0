@@ -138,19 +138,23 @@ export default function RouteCommandPalette() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Sync theme with document & localStorage
+  // Sync theme with document & localStorage (defaults to light mode)
   useEffect(() => {
     const checkTheme = () => {
       if (typeof window === "undefined") return;
       const domTheme = document.documentElement.getAttribute("data-theme");
       const savedTheme = localStorage.getItem("theme");
-      const isLight = domTheme === "light" || savedTheme === "light";
-      setIsDarkMode(!isLight);
+      const isDark =
+        savedTheme === "dark" ||
+        savedTheme === "mytheme" ||
+        domTheme === "mytheme" ||
+        domTheme === "dark";
+      setIsDarkMode(isDark);
     };
 
     checkTheme();
