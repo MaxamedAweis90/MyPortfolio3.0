@@ -48,7 +48,7 @@ function TimeoutCountdown({
   onExpire: () => void;
 }) {
   const [timeLeft, setTimeLeft] = useState<number>(() =>
-    Math.max(0, expiresAt - Date.now())
+    Math.max(0, expiresAt - Date.now()),
   );
 
   useEffect(() => {
@@ -69,7 +69,7 @@ function TimeoutCountdown({
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   const formatted = `${String(minutes).padStart(2, "0")}:${String(
-    seconds
+    seconds,
   ).padStart(2, "0")}`;
 
   return (
@@ -261,7 +261,7 @@ function TerminalLoginForm() {
     try {
       localStorage.setItem(
         "ugaas_terminal_history",
-        JSON.stringify(updated.slice(-50))
+        JSON.stringify(updated.slice(-50)),
       );
     } catch {
       // ignore
@@ -271,21 +271,51 @@ function TerminalLoginForm() {
   // Run Package Install & Linux Service Bootloader Sequence
   const runBootloader = () => {
     const bootSteps = [
-      { text: "[npm] resolving dependencies for @ugaas/admin-core v3.0.4...", delay: 80 },
-      { text: "[npm] audited 482 packages in 0.34s (0 vulnerabilities found)", delay: 100 },
+      {
+        text: "[npm] resolving dependencies for @ugaas/admin-core v3.0.4...",
+        delay: 80,
+      },
+      {
+        text: "[npm] audited 482 packages in 0.34s (0 vulnerabilities found)",
+        delay: 100,
+      },
       { text: "[1/7] ⠋ extracting @ugaas/mongodb-adapter@6.3.0...", delay: 90 },
-      { text: "[2/7] ⠙ mounting database cluster [myportfolio@mongodb-atlas]...", delay: 110 },
-      { text: "[3/7] ⠹ compiling cms subsystems: projects, experience, inquiries, audit...", delay: 130 },
-      { text: "[4/7] ⠸ verifying Better-Auth session tokens & RSA-256 signatures...", delay: 100 },
-      { text: "[5/7] ⠼ initializing hardware telemetry (Device, GeoIP, Audit Daemon)...", delay: 120 },
-      { text: "[6/7] ⠴ synchronizing UI view transitions & theme engine...", delay: 90 },
+      {
+        text: "[2/7] ⠙ mounting database cluster [myportfolio@mongodb-atlas]...",
+        delay: 110,
+      },
+      {
+        text: "[3/7] ⠹ compiling cms subsystems: projects, experience, inquiries, audit...",
+        delay: 130,
+      },
+      {
+        text: "[4/7] ⠸ verifying Better-Auth session tokens & RSA-256 signatures...",
+        delay: 100,
+      },
+      {
+        text: "[5/7] ⠼ initializing hardware telemetry (Device, GeoIP, Audit Daemon)...",
+        delay: 120,
+      },
+      {
+        text: "[6/7] ⠴ synchronizing UI view transitions & theme engine...",
+        delay: 90,
+      },
       { text: "[7/7] ⠦ compiling page bundles & CSS AST...", delay: 110 },
       { text: "[========================================>] 100%", delay: 120 },
-      { text: "[OK] Mounted: MongoDB Atlas Cluster (Database: myportfolio)", delay: 80 },
-      { text: "[OK] Mounted: Better-Auth Security Guard (Superuser Clearance Level 1)", delay: 80 },
+      {
+        text: "[OK] Mounted: MongoDB Atlas Cluster (Database: myportfolio)",
+        delay: 80,
+      },
+      {
+        text: "[OK] Mounted: Better-Auth Security Guard (Superuser Clearance Level 1)",
+        delay: 80,
+      },
       { text: "[OK] Mounted: Projects CMS Subsystem", delay: 80 },
       { text: "[OK] Mounted: Experience & Credentials Subsystem", delay: 80 },
-      { text: "[OK] Mounted: Inquiries Inbox & Notifications Relay", delay: 80 },
+      {
+        text: "[OK] Mounted: Inquiries Inbox & Notifications Relay",
+        delay: 80,
+      },
       { text: "[OK] Mounted: Live Audit Logger & Geo-IP Resolver", delay: 80 },
       { text: "▲ Next.js 16.3.3 (Turbopack) ready in 1.1s", delay: 140 },
       { text: "- Local:    http://localhost:3000/ugaas", delay: 90 },
@@ -333,7 +363,10 @@ function TerminalLoginForm() {
       return;
     }
 
-    const rawLines = rawVal.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+    const rawLines = rawVal
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0);
     setInputVal("");
 
     // Build the displayed executed command lines (masking password line if in password stage)
@@ -354,7 +387,10 @@ function TerminalLoginForm() {
       stage === "CONFIRM_ACCESS";
 
     // CLS / CLEAR (only outside credential entry mode)
-    if (!isEnteringCredentials && (firstCmd === "cls" || firstCmd === "clear")) {
+    if (
+      !isEnteringCredentials &&
+      (firstCmd === "cls" || firstCmd === "clear")
+    ) {
       setLines([]);
       return;
     }
@@ -624,7 +660,10 @@ function TerminalLoginForm() {
           "/about": { path: "/about", label: "About Mohamed" },
           bio: { path: "/about", label: "About Mohamed" },
           experience: { path: "/experience", label: "Experience & Timeline" },
-          "/experience": { path: "/experience", label: "Experience & Timeline" },
+          "/experience": {
+            path: "/experience",
+            label: "Experience & Timeline",
+          },
           career: { path: "/experience", label: "Experience & Timeline" },
           blog: { path: "/blog", label: "Blog & Engineering Notes" },
           "/blog": { path: "/blog", label: "Blog & Engineering Notes" },
@@ -795,18 +834,31 @@ function TerminalLoginForm() {
       const cmd = rawLines[i];
 
       // CLS / CLEAR
-      if (curStage !== "ENTER_EMAIL" && curStage !== "ENTER_PASSWORD" && curStage !== "CONFIRM_ACCESS") {
+      if (
+        curStage !== "ENTER_EMAIL" &&
+        curStage !== "ENTER_PASSWORD" &&
+        curStage !== "CONFIRM_ACCESS"
+      ) {
         if (cmd === "cls" || cmd === "clear") {
           setLines([]);
           continue;
         }
         if (cmd.startsWith("cd")) {
           const target = cmd.slice(2).trim();
-          if (target === "ugaas" || target === "./ugaas" || target === "/ugaas") {
+          if (
+            target === "ugaas" ||
+            target === "./ugaas" ||
+            target === "/ugaas"
+          ) {
             curPath = "ugaas";
             curStage = "IN_UGAAS";
             continue;
-          } else if (target === ".." || target === "~" || target === "/" || target === "") {
+          } else if (
+            target === ".." ||
+            target === "~" ||
+            target === "/" ||
+            target === ""
+          ) {
             curPath = "~";
             curStage = "ROOT";
             continue;
@@ -839,7 +891,11 @@ function TerminalLoginForm() {
 
       // STEP 2: IN_UGAAS -> must be 'npm login'
       if (curStage === "IN_UGAAS") {
-        if (cmd === "npm login" || cmd === "npm run login" || cmd === "npm auth") {
+        if (
+          cmd === "npm login" ||
+          cmd === "npm run login" ||
+          cmd === "npm auth"
+        ) {
           curStage = "ENTER_EMAIL";
           continue;
         } else {
@@ -925,13 +981,19 @@ function TerminalLoginForm() {
             curAttempts += 1;
             setFailedAttempts(curAttempts);
             try {
-              localStorage.setItem("ugaas_failed_attempts", String(curAttempts));
+              localStorage.setItem(
+                "ugaas_failed_attempts",
+                String(curAttempts),
+              );
             } catch {}
 
             if (curAttempts >= MAX_PASSWORD_ATTEMPTS) {
               const lockoutUntil = Date.now() + TIMEOUT_DURATION_MS;
               try {
-                localStorage.setItem("ugaas_login_timeout", String(lockoutUntil));
+                localStorage.setItem(
+                  "ugaas_login_timeout",
+                  String(lockoutUntil),
+                );
                 localStorage.removeItem("ugaas_failed_attempts");
               } catch {}
               setIsLocked(true);
@@ -1188,7 +1250,7 @@ function TerminalLoginForm() {
                 try {
                   localStorage.setItem(
                     "ugaas_terminal_privacy_blur",
-                    String(next)
+                    String(next),
                   );
                 } catch {}
               }}
@@ -1203,8 +1265,8 @@ function TerminalLoginForm() {
                 isPrivacyBlurred
                   ? "bg-amber-500/15 border-amber-500/40 text-amber-400 hover:bg-amber-500/25"
                   : isDarkMode
-                  ? "bg-[#161D2B] border-[#2A374A] text-slate-400 hover:text-white hover:bg-[#1E283A]"
-                  : "bg-[#F1F5F9] border-[#CBD5E1] text-slate-600 hover:text-slate-900 hover:bg-[#E2E8F0]"
+                    ? "bg-[#161D2B] border-[#2A374A] text-slate-400 hover:text-white hover:bg-[#1E283A]"
+                    : "bg-[#F1F5F9] border-[#CBD5E1] text-slate-600 hover:text-slate-900 hover:bg-[#E2E8F0]"
               }`}
             >
               {isPrivacyBlurred ? (
@@ -1224,9 +1286,7 @@ function TerminalLoginForm() {
               onClick={toggleTheme}
               type="button"
               title={
-                isDarkMode
-                  ? "Switch to Light mode"
-                  : "Switch to Dark mode"
+                isDarkMode ? "Switch to Light mode" : "Switch to Dark mode"
               }
               aria-label="Toggle Theme"
               className={`p-1.5 rounded-lg border transition-all duration-200 ${
@@ -1306,9 +1366,7 @@ function TerminalLoginForm() {
                 <div
                   key={line.id}
                   className={`font-mono whitespace-pre-wrap ${
-                    isDarkMode
-                      ? "text-red-400"
-                      : "text-red-600 font-semibold"
+                    isDarkMode ? "text-red-400" : "text-red-600 font-semibold"
                   }`}
                 >
                   {line.text}
@@ -1471,7 +1529,11 @@ function TerminalLoginForm() {
                     {/* Hidden interactive input overlay capturing keystrokes */}
                     <textarea
                       ref={textareaRef}
-                      rows={inputSubLines.length > 1 ? Math.min(inputSubLines.length, 6) : 1}
+                      rows={
+                        inputSubLines.length > 1
+                          ? Math.min(inputSubLines.length, 6)
+                          : 1
+                      }
                       autoFocus
                       disabled={isLaunchingApp}
                       value={inputVal}
@@ -1531,7 +1593,9 @@ function TerminalLoginForm() {
 
                 {inputSubLines.length > 1 && (
                   <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono py-1 pl-1">
-                    <span className="text-cyan-400 font-bold animate-pulse">&gt;&gt;</span>
+                    <span className="text-cyan-400 font-bold animate-pulse">
+                      &gt;&gt;
+                    </span>
                     <span>(Press Enter to execute all lines)</span>
                   </div>
                 )}

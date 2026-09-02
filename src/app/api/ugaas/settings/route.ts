@@ -6,7 +6,7 @@ export async function GET() {
   try {
     await connectToDatabase();
 
-    let settings = await Settings.findOne().lean();
+    let settings: any = await Settings.findOne().lean();
 
     if (!settings) {
       // Create default settings if not exists

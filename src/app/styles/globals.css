@@ -141,18 +141,19 @@
   color: #0f172a !important;
 }
 
-[data-theme="light"] .text-white:not(
-  .bg-\[\#0B82EC\],
-  .bg-\[\#0B82EC\] *,
-  button.bg-\[\#0B82EC\],
-  button.bg-\[\#0B82EC\] *,
-  a.bg-\[\#0B82EC\],
-  a.bg-\[\#0B82EC\] *,
-  .bg-primary,
-  .bg-primary *,
-  .badge-primary,
-  .btn-primary
-) {
+[data-theme="light"]
+  .text-white:not(
+    .bg-\[\#0B82EC\],
+    .bg-\[\#0B82EC\] *,
+    button.bg-\[\#0B82EC\],
+    button.bg-\[\#0B82EC\] *,
+    a.bg-\[\#0B82EC\],
+    a.bg-\[\#0B82EC\] *,
+    .bg-primary,
+    .bg-primary *,
+    .badge-primary,
+    .btn-primary
+  ) {
   color: #0f172a !important;
 }
 
@@ -184,7 +185,12 @@
   background-color: #f8fafc !important;
 }
 
-[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.bg-transparent):not([style*="background: transparent"]):not([style*="background-color: transparent"]):not([style*="transparent"]),
+[data-theme="light"]
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+    .bg-transparent
+  ):not([style*="background: transparent"]):not(
+    [style*="background-color: transparent"]
+  ):not([style*="transparent"]),
 [data-theme="light"] textarea:not(.bg-transparent),
 [data-theme="light"] select:not(.bg-transparent) {
   background-color: #ffffff !important;
