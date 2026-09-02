@@ -94,7 +94,13 @@ const AVAILABLE_ROUTES: RouteItem[] = [
     title: "Services & Capabilities",
     path: "/#services",
     description: "Full-stack development, mobile apps & UI/UX engineering",
-    keywords: ["services", "offerings", "solutions", "freelance", "capabilities"],
+    keywords: [
+      "services",
+      "offerings",
+      "solutions",
+      "freelance",
+      "capabilities",
+    ],
     icon: Layers,
   },
   {
@@ -110,7 +116,16 @@ const AVAILABLE_ROUTES: RouteItem[] = [
     title: "Ugaas Management Terminal",
     path: "/ugaas",
     description: "Administrative console gateway & CMS management portal",
-    keywords: ["ugaas", "admin", "cms", "management", "terminal", "login", "portal", "system"],
+    keywords: [
+      "ugaas",
+      "admin",
+      "cms",
+      "management",
+      "terminal",
+      "login",
+      "portal",
+      "system",
+    ],
     icon: Terminal,
     isSecret: true,
   },
@@ -128,7 +143,7 @@ export default function RouteCommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Sync theme with document
+  // Sync theme with document & localStorage
   useEffect(() => {
     const checkTheme = () => {
       if (typeof window === "undefined") return;
@@ -141,9 +156,27 @@ export default function RouteCommandPalette() {
     checkTheme();
     window.addEventListener("theme_changed", checkTheme);
     window.addEventListener("storage", checkTheme);
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "data-theme"
+        ) {
+          checkTheme();
+        }
+      }
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
     return () => {
       window.removeEventListener("theme_changed", checkTheme);
       window.removeEventListener("storage", checkTheme);
+      observer.disconnect();
     };
   }, []);
 
@@ -183,7 +216,7 @@ export default function RouteCommandPalette() {
     }
   }, [isOpen]);
 
-  // Filter routes based on query (only active after user starts typing)
+  // Filter & rank routes based on query (prefix matches & exact matches prioritized)
   const isTyping = query.trim().length > 0;
 
   const filteredRoutes = useMemo(() => {
@@ -192,13 +225,70 @@ export default function RouteCommandPalette() {
       return [];
     }
 
-    return AVAILABLE_ROUTES.filter((item) => {
-      const matchTitle = item.title.toLowerCase().includes(trimmed);
-      const matchPath = item.path.toLowerCase().replace(/^\/+/, "").includes(trimmed);
-      const matchDesc = item.description.toLowerCase().includes(trimmed);
-      const matchKeywords = item.keywords.some((k) => k.toLowerCase().includes(trimmed));
-      return matchTitle || matchPath || matchDesc || matchKeywords;
+    const scored = AVAILABLE_ROUTES.map((item) => {
+      const cleanPath = item.path
+        .toLowerCase()
+        .replace(/^\/+/, "")
+        .replace(/^#/, "");
+      const cleanTitle = item.title.toLowerCase();
+      const id = item.id.toLowerCase();
+      const titleWords = cleanTitle.split(/[\s&/_\-#]+/);
+      const descWords = item.description.toLowerCase().split(/[\s&/_\-#]+/);
+
+      let score = 0;
+
+      // 1. Exact match on path, title, or id
+      if (cleanPath === trimmed || cleanTitle === trimmed || id === trimmed) {
+        score = 1000;
+      }
+      // 2. Path starts with query (e.g. typing "ab" -> "/about")
+      else if (cleanPath.startsWith(trimmed)) {
+        score = 600 + Math.max(0, 50 - cleanPath.length);
+      }
+      // 3. ID starts with query
+      else if (id.startsWith(trimmed)) {
+        score = 550 + Math.max(0, 50 - id.length);
+      }
+      // 4. Title starts with query (e.g. "About Mohamed")
+      else if (cleanTitle.startsWith(trimmed)) {
+        score = 500 + Math.max(0, 50 - cleanTitle.length);
+      }
+      // 5. Any word in the title starts with query (e.g. "Work" in "Projects & Work")
+      else if (titleWords.some((w) => w.startsWith(trimmed))) {
+        score = 400;
+      }
+      // 6. Any keyword starts with query (e.g. "apps" -> "Projects & Work")
+      else if (item.keywords.some((k) => k.toLowerCase().startsWith(trimmed))) {
+        score = 300;
+      }
+      // 7. Path contains query
+      else if (cleanPath.includes(trimmed)) {
+        score = 150;
+      }
+      // 8. Title contains query
+      else if (cleanTitle.includes(trimmed)) {
+        score = 100;
+      }
+      // 9. Any keyword contains query
+      else if (item.keywords.some((k) => k.toLowerCase().includes(trimmed))) {
+        score = 60;
+      }
+      // 10. Description words start with query
+      else if (descWords.some((w) => w.startsWith(trimmed))) {
+        score = 30;
+      }
+      // 11. Description contains query
+      else if (item.description.toLowerCase().includes(trimmed)) {
+        score = 10;
+      }
+
+      return { item, score };
     });
+
+    return scored
+      .filter((entry) => entry.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map((entry) => entry.item);
   }, [query]);
 
   // Ensure selectedIndex is always within bounds
@@ -209,7 +299,9 @@ export default function RouteCommandPalette() {
   // Auto-scroll selected item into view
   useEffect(() => {
     if (!listRef.current) return;
-    const selectedElement = listRef.current.children[selectedIndex] as HTMLElement;
+    const selectedElement = listRef.current.children[
+      selectedIndex
+    ] as HTMLElement;
     if (selectedElement) {
       selectedElement.scrollIntoView({ block: "nearest" });
     }
@@ -245,7 +337,7 @@ export default function RouteCommandPalette() {
       e.preventDefault();
       if (filteredRoutes.length === 0) return;
       setSelectedIndex((prev) =>
-        prev === 0 ? filteredRoutes.length - 1 : prev - 1
+        prev === 0 ? filteredRoutes.length - 1 : prev - 1,
       );
     } else if (e.key === "Enter") {
       e.preventDefault();
@@ -284,24 +376,24 @@ export default function RouteCommandPalette() {
             className={`w-full max-w-xl relative z-10 rounded-2xl overflow-hidden shadow-2xl border transition-all duration-200 ${
               isDarkMode
                 ? "bg-[#0D1117]/95 border-[#30363D] text-slate-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)]"
-                : "bg-white/95 border-slate-300 text-slate-900 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.2)]"
+                : "bg-white/95 border-slate-200 text-slate-900 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.18)]"
             }`}
           >
             {/* Header Search Input */}
             <div
-              className={`p-4 sm:p-4.5 flex items-center gap-3 transition-colors ${
+              className={`p-3.5 sm:p-4 flex items-center gap-3 transition-colors ${
                 isTyping ? "border-b" : ""
               } ${
                 isDarkMode
                   ? "border-[#30363D] bg-[#161B22]/90"
-                  : "border-slate-200 bg-slate-50/95"
+                  : "border-slate-200 bg-slate-50/90"
               }`}
             >
               <div
-                className={`p-2 rounded-lg ${
+                className={`p-2 rounded-lg shrink-0 flex items-center justify-center transition-colors ${
                   isDarkMode
                     ? "bg-[#21262D] text-[#58A6FF]"
-                    : "bg-slate-200 text-[#0969DA]"
+                    : "bg-blue-50 text-[#0969DA] border border-blue-100"
                 }`}
               >
                 <Search className="w-4 h-4" />
@@ -313,20 +405,33 @@ export default function RouteCommandPalette() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleInputKeyDown}
-                placeholder="Type a route name (e.g. work, about, ugaas)..."
+                placeholder="Type a route name (e.g. work, about, blog) ..."
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck="false"
-                className={`flex-1 bg-transparent text-sm sm:text-base font-semibold focus:outline-none placeholder:text-slate-400 placeholder:font-normal ${
-                  isDarkMode ? "text-white" : "text-slate-900"
+                className={`flex-1 !bg-transparent border-0 outline-none focus:outline-none focus:ring-0 text-sm sm:text-base font-medium shadow-none ${
+                  isDarkMode
+                    ? "text-white placeholder:text-slate-500"
+                    : "text-slate-900 placeholder:text-slate-400"
                 }`}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
               />
 
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
-                  className="p-1.5 rounded-md text-slate-400 hover:text-slate-200 transition-colors"
+                  className={`p-1.5 rounded-md transition-colors ${
+                    isDarkMode
+                      ? "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                      : "text-slate-400 hover:text-slate-700 hover:bg-slate-200/60"
+                  }`}
+                  aria-label="Clear search input"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -334,10 +439,10 @@ export default function RouteCommandPalette() {
 
               <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-400 shrink-0">
                 <kbd
-                  className={`px-1.5 py-0.5 rounded border text-[10px] ${
+                  className={`px-1.5 py-0.5 rounded border text-[10px] font-semibold ${
                     isDarkMode
                       ? "bg-[#21262D] border-[#30363D] text-slate-300"
-                      : "bg-slate-100 border-slate-300 text-slate-600"
+                      : "bg-white border-slate-200 text-slate-600 shadow-xs"
                   }`}
                 >
                   ESC
@@ -353,15 +458,20 @@ export default function RouteCommandPalette() {
                   className={`px-4 py-2 flex items-center justify-between text-[11px] font-mono uppercase tracking-wider select-none border-b ${
                     isDarkMode
                       ? "bg-[#0D1117] border-[#21262D] text-slate-400"
-                      : "bg-slate-100/70 border-slate-200 text-slate-500"
+                      : "bg-slate-50 border-slate-200 text-slate-500"
                   }`}
                 >
                   <div className="flex items-center gap-1.5">
-                    <Compass className="w-3 h-3 text-[#2DD4BF]" />
-                    <span>Matching Routes</span>
+                    <Compass
+                      className={`w-3.5 h-3.5 ${
+                        isDarkMode ? "text-[#2DD4BF]" : "text-teal-600"
+                      }`}
+                    />
+                    <span className="font-semibold">Matching Routes</span>
                   </div>
-                  <span>
-                    {filteredRoutes.length} {filteredRoutes.length === 1 ? "match" : "matches"}
+                  <span className="font-semibold">
+                    {filteredRoutes.length}{" "}
+                    {filteredRoutes.length === 1 ? "match" : "matches"}
                   </span>
                 </div>
 
@@ -384,17 +494,19 @@ export default function RouteCommandPalette() {
                           isSelected
                             ? isDarkMode
                               ? "bg-[#21262D] text-white shadow-sm"
-                              : "bg-slate-100 text-slate-900 shadow-sm"
+                              : "bg-slate-100 text-slate-900 shadow-xs border border-slate-200/80"
                             : isDarkMode
-                            ? "text-slate-300 hover:bg-[#161B22]"
-                            : "text-slate-700 hover:bg-slate-50"
+                              ? "text-slate-300 hover:bg-[#161B22]"
+                              : "text-slate-700 hover:bg-slate-50"
                         }`}
                       >
                         {/* Active Left Pill Indicator */}
                         {isSelected && (
                           <motion.div
                             layoutId="activeIndicator"
-                            className="absolute left-1.5 top-2.5 bottom-2.5 w-1 rounded-full bg-[#2DD4BF]"
+                            className={`absolute left-1.5 top-2.5 bottom-2.5 w-1 rounded-full ${
+                              isDarkMode ? "bg-[#2DD4BF]" : "bg-teal-600"
+                            }`}
                           />
                         )}
 
@@ -403,15 +515,15 @@ export default function RouteCommandPalette() {
                             className={`p-2 rounded-lg shrink-0 transition-colors ${
                               route.isSecret
                                 ? isDarkMode
-                                ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
-                                : "bg-teal-50 text-teal-700 border border-teal-200"
+                                  ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
+                                  : "bg-teal-50 text-teal-700 border border-teal-200"
                                 : isSelected
-                                ? isDarkMode
-                                ? "bg-[#30363D] text-[#58A6FF]"
-                                : "bg-slate-200 text-[#0969DA]"
-                                : isDarkMode
-                                ? "bg-[#161B22] text-slate-400"
-                                : "bg-slate-100 text-slate-500"
+                                  ? isDarkMode
+                                    ? "bg-[#30363D] text-[#58A6FF]"
+                                    : "bg-blue-50 text-[#0969DA] border border-blue-100"
+                                  : isDarkMode
+                                    ? "bg-[#161B22] text-slate-400"
+                                    : "bg-slate-100 text-slate-500"
                             }`}
                           >
                             <IconComponent className="w-4 h-4" />
@@ -444,17 +556,21 @@ export default function RouteCommandPalette() {
                               isSelected
                                 ? isDarkMode
                                   ? "bg-[#0D1117] border-[#30363D] text-[#2DD4BF]"
-                                  : "bg-white border-slate-300 text-teal-700"
+                                  : "bg-white border-teal-200 text-teal-700 shadow-xs"
                                 : isDarkMode
-                                ? "bg-[#161B22] border-[#21262D] text-slate-400"
-                                : "bg-slate-100 border-slate-200 text-slate-500"
+                                  ? "bg-[#161B22] border-[#21262D] text-slate-400"
+                                  : "bg-slate-100 border-slate-200 text-slate-500"
                             }`}
                           >
                             {route.path}
                           </span>
 
                           {isSelected && (
-                            <ArrowRight className="w-4 h-4 text-[#2DD4BF] shrink-0" />
+                            <ArrowRight
+                              className={`w-4 h-4 shrink-0 ${
+                                isDarkMode ? "text-[#2DD4BF]" : "text-teal-600"
+                              }`}
+                            />
                           )}
                         </div>
                       </button>
@@ -468,7 +584,9 @@ export default function RouteCommandPalette() {
                         type="button"
                         onClick={() =>
                           handleNavigate(
-                            query.trim().startsWith("/") ? query.trim() : `/${query.trim()}`
+                            query.trim().startsWith("/")
+                              ? query.trim()
+                              : `/${query.trim()}`,
                           )
                         }
                         className={`w-full text-left p-3.5 rounded-xl flex items-center justify-between gap-3 border transition-colors cursor-pointer ${
@@ -483,14 +601,22 @@ export default function RouteCommandPalette() {
                           </div>
                           <div>
                             <span className="text-xs sm:text-sm font-semibold">
-                              Navigate directly to &quot;{query.trim().startsWith("/") ? query.trim() : `/${query.trim()}`}&quot;
+                              Navigate directly to &quot;
+                              {query.trim().startsWith("/")
+                                ? query.trim()
+                                : `/${query.trim()}`}
+                              &quot;
                             </span>
                             <p className="text-[11px] text-slate-400">
                               Press Enter to navigate
                             </p>
                           </div>
                         </div>
-                        <span className="font-mono text-xs font-bold text-[#2DD4BF]">
+                        <span
+                          className={`font-mono text-xs font-bold ${
+                            isDarkMode ? "text-[#2DD4BF]" : "text-teal-700"
+                          }`}
+                        >
                           ↵ ENTER
                         </span>
                       </button>
@@ -501,7 +627,7 @@ export default function RouteCommandPalette() {
             )}
 
             {/* Footer Helper Bar */}
-            <div
+            {/* <div
               className={`p-2.5 px-4 flex items-center justify-between text-[11px] font-mono select-none transition-colors ${
                 isTyping ? "border-t" : "border-t"
               } ${
@@ -514,12 +640,18 @@ export default function RouteCommandPalette() {
                 {isTyping ? (
                   <>
                     <span className="flex items-center gap-1">
-                      <kbd className="px-1 rounded border border-slate-600/40">↑</kbd>
-                      <kbd className="px-1 rounded border border-slate-600/40">↓</kbd>
+                      <kbd className="px-1 rounded border border-slate-600/40">
+                        ↑
+                      </kbd>
+                      <kbd className="px-1 rounded border border-slate-600/40">
+                        ↓
+                      </kbd>
                       <span>navigate</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <kbd className="px-1.5 rounded border border-slate-600/40">↵</kbd>
+                      <kbd className="px-1.5 rounded border border-slate-600/40">
+                        ↵
+                      </kbd>
                       <span>select</span>
                     </span>
                   </>
@@ -540,7 +672,7 @@ export default function RouteCommandPalette() {
                   Ctrl + P
                 </kbd>
               </div>
-            </div>
+            </div> */}
           </motion.div>
         </div>
       )}
