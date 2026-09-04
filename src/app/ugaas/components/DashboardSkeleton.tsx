@@ -27,26 +27,55 @@ export function DashboardSkeleton() {
         </div>
       </div>
 
-      {/* 2. 4 KPI Cards Grid Skeleton */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {Array.from({ length: 4 }).map((_, idx) => (
-          <Card key={idx} className="bg-surface/80 border-borderSubtle overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <Skeleton className="h-3.5 w-24 rounded" />
-              <Skeleton className="h-10 w-10 rounded-xl" />
-            </CardHeader>
-            <CardContent className="space-y-3 pt-1">
-              <div className="flex items-baseline justify-between">
-                <Skeleton className="h-9 w-16 rounded-lg" />
-                <Skeleton className="h-5 w-14 rounded-full" />
+      {/* 2. Top Analytics & Metrics Skeleton (2x2 Grid + Analysis Chart) */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
+        {/* Left: 2x2 Metric Cards Skeleton */}
+        <div className="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <Card key={idx} className="bg-surface/80 border-borderSubtle rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-2">
+                <Skeleton className="h-3.5 w-24 rounded" />
+                <Skeleton className="h-8 w-8 rounded-full" />
+              </div>
+              <div className="space-y-2 my-2">
+                <div className="flex items-baseline gap-2">
+                  <Skeleton className="h-8 w-20 rounded-lg" />
+                  <Skeleton className="h-5 w-14 rounded-full" />
+                </div>
               </div>
               <div className="pt-2 border-t border-borderSubtle/60 flex items-center justify-between">
-                <Skeleton className="h-3.5 w-28 rounded" />
-                <Skeleton className="h-3.5 w-16 rounded" />
+                <Skeleton className="h-3 w-28 rounded" />
+                <Skeleton className="h-3 w-4 rounded" />
               </div>
-            </CardContent>
-          </Card>
-        ))}
+            </Card>
+          ))}
+        </div>
+
+        {/* Right: Analysis Chart Skeleton */}
+        <Card className="xl:col-span-7 bg-surface/80 border-borderSubtle rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-4 border-b border-borderSubtle">
+            <div className="space-y-1.5">
+              <Skeleton className="h-5 w-32 rounded" />
+              <Skeleton className="h-3 w-48 rounded" />
+            </div>
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-28 rounded-xl" />
+              <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+          </div>
+          <div className="py-6 flex items-end justify-between gap-3 h-48">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-2">
+                <Skeleton className="w-full max-w-[42px] rounded-t-xl rounded-b-lg" style={{ height: `${25 + (i * 9) % 65}%` }} />
+                <Skeleton className="h-3 w-8 rounded" />
+              </div>
+            ))}
+          </div>
+          <div className="pt-3 border-t border-borderSubtle flex items-center justify-between">
+            <Skeleton className="h-3 w-36 rounded" />
+            <Skeleton className="h-3 w-20 rounded" />
+          </div>
+        </Card>
       </div>
 
       {/* 3. Main Body: Table & Side Panels */}

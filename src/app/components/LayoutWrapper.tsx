@@ -18,10 +18,23 @@ const ChatWidget = dynamic(() => import("./chatapp/ChatWidget"), { ssr: false })
 const LayoutWrapper = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    // Track real visitor telemetry in Ugaas analytics
+    if (pathname && !pathname.startsWith("/ugaas")) {
+      try {
+        fetch("/api/ugaas/analytics", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            path: pathname,
+            referrer: typeof document !== "undefined" ? document.referrer || "direct" : "direct",
+          }),
+        }).catch(() => {});
+      } catch {}
+    }
+  }, [pathname]);
 
   // Check if current route uses a custom standalone layout (e.g. Studio, Admin /ugaas)
   const isCustomLayout =

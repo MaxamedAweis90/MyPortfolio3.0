@@ -42,6 +42,7 @@ import { InquiryDetailModal, InquiryItem } from "./components/InquiryDetailModal
 import { ReseedConfirmModal } from "./components/ReseedConfirmModal";
 import { NewProjectModal } from "./components/NewProjectModal";
 import { DashboardSkeleton } from "./components/DashboardSkeleton";
+import { VercelAnalyticsCard } from "./components/VercelAnalyticsCard";
 
 interface OverviewStats {
   totalProjects: number;
@@ -120,6 +121,7 @@ export default function UgaasAdminDashboard() {
       value: stats ? stats.totalProjects : 12,
       subtitle: "Live in portfolio",
       trend: "Curated Case Studies",
+      pctBadge: "+ 14.2%",
       icon: FolderKanban,
       href: "/ugaas/projects",
       color: "#0B82EC",
@@ -132,6 +134,7 @@ export default function UgaasAdminDashboard() {
       value: stats ? stats.inquiries.total : 0,
       subtitle: `${stats ? stats.inquiries.unread : 0} unread messages`,
       trend: stats && stats.inquiries.unread > 0 ? "Requires Review" : "Up to date",
+      pctBadge: stats && stats.inquiries.unread > 0 ? `+ ${stats.inquiries.unread} New` : "+ 2.8%",
       icon: Mail,
       href: "/ugaas/inquiries",
       color: "#2DD4BF",
@@ -145,6 +148,7 @@ export default function UgaasAdminDashboard() {
       value: stats ? stats.experienceMilestones : 14,
       subtitle: "Career & certifications",
       trend: "Verified History",
+      pctBadge: "+ 4.1%",
       icon: Briefcase,
       href: "/ugaas/experience",
       color: "#3B82F6",
@@ -157,6 +161,7 @@ export default function UgaasAdminDashboard() {
       value: stats ? stats.activeTechStack : 48,
       subtitle: "Unique tools & icons",
       trend: "Full-Stack Ecosystem",
+      pctBadge: "+ 8.6%",
       icon: Layers,
       href: "/ugaas/projects",
       color: "#8B5CF6",
@@ -225,57 +230,66 @@ export default function UgaasAdminDashboard() {
         <div className="absolute right-0 top-0 -mt-16 -mr-16 w-80 h-80 bg-[#0B82EC]/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
-      {/* 2. Metric Cards Grid (4 KPI cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {kpis.map((kpi) => {
-          const Icon = kpi.icon;
-          return (
-            <Card
-              key={kpi.title}
-              className={`bg-surface ${kpi.borderColor} transition-all duration-200 group relative overflow-hidden`}
-            >
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-xs font-semibold text-mutedText uppercase tracking-wider">
-                  {kpi.title}
-                </CardTitle>
-                <div
-                  className={`w-10 h-10 rounded-xl ${kpi.accentBg} border border-borderSubtle flex items-center justify-center ${kpi.accentText} group-hover:scale-105 transition-transform`}
-                >
-                  <Icon className="w-5 h-5" />
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-baseline justify-between">
-                  <div className="text-3xl font-extrabold text-primaryText">
-                    {loading ? (
-                      <span className="inline-block w-12 h-8 bg-surface animate-pulse rounded" />
-                    ) : (
-                      kpi.value
-                    )}
-                  </div>
-                  {kpi.badge && (
-                    <Badge variant="teal" className="text-[10px] font-bold px-2 py-0.5 animate-pulse">
-                      {kpi.badge}
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between text-xs pt-1 border-t border-borderSubtle/60">
-                  <span className="text-mutedText flex items-center gap-1">
-                    <TrendingUp className="w-3.5 h-3.5 text-[#2DD4BF]" />
-                    {kpi.trend}
+      {/* 2. Top Analytics & Metrics Section: 2x2 Metric Cards (Left) + Analysis Chart (Right) */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
+        {/* Left Column: 2 Columns of 2 Cards (2x2 Grid matching reference image) */}
+        <div className="xl:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {kpis.map((kpi, idx) => {
+            const Icon = kpi.icon;
+            return (
+              <Card
+                key={kpi.title}
+                className="bg-surface border border-borderSubtle hover:border-[#0B82EC]/50 rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex flex-col justify-between group shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden"
+              >
+                {/* Top Row: Title + Circular Arrow Button */}
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs sm:text-sm font-bold text-mutedText tracking-tight">
+                    {kpi.title}
                   </span>
                   <Link
                     href={kpi.href}
-                    className="text-[#0B82EC] hover:underline flex items-center font-medium group-hover:translate-x-0.5 transition-transform"
+                    aria-label={`Manage ${kpi.title}`}
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                      idx === 0
+                        ? "bg-[#0B82EC] text-white shadow-md shadow-[#0B82EC]/30 group-hover:scale-105"
+                        : "bg-mainBg border border-borderSubtle text-mutedText group-hover:bg-[#0B82EC] group-hover:text-white group-hover:border-[#0B82EC] group-hover:scale-105"
+                    }`}
                   >
-                    Manage <ArrowUpRight className="w-3 h-3 ml-0.5" />
+                    <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </Link>
                 </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+
+                {/* Middle Row: Bold Metric Value + Pill Badge */}
+                <div className="my-3 sm:my-4">
+                  <div className="flex items-baseline gap-2.5 flex-wrap">
+                    <span className="text-2xl sm:text-3xl font-black text-primaryText tracking-tight">
+                      {loading ? (
+                        <span className="inline-block w-12 h-7 bg-mainBg animate-pulse rounded" />
+                      ) : (
+                        kpi.value.toLocaleString()
+                      )}
+                    </span>
+                    <span className="inline-flex items-center gap-0.5 text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <TrendingUp className="w-3 h-3" />
+                      {kpi.pctBadge}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Bottom Row: Subtitle & Icon Indicator */}
+                <div className="pt-2.5 border-t border-borderSubtle/60 flex items-center justify-between text-xs text-mutedText">
+                  <span className="truncate max-w-[85%]">{kpi.trend}</span>
+                  <Icon className="w-3.5 h-3.5 text-mutedText/60 shrink-0 ml-1 group-hover:text-[#0B82EC] transition-colors" />
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Right Column: Analysis Chart Card with Switcher */}
+        <div className="xl:col-span-7 flex flex-col">
+          <VercelAnalyticsCard />
+        </div>
       </div>
 
       {/* 3. Main Dashboard Body (Recent Inquiries Table + System Health) */}
