@@ -33,10 +33,21 @@ export default function ProjectCard({ proj, index }: ProjectCardProps) {
       ? proj.tools.map((t) => t.title)
       : (proj.shortTagline || "React, Next.js, TypeScript").split(/,\s*/);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleCardClick();
+    }
+  };
+
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={handleCardClick}
-      className="bg-surface/90 backdrop-blur-xl border border-borderSubtle hover:border-brandAccent/70 rounded-3xl p-6 shadow-2xl relative overflow-hidden group flex flex-col justify-between h-full transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(11,130,236,0.18)] cursor-pointer"
+      onKeyDown={handleKeyDown}
+      aria-label={`View project details for ${proj.title}`}
+      className="bg-surface/90 backdrop-blur-xl border border-borderSubtle hover:border-brandAccent/70 rounded-3xl p-6 shadow-2xl relative overflow-hidden group flex flex-col justify-between h-full transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(11,130,236,0.18)] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brandAccent"
     >
       {/* Ambient bottom-up glow on hover */}
       <div className="absolute bottom-0 left-0 right-0 h-44 bg-gradient-to-t from-brandAccent/20 via-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -115,7 +126,8 @@ export default function ProjectCard({ proj, index }: ProjectCardProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface/95 border border-borderSubtle text-primaryText font-bold text-xs hover:border-brandAccent transition-colors shadow-md"
+                aria-label={`Open live preview for ${proj.title} (opens in new tab)`}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface/95 border border-borderSubtle text-primaryText font-bold text-xs hover:border-brandAccent transition-colors shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brandAccent"
               >
                 <span>Live Preview</span>
                 <RiExternalLinkLine className="text-xs" />

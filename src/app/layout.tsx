@@ -60,6 +60,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       lang="en"
       data-theme="light"
       className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} light`}
+      suppressHydrationWarning
     >
       <head>
         {/* Anti-flicker inline theme initialization - defaults to light */}

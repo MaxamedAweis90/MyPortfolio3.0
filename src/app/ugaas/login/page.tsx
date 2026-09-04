@@ -12,7 +12,6 @@ import {
   Moon,
   Eye,
   EyeOff,
-  Shield,
 } from "lucide-react";
 import { signIn } from "@/ugaas/lib/auth-client";
 

@@ -13,30 +13,62 @@ const Footer = () => {
         <p className="text-mutedText font-medium">Let&apos;s connect:</p>
         <div className="socials flex flex-wrap gap-4 sm:gap-8 text-nowrap text-sm sm:text-base justify-center text-primaryText">
           {footerData.email && (
-            <a href={`mailto:${footerData.email}`} className="hover:text-brandAccent text-nowrap transition-colors">
+            <a
+              href={`mailto:${footerData.email}`}
+              aria-label="Send email to Mohamed Aweis"
+              className="hover:text-brandAccent text-nowrap transition-colors focus:outline-none focus-visible:underline"
+            >
               📧 Email Me
             </a>
           )}
           {footerData.socialLinks?.linkedin && (
-            <a href={footerData.socialLinks.linkedin} className="hover:text-brandAccent transition-colors">
+            <a
+              href={footerData.socialLinks.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit LinkedIn profile (opens in new tab)"
+              className="hover:text-brandAccent transition-colors focus:outline-none focus-visible:underline"
+            >
               🔗 Linkedin
             </a>
           )}
           {footerData.resume && (
-            <a href={footerData.resume} className="hover:text-brandAccent transition-colors">
+            <a
+              href={footerData.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View Resume (opens in new tab)"
+              className="hover:text-brandAccent transition-colors focus:outline-none focus-visible:underline"
+            >
               📝 Resume
             </a>
           )}
-          <Link href="/work" className="hover:text-brandAccent transition-colors">
+          <Link
+            href="/work"
+            aria-label="View portfolio projects"
+            className="hover:text-brandAccent transition-colors focus:outline-none focus-visible:underline"
+          >
             💼 Work
           </Link>
           {footerData.socialLinks?.youtube && (
-            <a href={footerData.socialLinks.youtube} className="hover:text-brandAccent transition-colors">
+            <a
+              href={footerData.socialLinks.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit YouTube channel (opens in new tab)"
+              className="hover:text-brandAccent transition-colors focus:outline-none focus-visible:underline"
+            >
               🎬 Youtube
             </a>
           )}
           {footerData.socialLinks?.instagram && (
-            <a href={footerData.socialLinks.instagram} className="hover:text-brandAccent transition-colors">
+            <a
+              href={footerData.socialLinks.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit Instagram profile (opens in new tab)"
+              className="hover:text-brandAccent transition-colors focus:outline-none focus-visible:underline"
+            >
               📸 Instagram
             </a>
           )}

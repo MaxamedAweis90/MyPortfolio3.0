@@ -24,8 +24,7 @@
         "./src/*"
       ],
       "@/components/*": [
-        "./src/app/components/*",
-        "./src/components/*"
+        "./src/app/components/*"
       ],
       "@/lib/*": [
         "./src/app/lib/*"

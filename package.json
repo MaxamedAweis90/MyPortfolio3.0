@@ -7,6 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:frontend": "playwright test tests/frontend",
+    "test:frontend:headed": "playwright test tests/frontend --headed",
+    "test:ugaas": "playwright test tests/ugaas",
+    "test:ugaas:headed": "playwright test tests/ugaas --headed",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
     "db:seed": "npx tsx scripts/seed-database.ts",
     "db:seed:admin": "npx tsx scripts/seed-admin.ts",
     "admin:seed": "npx tsx scripts/seed-admin.ts"
@@ -45,6 +53,7 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.7",
