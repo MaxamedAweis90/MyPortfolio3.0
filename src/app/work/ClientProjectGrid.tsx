@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import type { Project } from "@/types/portfolio";
 import ProjectCard from "@/components/ProjectCard";
 import { RiFilter3Line } from "react-icons/ri";
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 15 },
   visible: (index: number) => ({
     opacity: 1,
