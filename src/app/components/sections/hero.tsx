@@ -39,7 +39,8 @@ const Hero = () => {
       } catch {}
     };
 
-    fetchLiveResume();
+    // Defer fetching settings slightly after mount to prioritize critical hero image render
+    const timer = setTimeout(fetchLiveResume, 1200);
 
     const handleUpdate = (e: any) => {
       if (e.detail?.settings?.resumeUrl) {
@@ -50,7 +51,10 @@ const Hero = () => {
     };
 
     window.addEventListener("social_links_updated", handleUpdate);
-    return () => window.removeEventListener("social_links_updated", handleUpdate);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("social_links_updated", handleUpdate);
+    };
   }, []);
 
   const greetings = [
@@ -332,8 +336,8 @@ const Hero = () => {
             src="/me.png"
             alt="Eng_Aweis"
             priority={true}
-            quality={80}
-            sizes="(max-width: 640px) 340px, (max-width: 1024px) 440px, 672px"
+            quality={75}
+            sizes="(max-width: 640px) 300px, (max-width: 1024px) 440px, 672px"
             width={672}
             height={800}
             className="h-full w-auto object-contain object-bottom align-bottom block drop-shadow-[0_25px_40px_rgba(0,0,0,0.6)] pointer-events-auto transition-transform duration-500 hover:scale-[1.01]"

@@ -10,11 +10,13 @@ import Script from "next/script";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const outfit = Outfit({
@@ -87,13 +89,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               })();
             `,
           }}
-        />
-        {/* Preload critical LCP Hero Image */}
-        <link
-          rel="preload"
-          as="image"
-          href="/me.png"
-          fetchPriority="high"
         />
         {/* ✅ Google Analytics Scripts - deferred to lazyOnload */}
         <Script

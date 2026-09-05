@@ -10,8 +10,7 @@ import {
   getPublicExperiences,
 } from "@/lib/portfolio-service";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 3600; // Edge cached with ISR (revalidated hourly or on-demand)
 
 const Page = async () => {
   const [liveProjects, liveExperiences] = await Promise.all([
