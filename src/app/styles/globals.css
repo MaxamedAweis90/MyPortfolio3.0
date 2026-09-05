@@ -152,7 +152,15 @@
     .bg-primary,
     .bg-primary *,
     .badge-primary,
-    .btn-primary
+    .btn-primary,
+    .bg-\[\#00875A\],
+    .bg-\[\#00875A\] *,
+    .bg-black,
+    .bg-black *,
+    [class*="bg-black"],
+    [class*="bg-black"] *,
+    [class*="bg-slate-900"],
+    [class*="bg-slate-900"] *
   ) {
   color: #0f172a !important;
 }

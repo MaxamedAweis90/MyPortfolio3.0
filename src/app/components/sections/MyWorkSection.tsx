@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import Link from "next/link";
 import ProjectCard from "@/components/ProjectCard";
 import { projectsData } from "@/data/portfolioData";
+import type { Project } from "@/types/portfolio";
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
@@ -12,16 +13,33 @@ import {
 
 const ITEMS_PER_PAGE = 6;
 
-export default function MyWorkSection() {
+interface MyWorkSectionProps {
+  initialProjects?: Project[];
+}
+
+export default function MyWorkSection({ initialProjects }: MyWorkSectionProps = {}) {
+  // Only render projects where isFeatured: true (capped at max 6 items)
+  const featuredProjects = React.useMemo(() => {
+    const raw = initialProjects && initialProjects.length > 0 ? initialProjects : projectsData;
+    const featured = raw.filter((p) => p.isFeatured);
+    return (featured.length > 0 ? featured : raw).slice(0, 6);
+  }, [initialProjects]);
+
+  const [projects, setProjects] = useState<Project[]>(featuredProjects);
   const [currentPage, setCurrentPage] = useState(1);
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  const totalProjects = projectsData.length;
+  React.useEffect(() => {
+    setProjects(featuredProjects);
+    setCurrentPage(1);
+  }, [featuredProjects]);
+
+  const totalProjects = projects.length;
   const totalPages = Math.max(1, Math.ceil(totalProjects / ITEMS_PER_PAGE));
 
   // Dynamic pagination slicing: 6 items per page (2 rows of 3 columns)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentProjects = projectsData.slice(
+  const currentProjects = projects.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
@@ -67,7 +85,7 @@ export default function MyWorkSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch min-h-[500px]">
           {currentProjects.map((proj, idx) => (
             <ProjectCard
-              key={proj._id}
+              key={proj._id || proj.id || proj.slug || idx}
               proj={proj}
               index={startIndex + idx}
             />

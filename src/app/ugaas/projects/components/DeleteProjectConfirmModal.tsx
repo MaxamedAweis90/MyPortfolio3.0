@@ -27,10 +27,16 @@ export interface ProjectItem {
   serverUrl?: string;
   playStoreUrl?: string;
   appStoreUrl?: string;
+  appIconUrl?: string;
+  apkUrl?: string;
+  screenshots?: string[];
+  images?: string[];
   image: string;
   tools: string[];
   isFeatured: boolean;
   order: number;
+  projectNumber?: number;
+  sortOrder?: number;
   createdAt?: string | Date;
 }
 

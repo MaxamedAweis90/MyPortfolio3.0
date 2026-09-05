@@ -28,11 +28,8 @@ export async function GET() {
       Certificate.countDocuments().catch(() => 0),
     ]);
 
-    const totalProjects = dbProjectCount > 0 ? dbProjectCount : projectsData.length;
-    const experienceMilestones =
-      dbExperienceCount + dbCertificateCount > 0
-        ? dbExperienceCount + dbCertificateCount
-        : experiencesData.length + 6;
+    const totalProjects = dbProjectCount;
+    const experienceMilestones = dbExperienceCount + dbCertificateCount;
 
     const activeTechStack = Object.keys(TOOL_ICONS).length || 48;
 

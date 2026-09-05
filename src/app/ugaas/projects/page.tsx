@@ -14,6 +14,8 @@ import {
   Star,
   Globe,
   Layers,
+  Tags,
+  GripVertical,
 } from "lucide-react";
 import {
   Card,
@@ -37,6 +39,7 @@ import { ProjectDialog } from "./components/ProjectDialog";
 import { DeleteProjectConfirmModal, ProjectItem } from "./components/DeleteProjectConfirmModal";
 import { ProjectsSkeleton } from "./components/ProjectsSkeleton";
 import { ScrollableContainer } from "../components/ScrollableContainer";
+import { ManageCategoriesModal, CategoryItem } from "./components/ManageCategoriesModal";
 
 export default function ProjectsCMSPage() {
   const [projects, setProjects] = useState<ProjectItem[]>([]);
@@ -44,18 +47,136 @@ export default function ProjectsCMSPage() {
   const [refreshing, setRefreshing] = useState(false);
 
   // Filters & Search
-  const [selectedCategory, setSelectedCategory] = useState<"All" | "Web" | "Mobile" | "Design">("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Categories state
+  const [categoriesList, setCategoriesList] = useState<CategoryItem[]>([]);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
 
   // Modals state
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectItem | null>(null);
   const [deletingProject, setDeletingProject] = useState<ProjectItem | null>(null);
 
+  // Drag and drop state
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", index.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dragOverIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDragLeave = () => {
+    // Clean up if needed
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === targetIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const draggedProject = filteredProjects[draggedIndex];
+    const targetProject = filteredProjects[targetIndex];
+    if (!draggedProject || !targetProject) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const oldIndex = projects.findIndex(
+      (p) => (p.id || p._id || p.slug) === (draggedProject.id || draggedProject._id || draggedProject.slug)
+    );
+    const newIndex = projects.findIndex(
+      (p) => (p.id || p._id || p.slug) === (targetProject.id || targetProject._id || targetProject.slug)
+    );
+
+    if (oldIndex === -1 || newIndex === -1) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const updatedProjects = [...projects];
+    const [moved] = updatedProjects.splice(oldIndex, 1);
+    updatedProjects.splice(newIndex, 0, moved);
+
+    const total = updatedProjects.length;
+
+    // Number rows in descending order from total down to 1 (e.g. 5, 4, 3, 2, 1)
+    const reordered = updatedProjects.map((p, idx) => ({
+      ...p,
+      sortOrder: idx + 1,
+      order: idx + 1,
+      projectNumber: total - idx,
+    }));
+
+    setProjects(reordered);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+
+    try {
+      const items = reordered.map((p, idx) => ({
+        id: p.id || p._id || p.slug,
+        sortOrder: idx + 1,
+        projectNumber: total - idx,
+      }));
+      const res = await fetch("/api/ugaas/projects/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Project display order updated!");
+      } else {
+        toast.error(data.error || "Failed to save project order");
+        fetchProjects();
+      }
+    } catch {
+      toast.error("Failed to save project order");
+      fetchProjects();
+    }
+  };
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/ugaas/projects/categories?t=${Date.now()}`, {
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (data.success && data.categories) {
+        setCategoriesList(data.categories);
+      }
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    }
+  }, []);
+
   const fetchProjects = useCallback(async (showRefreshing = false) => {
     if (showRefreshing) setRefreshing(true);
     try {
-      const res = await fetch("/api/ugaas/projects");
+      const res = await fetch(`/api/ugaas/projects?t=${Date.now()}`, {
+        cache: "no-store",
+      });
       const data = await res.json();
       if (data.success && data.projects) {
         setProjects(data.projects);
@@ -71,7 +192,19 @@ export default function ProjectsCMSPage() {
 
   useEffect(() => {
     fetchProjects();
-  }, [fetchProjects]);
+    fetchCategories();
+  }, [fetchProjects, fetchCategories]);
+
+  // Reset selected category to "All" if current category was deleted
+  useEffect(() => {
+    if (
+      selectedCategory !== "All" &&
+      categoriesList.length > 0 &&
+      !categoriesList.some((c) => c.name.toLowerCase() === selectedCategory.toLowerCase())
+    ) {
+      setSelectedCategory("All");
+    }
+  }, [categoriesList, selectedCategory]);
 
   // Filtered projects list
   const filteredProjects = useMemo(() => {
@@ -98,6 +231,15 @@ export default function ProjectsCMSPage() {
   const handleToggleFeatured = async (project: ProjectItem) => {
     const targetId = project.id || project._id || project.slug;
     const newFeaturedState = !project.isFeatured;
+
+    // Enforce max 6 limit when enabling featured status
+    if (newFeaturedState) {
+      const activeFeaturedCount = projects.filter((p) => p.isFeatured).length;
+      if (activeFeaturedCount >= 6) {
+        toast.error("Maximum 6 projects can be featured on the Home section.");
+        return;
+      }
+    }
 
     // Optimistic UI update
     setProjects((prev) =>
@@ -131,7 +273,7 @@ export default function ProjectsCMSPage() {
               : p
           )
         );
-        toast.error("Failed to update featured status");
+        toast.error(data.error || "Failed to update featured status");
       }
     } catch {
       // Rollback
@@ -158,7 +300,9 @@ export default function ProjectsCMSPage() {
 
   const handleProjectSaved = (savedProject: ProjectItem, isNew: boolean) => {
     if (isNew) {
+      // Place newly added project on top
       setProjects((prev) => [savedProject, ...prev]);
+      fetchProjects();
     } else {
       const targetId = savedProject.id || savedProject._id || savedProject.slug;
       setProjects((prev) =>
@@ -170,12 +314,37 @@ export default function ProjectsCMSPage() {
   };
 
   const handleProjectDeleted = (deletedId: string) => {
-    setProjects((prev) =>
-      prev.filter((p) => (p.id || p._id || p.slug) !== deletedId)
-    );
+    // Optimistically remove and re-number projects added after the deleted one
+    setProjects((prev) => {
+      const deletedItem = prev.find(
+        (p) => (p.id || p._id || p.slug) === deletedId
+      );
+      const deletedNum = deletedItem?.projectNumber;
+      return prev
+        .filter((p) => (p.id || p._id || p.slug) !== deletedId)
+        .map((p) => {
+          if (
+            deletedNum !== undefined &&
+            p.projectNumber !== undefined &&
+            p.projectNumber > deletedNum
+          ) {
+            return { ...p, projectNumber: p.projectNumber - 1 };
+          }
+          return p;
+        });
+    });
+    fetchProjects();
+    fetchCategories();
   };
 
-  const categories = ["All", "Web", "Mobile", "Design"] as const;
+  // Dynamic Categories Tabs derived directly from database categoriesList
+  const categoryTabs = useMemo(() => {
+    if (categoriesList && categoriesList.length > 0) {
+      return ["All", ...categoriesList.map((c) => c.name)];
+    }
+    const fromProjects = Array.from(new Set(projects.map((p) => p.category).filter(Boolean)));
+    return ["All", ...(fromProjects.length > 0 ? fromProjects : ["Web", "Mobile", "Design"])];
+  }, [categoriesList, projects]);
 
   if (loading && projects.length === 0) {
     return <ProjectsSkeleton />;
@@ -199,16 +368,28 @@ export default function ProjectsCMSPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => fetchProjects(true)}
+            onClick={() => {
+              fetchProjects(true);
+              fetchCategories();
+            }}
             disabled={refreshing}
-            title="Refresh Projects"
+            title="Refresh Projects & Categories"
             className="text-mutedText hover:text-primaryText hover:bg-surface border border-borderSubtle"
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin text-[#0B82EC]" : ""}`} />
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={() => setIsCategoryModalOpen(true)}
+            className="border-borderSubtle bg-surface hover:bg-surface/80 text-primaryText gap-2 text-xs sm:text-sm h-10 px-3.5 font-semibold"
+          >
+            <Tags className="w-4 h-4 text-[#0B82EC]" />
+            <span>Manage Categories</span>
           </Button>
 
           <Button
@@ -228,7 +409,7 @@ export default function ProjectsCMSPage() {
           <div className="w-full md:w-auto min-w-0">
             <ScrollableContainer containerClassName="rounded-xl border border-borderSubtle bg-surface">
               <div className="flex items-center gap-1.5 p-1 min-w-max">
-                {categories.map((cat) => {
+                {categoryTabs.map((cat) => {
                   const count =
                     cat === "All"
                       ? projects.length
@@ -236,7 +417,7 @@ export default function ProjectsCMSPage() {
                           (p) => p.category?.toLowerCase() === cat.toLowerCase()
                         ).length;
 
-                  const isSelected = selectedCategory === cat;
+                  const isSelected = selectedCategory.toLowerCase() === cat.toLowerCase();
 
                   return (
                     <button
@@ -295,6 +476,10 @@ export default function ProjectsCMSPage() {
           <Table>
             <TableHeader>
               <TableRow className="border-b border-borderSubtle bg-[#111622]/70">
+                <TableHead className="w-10 text-center font-semibold text-xs text-mutedText">
+                  <span className="sr-only">Reorder</span>
+                </TableHead>
+                <TableHead className="w-12 text-center font-semibold text-xs text-mutedText">#</TableHead>
                 <TableHead className="w-16 font-semibold text-xs text-mutedText">Thumb</TableHead>
                 <TableHead className="font-semibold text-xs text-mutedText">Title & Slug</TableHead>
                 <TableHead className="font-semibold text-xs text-mutedText">Category</TableHead>
@@ -307,22 +492,62 @@ export default function ProjectsCMSPage() {
               {loading ? (
                 Array.from({ length: 5 }).map((_, idx) => (
                   <TableRow key={idx} className="border-b border-borderSubtle/50">
-                    <TableCell colSpan={6} className="py-5">
+                    <TableCell colSpan={8} className="py-5">
                       <div className="h-5 bg-[#111622] rounded animate-pulse w-4/5 mx-auto" />
                     </TableCell>
                   </TableRow>
                 ))
               ) : filteredProjects.length > 0 ? (
-                filteredProjects.map((project) => {
+                filteredProjects.map((project, index) => {
                   const targetId = project.id || project._id || project.slug;
+                  const isDragging = draggedIndex === index;
+                  const isOver = dragOverIndex === index;
 
                   return (
                     <TableRow
                       key={targetId}
-                      className="border-b border-borderSubtle/50 hover:bg-surface/80 transition-colors group"
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDragLeave={handleDragLeave}
+                      onDragEnd={handleDragEnd}
+                      onDrop={(e) => handleDrop(e, index)}
+                      className={`border-b border-borderSubtle/50 hover:bg-surface/80 transition-colors group cursor-default ${
+                        isDragging ? "opacity-40 bg-surface/30" : ""
+                      } ${
+                        isOver ? "border-t-2 border-t-[#0B82EC] bg-[#0B82EC]/5" : ""
+                      }`}
                     >
+                      {/* Drag Handle */}
+                      <TableCell className="py-3.5 pl-3 pr-1 text-center w-10">
+                        <div
+                          className="cursor-grab active:cursor-grabbing text-mutedText/60 hover:text-white p-1 rounded hover:bg-[#111622] inline-flex items-center justify-center transition-colors"
+                          title="Drag to reorder display position"
+                        >
+                          <GripVertical className="w-4 h-4" />
+                        </div>
+                      </TableCell>
+
+                      {/* Project Number (Descending: latest on top) */}
+                      <TableCell className="py-3.5 px-2 text-center w-12">
+                        <span
+                          className="inline-block font-mono text-[11px] font-bold text-[#0B82EC] bg-[#0B82EC]/10 px-2 py-0.5 rounded border border-[#0B82EC]/20"
+                          title={`Project #${String(
+                            project.projectNumber !== undefined && project.projectNumber !== null
+                              ? project.projectNumber
+                              : (filteredProjects.length - index)
+                          ).padStart(2, "0")}`}
+                        >
+                          {String(
+                            project.projectNumber !== undefined && project.projectNumber !== null
+                              ? project.projectNumber
+                              : (filteredProjects.length - index)
+                          ).padStart(2, "0")}
+                        </span>
+                      </TableCell>
+
                       {/* Thumbnail */}
-                      <TableCell className="py-3.5 pl-4">
+                      <TableCell className="py-3.5 pl-2">
                         <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-[#111622] border border-borderSubtle shrink-0">
                           {project.image ? (
                             <Image
@@ -449,7 +674,7 @@ export default function ProjectsCMSPage() {
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-16 text-mutedText">
+                  <TableCell colSpan={8} className="text-center py-16 text-mutedText">
                     <FolderKanban className="w-10 h-10 text-mutedText/40 mx-auto mb-3" />
                     <p className="text-base font-semibold text-white">No projects found</p>
                     <p className="text-xs text-mutedText mt-1 max-w-sm mx-auto">
@@ -497,7 +722,25 @@ export default function ProjectsCMSPage() {
         isOpen={isEditorOpen}
         onClose={() => setIsEditorOpen(false)}
         project={editingProject}
-        onSuccess={handleProjectSaved}
+        onSuccess={(savedProject, isNew) => {
+          handleProjectSaved(savedProject, isNew);
+          fetchCategories();
+        }}
+        availableCategories={categoriesList.map((c) => c.name)}
+        onCategoriesChanged={() => {
+          fetchCategories();
+          fetchProjects();
+        }}
+      />
+
+      <ManageCategoriesModal
+        isOpen={isCategoryModalOpen}
+        onClose={() => setIsCategoryModalOpen(false)}
+        categories={categoriesList}
+        onCategoriesChanged={() => {
+          fetchCategories();
+          fetchProjects();
+        }}
       />
 
       <DeleteProjectConfirmModal

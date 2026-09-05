@@ -46,7 +46,11 @@ export default function Navbar() {
     { id: "services", label: "Services", href: "/#services" },
   ];
 
-  const contactItem: NavItem = { id: "contact", label: "Contact", href: "/#contact" };
+  const contactItem: NavItem = {
+    id: "contact",
+    label: "Contact",
+    href: "/#contact",
+  };
 
   const allNavItems = [...leftNavItems, ...rightNavItems, contactItem];
 
@@ -69,7 +73,7 @@ export default function Navbar() {
     if (typeof document !== "undefined") {
       document.documentElement.setAttribute(
         "data-theme-transition",
-        nextTheme ? "to-dark" : "to-light"
+        nextTheme ? "to-dark" : "to-light",
       );
     }
 
@@ -88,7 +92,9 @@ export default function Navbar() {
 
     if (typeof document !== "undefined" && "startViewTransition" in document) {
       const docWithTransition = document as Document & {
-        startViewTransition: (callback: () => void) => { finished: Promise<void> };
+        startViewTransition: (callback: () => void) => {
+          finished: Promise<void>;
+        };
       };
       const transition = docWithTransition.startViewTransition(() => {
         applyTheme();
@@ -107,7 +113,15 @@ export default function Navbar() {
       setIsScrolled(window.scrollY > 50);
 
       if (pathname === "/") {
-        const sectionIds = ["hero", "about", "skills", "work", "experience", "services", "contact"];
+        const sectionIds = [
+          "hero",
+          "about",
+          "skills",
+          "work",
+          "experience",
+          "services",
+          "contact",
+        ];
         const scrollPosition = window.scrollY + 180;
 
         for (let i = sectionIds.length - 1; i >= 0; i--) {
@@ -134,13 +148,18 @@ export default function Navbar() {
 
   // Handle initial hash scrolling when navigating between pages
   useEffect(() => {
-    if (pathname === "/" && typeof window !== "undefined" && window.location.hash) {
+    if (
+      pathname === "/" &&
+      typeof window !== "undefined" &&
+      window.location.hash
+    ) {
       const targetId = window.location.hash.replace("#", "");
       setTimeout(() => {
         const el = document.getElementById(targetId);
         if (el) {
           const navOffset = 80;
-          const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+          const elementPosition =
+            el.getBoundingClientRect().top + window.scrollY;
           const offsetPosition = Math.max(0, elementPosition - navOffset);
           window.scrollTo({
             top: offsetPosition,
@@ -154,7 +173,7 @@ export default function Navbar() {
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    item: NavItem
+    item: NavItem,
   ) => {
     e.preventDefault();
     setMenuOpen(false);
@@ -244,7 +263,10 @@ export default function Navbar() {
             {/* Left Nav Group: Home, About, Skills, Work */}
             <div className="flex items-center space-x-1 lg:space-x-2">
               {leftNavItems.map((item) => (
-                <li key={item.id} className="relative flex items-center justify-center">
+                <li
+                  key={item.id}
+                  className="relative flex items-center justify-center"
+                >
                   <a
                     href={item.href}
                     onClick={(e) => handleNavClick(e, item)}
@@ -320,7 +342,10 @@ export default function Navbar() {
             {/* Right Nav Group: Experience, Services, Distinct Contact Button, Dark Mode Toggle */}
             <div className="flex items-center space-x-1.5 lg:space-x-3">
               {rightNavItems.map((item) => (
-                <li key={item.id} className="relative flex items-center justify-center">
+                <li
+                  key={item.id}
+                  className="relative flex items-center justify-center"
+                >
                   <a
                     href={item.href}
                     onClick={(e) => handleNavClick(e, item)}
@@ -355,8 +380,12 @@ export default function Navbar() {
               {/* Enhanced Dark / Light Mode Switcher with tailored UI/UX styling */}
               <button
                 onClick={toggleTheme}
-                aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                aria-label={
+                  isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                }
+                title={
+                  isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                }
                 className={`p-2 rounded-xl border transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer flex items-center justify-center ${
                   isDarkMode
                     ? isNavDark
@@ -381,8 +410,12 @@ export default function Navbar() {
             {/* Mobile Dark Mode Toggle */}
             <button
               onClick={toggleTheme}
-              aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              aria-label={
+                isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+              }
+              title={
+                isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+              }
               className={`p-1.5 sm:p-2 rounded-xl border transition-all duration-300 active:scale-95 flex items-center justify-center ${
                 isDarkMode
                   ? isNavDark

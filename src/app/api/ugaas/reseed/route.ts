@@ -25,9 +25,7 @@ export async function POST() {
     const formattedProjects = projectsData.map((p, index) => ({
       title: p.title,
       slug: p.slug,
-      category: ["All", "Web", "Mobile", "Design"].includes(p.category)
-        ? p.category
-        : "Web",
+      category: p.category || "Web",
       desc: p.description || p.shortTagline || p.title,
       fullDesc: p.longDescription?.join("\n\n") || p.description || "",
       liveUrl: p.liveProjectUrl || "",

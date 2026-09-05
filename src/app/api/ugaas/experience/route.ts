@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/ugaas/lib/db";
 import { Experience } from "@/ugaas/models/Experience";
 import { Certificate } from "@/ugaas/models/Certificate";
@@ -184,6 +185,14 @@ export async function POST(request: Request) {
         badges,
       },
     });
+
+    try {
+      revalidatePath("/");
+      revalidatePath("/experience");
+      revalidatePath("/about");
+    } catch (revErr) {
+      console.warn("Revalidation warning:", revErr);
+    }
 
     return NextResponse.json(
       {

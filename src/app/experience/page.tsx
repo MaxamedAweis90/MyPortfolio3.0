@@ -6,6 +6,7 @@ import {
   experiencesData,
   educationData,
   certificationsData,
+  ExperienceItem,
 } from "@/data/experienceData";
 import {
   RiArrowLeftLine,
@@ -18,24 +19,83 @@ import {
 } from "react-icons/ri";
 
 export default function ExperiencePage() {
+  const [experiences, setExperiences] = React.useState<ExperienceItem[]>(experiencesData);
+  const [education, setEducation] = React.useState(educationData);
+  const [certifications, setCertifications] = React.useState(certificationsData);
+
+  React.useEffect(() => {
+    fetch("/api/ugaas/experience")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.experiences && data.experiences.length > 0) {
+          const careerDocs = data.experiences.filter((e: any) => e.type === "career");
+          const eduDocs = data.experiences.filter((e: any) => e.type === "education");
+
+          if (careerDocs.length > 0) {
+            setExperiences(
+              careerDocs.map((doc: any) => ({
+                id: doc.id || doc._id,
+                role: doc.role,
+                company: doc.company,
+                companyShort:
+                  doc.company
+                    .split(" ")
+                    .map((w: string) => w[0])
+                    .join("")
+                    .toUpperCase()
+                    .slice(0, 4) || "EXP",
+                location: doc.badges?.[0] || "Banadir, Somalia",
+                period: doc.duration || "Present",
+                type: doc.badges?.[1] || doc.badges?.[0] || "Career Experience",
+                badgeBg: "bg-blue-500/10",
+                badgeColor: "text-blue-400 border-blue-500/30",
+                highlights: doc.highlights || [],
+                technologies: doc.techStack || [],
+              }))
+            );
+          }
+
+          if (eduDocs.length > 0) {
+            setEducation(
+              eduDocs.map((doc: any) => ({
+                degree: doc.role,
+                institution: doc.company,
+                period: doc.duration,
+                location: doc.badges?.[0] || "Somalia",
+                details: doc.highlights?.[0] || "",
+                relevantCourses: doc.techStack || [],
+              }))
+            );
+          }
+        }
+
+        if (data.success && data.certificates && data.certificates.length > 0) {
+          setCertifications(
+            data.certificates.map((c: any) => ({
+              name: c.title,
+              issuer: c.issuer || "Certificate Authority",
+              date: c.createdAt ? new Date(c.createdAt).getFullYear().toString() : "2024",
+              verifyUrl: c.link || "",
+              credentialId: c.code || "",
+              badge: "Professional Certification",
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
   return (
-    <div className="min-h-screen bg-mainBg text-primaryText pt-28 pb-20 px-4 sm:px-8 lg:px-16 relative overflow-hidden">
+    <div className="min-h-screen bg-mainBg text-primaryText pt-28 md:pt-32 pb-20 px-4 sm:px-8 lg:px-16 relative overflow-hidden">
       {/* Ambient background glows */}
       <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-brandAccent/5 rounded-full blur-[200px] pointer-events-none" />
       <div className="absolute bottom-20 right-10 w-[600px] h-[600px] bg-secondaryAccent/5 rounded-full blur-[180px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto relative z-10 space-y-16">
+      <div className="max-w-6xl mx-auto relative z-10 space-y-12">
         
-        {/* Navigation Breadcrumb / Back Button */}
-        <div className="flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface/90 border border-borderSubtle text-sm font-semibold text-mutedText hover:text-primaryText hover:border-brandAccent/40 transition-colors shadow-sm"
-          >
-            <RiArrowLeftLine className="text-base" /> Back to Home
-          </Link>
+        {/* Top Header Badge */}
+        <div className="flex items-center justify-end">
           <span className="text-xs font-mono font-bold text-brandAccent bg-brandAccent/10 px-3 py-1 rounded-full border border-brandAccent/30">
-            CAREER & EDUCATION
+            CAREER & EDUCATION ARCHIVE
           </span>
         </div>
 
@@ -74,7 +134,7 @@ export default function ExperiencePage() {
           </div>
 
           <div className="space-y-8">
-            {experiencesData.map((exp, index) => (
+            {experiences.map((exp, index) => (
               <motion.div
                 key={exp.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -155,7 +215,7 @@ export default function ExperiencePage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6">
-            {educationData.map((edu, idx) => (
+            {education.map((edu, idx) => (
               <div
                 key={idx}
                 className="bg-surface/90 backdrop-blur-xl border border-borderSubtle rounded-3xl p-6 sm:p-8 shadow-xl space-y-3"
@@ -198,7 +258,7 @@ export default function ExperiencePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {certificationsData.map((cert, idx) => (
+            {certifications.map((cert, idx) => (
               <div
                 key={idx}
                 className="p-5 rounded-2xl bg-surface/85 backdrop-blur-md border border-borderSubtle hover:border-purple-400/40 transition-all flex items-center justify-between shadow-md"

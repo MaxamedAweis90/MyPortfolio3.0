@@ -1,55 +1,72 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/ugaas/lib/db";
 import { Project } from "@/ugaas/models/Project";
+import { ProjectCategory } from "@/ugaas/models/ProjectCategory";
 import { projectsData } from "@/data/portfolioData";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
   try {
     await connectToDatabase();
-    let projects = await Project.find().sort({ order: 1, createdAt: -1 }).lean();
 
-    // If database is empty, auto-seed with projectsData
-    if (!projects || projects.length === 0) {
-      const formattedProjects = projectsData.map((p, index) => ({
-        title: p.title,
-        slug: p.slug,
-        category: ["All", "Web", "Mobile", "Design"].includes(p.category)
-          ? p.category
-          : "Web",
-        desc: p.description || p.shortTagline || p.title,
-        fullDesc: p.longDescription?.join("\n\n") || p.description || "",
-        liveUrl: p.liveProjectUrl || "",
-        githubUrl: "",
-        clientUrl: "",
-        serverUrl: "",
-        playStoreUrl: p.playStoreUrl || "",
-        appStoreUrl: p.appStoreUrl || "",
-        image:
-          p.images?.[0] ||
-          p.appIconUrl ||
-          p.screenshots?.[0] ||
-          "/Hero3DMe.png",
-        tools: p.tools?.map((t) => t.title || "").filter(Boolean) || [],
-        isFeatured: p.isFeatured ?? false,
-        order: index + 1,
-      }));
+    // 1. Fetch projects respecting manual drag order (sortOrder) or creation order
+    let projects = await Project.find()
+      .sort({ sortOrder: 1, createdAt: -1, _id: -1 })
+      .lean();
 
-      await Project.insertMany(formattedProjects);
-      projects = await Project.find().sort({ order: 1, createdAt: -1 }).lean();
+    const total = projects.length;
+
+    // 2. Ensure all active projects have descending numbers (N down to 1) and ascending sortOrder (1 to N)
+    const needsNormalization = projects.some(
+      (p: any, idx: number) =>
+        p.projectNumber !== total - idx || p.sortOrder !== idx + 1
+    );
+
+    if (needsNormalization && total > 0) {
+      for (let i = 0; i < total; i++) {
+        const assignedNumber = total - i;
+        const assignedSort = i + 1;
+        await Project.collection.updateOne(
+          { _id: projects[i]._id },
+          {
+            $set: {
+              projectNumber: assignedNumber,
+              sortOrder: assignedSort,
+              order: assignedSort,
+            },
+          }
+        );
+        projects[i].projectNumber = assignedNumber;
+        projects[i].sortOrder = assignedSort;
+        projects[i].order = assignedSort;
+      }
     }
 
-    const sanitized = projects.map((p: any) => ({
+    const sanitized = projects.map((p: any, index: number) => ({
       ...p,
       id: p._id.toString(),
       _id: p._id.toString(),
+      projectNumber: p.projectNumber ?? (total - index),
+      sortOrder: p.sortOrder ?? (index + 1),
     }));
 
-    return NextResponse.json({ success: true, projects: sanitized });
+    return NextResponse.json(
+      { success: true, projects: sanitized },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   } catch (error) {
     console.error("❌ [Projects Fetch Error]:", error);
+    const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch projects" },
-      { status: 500 }
+      { success: false, error: message },
+      { status: 200 }
     );
   }
 }
@@ -69,6 +86,10 @@ export async function POST(request: Request) {
       serverUrl = "",
       playStoreUrl = "",
       appStoreUrl = "",
+      appIconUrl = "",
+      apkUrl = "",
+      screenshots = [],
+      images = [],
       image = "/Hero3DMe.png",
       tools = [],
       isFeatured = false,
@@ -98,11 +119,52 @@ export async function POST(request: Request) {
       finalSlug = `${baseSlug}-${Date.now().toString().slice(-4)}`;
     }
 
+    // Ensure category exists in ProjectCategory collection
+    if (category && typeof category === "string" && category.trim()) {
+      const catTrimmed = category.trim();
+      if (catTrimmed.toLowerCase() !== "all") {
+        const existingCat = await ProjectCategory.findOne({
+          name: { $regex: new RegExp(`^${catTrimmed}$`, "i") },
+        });
+        if (!existingCat) {
+          const catCount = await ProjectCategory.countDocuments();
+          await ProjectCategory.create({
+            name: catTrimmed,
+            slug: catTrimmed.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+            order: catCount + 1,
+          });
+        }
+      }
+    }
+
+    // Check max 6 featured projects constraint
+    const requestedFeatured = Boolean(isFeatured);
+    if (requestedFeatured) {
+      const activeFeaturedCount = await Project.countDocuments({ isFeatured: true });
+      if (activeFeaturedCount >= 6) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Maximum 6 projects can be featured on the Home section.",
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Shift all existing projects down in sortOrder so new project is placed on top (sortOrder: 1)
+    await Project.updateMany(
+      {},
+      { $inc: { sortOrder: 1, order: 1 } }
+    );
+
     const count = await Project.countDocuments();
+    const newProjectNumber = count + 1;
+
     const newProject = await Project.create({
       title,
       slug: finalSlug,
-      category,
+      category: category ? category.trim() : "Web",
       desc,
       fullDesc: fullDesc || desc,
       liveUrl,
@@ -111,14 +173,28 @@ export async function POST(request: Request) {
       serverUrl,
       playStoreUrl,
       appStoreUrl,
+      appIconUrl: appIconUrl || "",
+      apkUrl: apkUrl || "",
+      screenshots: Array.isArray(screenshots)
+        ? screenshots.filter(Boolean)
+        : screenshots
+        ? [screenshots]
+        : [],
+      images: Array.isArray(images)
+        ? images.filter(Boolean)
+        : images
+        ? [images]
+        : [],
       image: image || "/Hero3DMe.png",
       tools: Array.isArray(tools)
         ? tools
         : typeof tools === "string"
         ? tools.split(",").map((t: string) => t.trim()).filter(Boolean)
         : [],
-      isFeatured: Boolean(isFeatured),
-      order: count + 1,
+      isFeatured: requestedFeatured,
+      order: 1,
+      sortOrder: 1,
+      projectNumber: newProjectNumber,
     });
 
     // Record activity audit log
@@ -136,6 +212,13 @@ export async function POST(request: Request) {
         slug: finalSlug,
       },
     });
+
+    try {
+      revalidatePath("/");
+      revalidatePath("/work");
+    } catch (revErr) {
+      console.warn("Revalidation warning:", revErr);
+    }
 
     return NextResponse.json(
       {

@@ -11,15 +11,22 @@ import type { Project } from "@/types/portfolio";
 
 type ProjectCardProps = {
   proj: Project;
-  index: number;
+  index?: number;
+  isNew?: boolean;
 };
 
-export default function ProjectCard({ proj, index }: ProjectCardProps) {
+export default function ProjectCard({ proj, index, isNew }: ProjectCardProps) {
   const router = useRouter();
   const detailHref = proj.slug ? `/work/${proj.slug}` : undefined;
 
-  // Format index as 2-digit string: 01, 02, 03...
-  const formattedIndex = (index + 1).toString().padStart(2, "0");
+  // Persistent project number from schema (never dynamic array index)
+  const formattedNumber = (
+    proj.projectNumber !== undefined && proj.projectNumber !== null
+      ? proj.projectNumber
+      : (proj.order || (typeof index === "number" ? index + 1 : 1))
+  )
+    .toString()
+    .padStart(2, "0");
 
   const handleCardClick = () => {
     if (detailHref) {
@@ -57,12 +64,17 @@ export default function ProjectCard({ proj, index }: ProjectCardProps) {
 
       <div className="relative z-10 space-y-4 flex-1 flex flex-col justify-between">
         <div>
-          {/* Top Header Row: Index Number + Category + Hover Arrow */}
+          {/* Top Header Row: Project Number + New Badge + Category + Hover Arrow */}
           <div className="flex items-center justify-between mb-3.5">
             <div className="flex items-center gap-2.5">
               <span className="text-2xl sm:text-3xl font-black text-primaryText tracking-tight group-hover:text-brandAccent transition-colors">
-                {formattedIndex}
+                {formattedNumber}
               </span>
+              {isNew && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-gradient-to-r from-[#0B82EC] to-[#2DD4BF] text-white shadow-sm shadow-[#0B82EC]/30 animate-pulse">
+                  New
+                </span>
+              )}
               <span className="w-1.5 h-1.5 rounded-full bg-brandAccent/60" />
             </div>
 

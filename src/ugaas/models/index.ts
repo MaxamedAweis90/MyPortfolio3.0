@@ -4,3 +4,4 @@ export * from "./Certificate";
 export * from "./Inquiry";
 export * from "./Settings";
 export * from "./AuditLog";
+export * from "./ProjectCategory";

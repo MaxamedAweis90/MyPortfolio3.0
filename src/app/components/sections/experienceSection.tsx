@@ -2,16 +2,21 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { experiencesData } from "@/data/experienceData";
+import { experiencesData, ExperienceItem } from "@/data/experienceData";
 import {
   RiBriefcase4Line,
   RiArrowRightLine,
   RiTimeLine,
 } from "react-icons/ri";
 
-export default function ExperienceSection() {
+interface ExperienceSectionProps {
+  initialExperiences?: ExperienceItem[];
+}
+
+export default function ExperienceSection({ initialExperiences }: ExperienceSectionProps = {}) {
+  const experiences = initialExperiences && initialExperiences.length > 0 ? initialExperiences : experiencesData;
   // Show the 3 latest experiences on the home page as requested
-  const latestExperiences = experiencesData.slice(0, 3);
+  const latestExperiences = experiences.slice(0, 3);
 
   return (
     <section

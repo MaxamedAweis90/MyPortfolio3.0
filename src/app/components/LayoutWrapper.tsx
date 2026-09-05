@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
+import BreadcrumbHeader from "./BreadcrumbHeader";
 import TargetCursor from "@/components/TargetCursor";
 import Footer from "./Footer";
 import SocialBar from "./SocialBar";
@@ -43,6 +44,9 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
       pathname.startsWith("/ugaas") ||
       pathname.startsWith("/admin")));
 
+  // Navbar only appears on the main screen (landing page '/')
+  const isMainScreen = pathname === "/";
+
   return (
     <>
       {mounted && !isCustomLayout && <ChatWidget />}
@@ -50,7 +54,9 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
       {mounted && !isCustomLayout && <RouteCommandPalette />}
 
       <div className="w-full min-h-screen flex flex-col justify-between">
-        {!isCustomLayout && <Navbar />}
+        {!isCustomLayout && (
+          isMainScreen ? <Navbar /> : <BreadcrumbHeader />
+        )}
         {!isCustomLayout && <SocialBar />}
 
         {/* Main content wrapper */}

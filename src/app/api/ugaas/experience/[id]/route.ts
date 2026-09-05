@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/ugaas/lib/db";
 import { Experience } from "@/ugaas/models/Experience";
 import mongoose from "mongoose";
@@ -114,6 +115,14 @@ export async function PUT(
       },
     });
 
+    try {
+      revalidatePath("/");
+      revalidatePath("/experience");
+      revalidatePath("/about");
+    } catch (revErr) {
+      console.warn("Revalidation warning:", revErr);
+    }
+
     return NextResponse.json({
       success: true,
       experience: {
@@ -157,6 +166,14 @@ export async function DELETE(
         type: deleted.type,
       },
     });
+
+    try {
+      revalidatePath("/");
+      revalidatePath("/experience");
+      revalidatePath("/about");
+    } catch (revErr) {
+      console.warn("Revalidation warning:", revErr);
+    }
 
     return NextResponse.json({
       success: true,

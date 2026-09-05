@@ -49,6 +49,10 @@ export type Project = {
   longDescription?: string[];
   images?: string[];
   liveProjectUrl?: string;
+  liveUrl?: string;
+  githubUrl?: string;
+  clientUrl?: string;
+  serverUrl?: string;
   shortTagline?: string;
   appIconUrl?: string;
   apkUrl?: string;
@@ -62,4 +66,6 @@ export type Project = {
   createdAt?: string;
   popularity?: number;
   isPopular?: boolean;
+  projectNumber?: number;
+  sortOrder?: number;
 };
