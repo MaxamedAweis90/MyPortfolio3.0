@@ -7,22 +7,21 @@ import ProjectCard from "@/components/ProjectCard";
 import { RiFilter3Line } from "react-icons/ri";
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  hidden: { opacity: 0, y: 15 },
   visible: (index: number) => ({
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: {
-      delay: index * 0.12,
-      duration: 0.4,
+      delay: Math.min(index * 0.05, 0.2),
+      duration: 0.3,
+      ease: "easeOut",
     },
   }),
   exit: {
     opacity: 0,
-    y: -20,
-    scale: 0.95,
+    y: -10,
     transition: {
-      duration: 0.25,
+      duration: 0.15,
     },
   },
 };
