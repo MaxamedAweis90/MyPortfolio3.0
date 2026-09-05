@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import ProjectCard from "@/components/ProjectCard";
-import { projectsData } from "@/data/portfolioData";
+import type { Project } from "@/types/portfolio";
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
@@ -12,16 +12,49 @@ import {
 
 const ITEMS_PER_PAGE = 6;
 
-export default function MyWorkSection() {
+interface MyWorkSectionProps {
+  initialProjects?: Project[];
+}
+
+export default function MyWorkSection({ initialProjects }: MyWorkSectionProps = {}) {
+  // Only render projects where isFeatured: true (capped at max 6 items)
+  const featuredProjects = React.useMemo(() => {
+    const raw = initialProjects || [];
+    const featured = raw.filter((p) => p.isFeatured);
+    return (featured.length > 0 ? featured : raw).slice(0, 6);
+  }, [initialProjects]);
+
+  const [projects, setProjects] = useState<Project[]>(featuredProjects);
   const [currentPage, setCurrentPage] = useState(1);
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  const totalProjects = projectsData.length;
+  React.useEffect(() => {
+    setProjects(featuredProjects);
+    setCurrentPage(1);
+  }, [featuredProjects]);
+
+  const totalProjects = projects.length;
   const totalPages = Math.max(1, Math.ceil(totalProjects / ITEMS_PER_PAGE));
+
+  // Identify the 2 most recently created projects across catalog for consistency with /work
+  const latestTwoProjectIds = React.useMemo(() => {
+    const sortedByLatest = [...projects].sort((a, b) => {
+      return (
+        new Date(b.createdAt || 0).getTime() -
+        new Date(a.createdAt || 0).getTime()
+      );
+    });
+    return new Set(
+      sortedByLatest
+        .slice(0, 2)
+        .map((p) => p._id || p.id || p.slug)
+        .filter(Boolean)
+    );
+  }, [projects]);
 
   // Dynamic pagination slicing: 6 items per page (2 rows of 3 columns)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentProjects = projectsData.slice(
+  const currentProjects = projects.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
@@ -63,15 +96,19 @@ export default function MyWorkSection() {
           </p>
         </div>
 
-        {/* 6 Projects Grid: 2 rows of 3 columns on desktop, responsive 1 column fallback */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch min-h-[500px]">
-          {currentProjects.map((proj, idx) => (
-            <ProjectCard
-              key={proj._id}
-              proj={proj}
-              index={startIndex + idx}
-            />
-          ))}
+        {/* 6 Projects Grid: 2 rows of 3 columns matching /work screen */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+          {currentProjects.map((proj, idx) => {
+            const isNew = latestTwoProjectIds.has(proj._id || proj.id || proj.slug || "");
+            return (
+              <ProjectCard
+                key={proj._id || proj.id || proj.slug || idx}
+                proj={proj}
+                index={startIndex + idx}
+                isNew={isNew}
+              />
+            );
+          })}
         </div>
 
         {/* Single Bottom Action & Pagination Control Row */}

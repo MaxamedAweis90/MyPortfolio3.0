@@ -7,6 +7,9 @@ export interface IExperience extends Document {
   badges: string[];
   highlights: string[];
   techStack: string[];
+  image?: string;
+  credentialUrl?: string;
+  credentialId?: string;
   type: "career" | "education" | "certification";
   order: number;
   createdAt: Date;
@@ -41,6 +44,18 @@ const ExperienceSchema = new Schema<IExperience>(
     techStack: {
       type: [String],
       default: [],
+    },
+    image: {
+      type: String,
+      default: "",
+    },
+    credentialUrl: {
+      type: String,
+      default: "",
+    },
+    credentialId: {
+      type: String,
+      default: "",
     },
     type: {
       type: String,

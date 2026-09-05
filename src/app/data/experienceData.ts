@@ -97,25 +97,61 @@ export const educationData = [
   },
 ];
 
-export const certificationsData = [
+export interface CertificateItem {
+  name: string;
+  issuer: string;
+  date: string;
+  image?: string;
+  pdfUrl?: string;
+  verifyUrl?: string;
+  credentialId?: string;
+  category?: string;
+  badge?: string;
+}
+
+export const certificationsData: CertificateItem[] = [
   {
     name: "Software Development Certification",
     issuer: "Somali Network Operators Group (SomNOG)",
     date: "2024",
+    image: "/intro-Cover.jpg",
+    pdfUrl: "/resume.pdf",
+    verifyUrl: "https://somnog.so",
+    credentialId: "SOMNOG-2024-SD01",
+    category: "Software Engineering",
+    badge: "Verified SomNOG",
   },
   {
     name: "MERN Stack Development",
     issuer: "LinkedIn Learning",
     date: "2024",
+    image: "/Hero3DMe.png",
+    pdfUrl: "/resume.pdf",
+    verifyUrl: "https://linkedin.com/learning",
+    credentialId: "LL-MERN-882194",
+    category: "Full-Stack Development",
+    badge: "LinkedIn Certified",
   },
   {
     name: "Web Development Specialist",
     issuer: "CodSoft",
     date: "2024",
+    image: "/aboutimage.jpg",
+    pdfUrl: "/resume.pdf",
+    verifyUrl: "https://codsoft.in",
+    credentialId: "CS-WEB-2024-912",
+    category: "Web Development",
+    badge: "CodSoft Verified",
   },
   {
     name: "IBM Full Stack Software Developer",
     issuer: "IBM (Professional Certificate)",
-    date: "In Progress",
+    date: "2025",
+    image: "/HeroMe.png",
+    pdfUrl: "/resume.pdf",
+    verifyUrl: "https://coursera.org/verify/professional-cert/ibm",
+    credentialId: "IBM-FS-2025-003",
+    category: "Cloud & Full Stack",
+    badge: "IBM Professional",
   },
 ];

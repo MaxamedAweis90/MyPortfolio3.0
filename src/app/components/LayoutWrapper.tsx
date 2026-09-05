@@ -3,11 +3,13 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
+import BreadcrumbHeader from "./BreadcrumbHeader";
 import TargetCursor from "@/components/TargetCursor";
 import Footer from "./Footer";
 import SocialBar from "./SocialBar";
 import ScrollToTop from "./ScrollToTop";
 import dynamic from "next/dynamic";
+import RouteCommandPalette from "./RouteCommandPalette";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
@@ -17,10 +19,23 @@ const ChatWidget = dynamic(() => import("./chatapp/ChatWidget"), { ssr: false })
 const LayoutWrapper = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    // Track real visitor telemetry in Ugaas analytics
+    if (pathname && !pathname.startsWith("/ugaas")) {
+      try {
+        fetch("/api/ugaas/analytics", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            path: pathname,
+            referrer: typeof document !== "undefined" ? document.referrer || "direct" : "direct",
+          }),
+        }).catch(() => {});
+      } catch {}
+    }
+  }, [pathname]);
 
   // Check if current route uses a custom standalone layout (e.g. Studio, Admin /ugaas)
   const isCustomLayout =
@@ -29,13 +44,19 @@ const LayoutWrapper = ({ children }: { children: ReactNode }) => {
       pathname.startsWith("/ugaas") ||
       pathname.startsWith("/admin")));
 
+  // Navbar only appears on the main screen (landing page '/')
+  const isMainScreen = pathname === "/";
+
   return (
     <>
       {mounted && !isCustomLayout && <ChatWidget />}
       {mounted && !isCustomLayout && <ScrollToTop />}
+      {mounted && !isCustomLayout && <RouteCommandPalette />}
 
       <div className="w-full min-h-screen flex flex-col justify-between">
-        {!isCustomLayout && <Navbar />}
+        {!isCustomLayout && (
+          isMainScreen ? <Navbar /> : <BreadcrumbHeader />
+        )}
         {!isCustomLayout && <SocialBar />}
 
         {/* Main content wrapper */}

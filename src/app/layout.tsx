@@ -62,9 +62,32 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable}`}
+      data-theme="light"
+      className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} light`}
+      suppressHydrationWarning
     >
       <head>
+        {/* Anti-flicker inline theme initialization - defaults to light */}
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('theme');
+                  if (saved === 'dark' || saved === 'mytheme') {
+                    document.documentElement.setAttribute('data-theme', 'mytheme');
+                    document.documentElement.classList.remove('light');
+                  } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    document.documentElement.classList.add('light');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         {/* ✅ Remix Icons CDN */}
         <link
           href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css"

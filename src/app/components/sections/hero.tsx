@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,8 +22,36 @@ import {
 
 const Hero = () => {
   const router = useRouter();
-  const resume = appContextData.resume || "/resume.pdf";
+  const [resumeUrl, setResumeUrl] = useState(appContextData.resume || "/resume.pdf");
   const displayName = appContextData.name || "Eng_Aweis";
+
+  // Fetch live settings and listen for real-time updates
+  useEffect(() => {
+    const fetchLiveResume = async () => {
+      try {
+        const res = await fetch(`/api/ugaas/settings?t=${Date.now()}`, {
+          cache: "no-store",
+        });
+        const data = await res.json();
+        if (data.success && data.settings?.resumeUrl) {
+          setResumeUrl(data.settings.resumeUrl);
+        }
+      } catch {}
+    };
+
+    fetchLiveResume();
+
+    const handleUpdate = (e: any) => {
+      if (e.detail?.settings?.resumeUrl) {
+        setResumeUrl(e.detail.settings.resumeUrl);
+      } else {
+        fetchLiveResume();
+      }
+    };
+
+    window.addEventListener("social_links_updated", handleUpdate);
+    return () => window.removeEventListener("social_links_updated", handleUpdate);
+  }, []);
 
   const greetings = [
     "Hello, I'm",
@@ -243,8 +270,8 @@ const Hero = () => {
 
             {/* Line 2 (Mobile Only): Resume Button spanning exact combined width of Row 1 above */}
             <div className="w-full lg:hidden">
-              <Link
-                href={resume}
+              <a
+                href={resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-3 py-2.5 sm:py-3 rounded-full bg-brandAccent/90 backdrop-blur-md border border-brandAccent/50 text-white font-extrabold text-xs sm:text-sm hover:bg-brandAccent transition-all duration-300 shadow-xl shadow-brandAccent/30 hover:scale-[1.02] group"
@@ -253,15 +280,15 @@ const Hero = () => {
                 <span className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white transition-all duration-300 group-hover:bg-white group-hover:text-brandAccent group-hover:rotate-12 shadow-sm">
                   <FaFileDownload className="text-xs" />
                 </span>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
 
         {/* Resume CTA Button Pinned Inside Container Grid at Bottom-Right for Desktop lg: */}
         <div className="hidden lg:flex w-full justify-end pb-6 sm:pb-8 pointer-events-auto z-40">
-          <Link
-            href={resume}
+          <a
+            href={resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-3.5 pl-5 pr-2 py-2 rounded-full bg-brandAccent/90 backdrop-blur-md border border-brandAccent/50 text-white font-extrabold text-xs sm:text-sm hover:bg-brandAccent transition-all duration-300 shadow-xl shadow-brandAccent/30 hover:scale-105 group"
@@ -270,7 +297,7 @@ const Hero = () => {
             <span className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white transition-all duration-300 group-hover:bg-white group-hover:text-brandAccent group-hover:rotate-12 shadow-sm">
               <FaFileDownload className="text-xs" />
             </span>
-          </Link>
+          </a>
         </div>
       </div>
 

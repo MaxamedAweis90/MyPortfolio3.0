@@ -41,6 +41,7 @@ export type Tool = {
 
 export type Project = {
   _id: string;
+  id?: string;
   title: string;
   slug: string;
   category: "Web" | "Mobile" | "Design" | string;
@@ -49,6 +50,10 @@ export type Project = {
   longDescription?: string[];
   images?: string[];
   liveProjectUrl?: string;
+  liveUrl?: string;
+  githubUrl?: string;
+  clientUrl?: string;
+  serverUrl?: string;
   shortTagline?: string;
   appIconUrl?: string;
   apkUrl?: string;
@@ -62,4 +67,7 @@ export type Project = {
   createdAt?: string;
   popularity?: number;
   isPopular?: boolean;
+  projectNumber?: number;
+  sortOrder?: number;
+  order?: number;
 };

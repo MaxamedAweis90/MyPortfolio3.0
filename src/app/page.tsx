@@ -1,39 +1,63 @@
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import Hero from "@/components/sections/hero";
+import {
+  getPublicProjects,
+  getPublicExperiences,
+} from "@/lib/portfolio-service";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 // Lazy-load below-the-fold sections to minimize initial JavaScript bundle size
-const AboutSection = dynamic(() => import("./components/sections/aboutSection"), {
-  loading: () => <div className="min-h-[500px] bg-mainBg" />,
-});
+const AboutSection = nextDynamic(
+  () => import("./components/sections/aboutSection"),
+  {
+    loading: () => <div className="min-h-[500px] bg-mainBg" />,
+  },
+);
 
-const SkillsSection = dynamic(() => import("./components/sections/skillsSection"), {
-  loading: () => <div className="min-h-[500px] bg-mainBg" />,
-});
+const SkillsSection = nextDynamic(
+  () => import("./components/sections/skillsSection"),
+  {
+    loading: () => <div className="min-h-[500px] bg-mainBg" />,
+  },
+);
 
-const MyWorkSection = dynamic(() => import("./components/sections/MyWorkSection"), {
-  loading: () => <div className="min-h-[600px] bg-mainBg" />,
-});
+const MyWorkSection = nextDynamic(
+  () => import("./components/sections/MyWorkSection"),
+  {
+    loading: () => <div className="min-h-[600px] bg-mainBg" />,
+  },
+);
 
-const ExperienceSection = dynamic(() => import("./components/sections/experienceSection"), {
-  loading: () => <div className="min-h-[500px] bg-mainBg" />,
-});
+const ExperienceSection = nextDynamic(
+  () => import("./components/sections/experienceSection"),
+  {
+    loading: () => <div className="min-h-[500px] bg-mainBg" />,
+  },
+);
 
-const Services = dynamic(() => import("./components/sections/services"), {
+const Services = nextDynamic(() => import("./components/sections/services"), {
   loading: () => <div className="min-h-[400px] bg-mainBg" />,
 });
 
-const Contact = dynamic(() => import("./components/sections/contact"), {
+const Contact = nextDynamic(() => import("./components/sections/contact"), {
   loading: () => <div className="min-h-[400px] bg-mainBg" />,
 });
 
-const Page = () => {
+const Page = async () => {
+  const [liveProjects, liveExperiences] = await Promise.all([
+    getPublicProjects(),
+    getPublicExperiences(),
+  ]);
+
   return (
     <div className="w-full">
       <Hero />
       <AboutSection />
+      <MyWorkSection initialProjects={liveProjects} />
       <SkillsSection />
-      <MyWorkSection />
-      <ExperienceSection />
+      <ExperienceSection initialExperiences={liveExperiences} />
       <Services />
       <Contact />
     </div>

@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface IProject extends Document {
   title: string;
   slug: string;
-  category: "All" | "Web" | "Mobile" | "Design";
+  category: string;
   desc: string;
   fullDesc?: string;
   liveUrl?: string;
@@ -12,10 +12,16 @@ export interface IProject extends Document {
   serverUrl?: string;
   playStoreUrl?: string;
   appStoreUrl?: string;
+  appIconUrl?: string;
+  apkUrl?: string;
+  screenshots?: string[];
+  images?: string[];
   image: string;
   tools: string[];
   isFeatured: boolean;
   order: number;
+  projectNumber?: number;
+  sortOrder?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,8 +43,8 @@ const ProjectSchema = new Schema<IProject>(
     },
     category: {
       type: String,
-      enum: ["All", "Web", "Mobile", "Design"],
       default: "Web",
+      trim: true,
     },
     desc: {
       type: String,
@@ -73,6 +79,22 @@ const ProjectSchema = new Schema<IProject>(
       type: String,
       trim: true,
     },
+    appIconUrl: {
+      type: String,
+      trim: true,
+    },
+    apkUrl: {
+      type: String,
+      trim: true,
+    },
+    screenshots: {
+      type: [String],
+      default: [],
+    },
+    images: {
+      type: [String],
+      default: [],
+    },
     image: {
       type: String,
       required: [true, "Project image URL is required"],
@@ -90,11 +112,28 @@ const ProjectSchema = new Schema<IProject>(
       type: Number,
       default: 0,
     },
+    projectNumber: {
+      type: Number,
+      index: true,
+    },
+    sortOrder: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
+
+// Invalidate cached model if created before projectNumber was added to schema
+if (mongoose.models && mongoose.models.Project) {
+  if (!mongoose.models.Project.schema.paths.projectNumber) {
+    delete (mongoose.models as any).Project;
+  }
+}
 
 export const Project: Model<IProject> =
   mongoose.models.Project || mongoose.model<IProject>("Project", ProjectSchema);

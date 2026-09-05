@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ReactPlayer from "react-player/youtube";
 import { motion } from "framer-motion";
@@ -15,7 +15,7 @@ import { LucideVerified } from "lucide-react";
 import { GiSpeaker, GiSpeakerOff } from "react-icons/gi";
 
 import Certificates from "./certificates";
-import { certificatesData } from "@/data/portfolioData";
+import type { Certificate } from "@/types/portfolio";
 
 import {
   SiVite,
@@ -44,7 +44,29 @@ export default function Page() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [played, setPlayed] = useState(0);
-  const certificates = certificatesData;
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+
+  useEffect(() => {
+    fetch("/api/ugaas/experience", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.certificates)) {
+          setCertificates(
+            data.certificates.map((c: any) => ({
+              _id: c.id || c._id,
+              title: c.title,
+              issuer: c.issuer || "Certificate Authority",
+              issuedDate: c.createdAt ? new Date(c.createdAt).getFullYear().toString() : "2024",
+              category: { _ref: c.category || "web", title: c.category || "Web Development" },
+              imageUrl: c.image || "/Hero3DMe.png",
+              verificationUrl: c.link || "",
+              verificationCode: c.code || "",
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const togglePlayPause = () => setIsPlaying((prev) => !prev);
   const toggleMute = () => setIsMuted((prev) => !prev);
