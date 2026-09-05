@@ -3,7 +3,6 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/ugaas/lib/db";
 import { Project } from "@/ugaas/models/Project";
 import { ProjectCategory } from "@/ugaas/models/ProjectCategory";
-import { projectsData } from "@/data/portfolioData";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -13,7 +12,7 @@ export async function GET() {
     await connectToDatabase();
 
     // 1. Fetch projects respecting manual drag order (sortOrder) or creation order
-    let projects = await Project.find()
+    const projects = await Project.find()
       .sort({ sortOrder: 1, createdAt: -1, _id: -1 })
       .lean();
 

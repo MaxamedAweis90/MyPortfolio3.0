@@ -10,6 +10,7 @@ export async function GET() {
 
     if (!settings) {
       // Create default settings if not exists
+      const { defaultSocialLinks } = await import("@/ugaas/models/Settings");
       const created = await Settings.create({
         fullName: "Mohamed Aweis",
         headline: "Full-Stack Software Engineer & Mobile Developer",
@@ -19,10 +20,21 @@ export async function GET() {
         bio: "Passionate engineer crafting scalable web applications, mobile experiences, and modern cloud architectures.",
         avatarUrl: "/myProfile.png",
         resumeUrl: "/resume.pdf",
+        socialLinks: defaultSocialLinks,
         githubUrl: "https://github.com/MaxamedAweis90",
+        githubEnabled: true,
         linkedinUrl: "https://linkedin.com/in/maxamedaweis90",
+        linkedinEnabled: true,
+        behanceUrl: "https://behance.net/maxamedaweys3",
+        behanceEnabled: true,
+        youtubeUrl: "https://youtube.com/@Eng_Aweis",
+        youtubeEnabled: true,
+        instagramUrl: "https://instagram.com/eng_aweis",
+        instagramEnabled: true,
         twitterUrl: "https://x.com/maxamedaweis90",
+        twitterEnabled: false,
         discordTag: "aweis90",
+        discordEnabled: false,
         portfolioUrl: "https://aweis.dev",
         appsShortcut: "Ctrl+K",
         terminalShortcut: "Ctrl+`",
@@ -30,6 +42,9 @@ export async function GET() {
         enableNotifications: true,
       });
       settings = created.toObject();
+    } else if (!Array.isArray(settings.socialLinks) || settings.socialLinks.length === 0) {
+      const { defaultSocialLinks } = await import("@/ugaas/models/Settings");
+      settings.socialLinks = defaultSocialLinks;
     }
 
     return NextResponse.json({
@@ -53,14 +68,11 @@ export async function PUT(req: NextRequest) {
     await connectToDatabase();
     const body = await req.json();
 
-    let settings = await Settings.findOne();
-
-    if (!settings) {
-      settings = await Settings.create(body);
-    } else {
-      Object.assign(settings, body);
-      await settings.save();
-    }
+    const settings = await Settings.findOneAndUpdate(
+      {},
+      { $set: body },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    ).lean();
 
     // Record activity audit log
     const { logActivity } = await import("@/ugaas/lib/audit");
@@ -70,7 +82,7 @@ export async function PUT(req: NextRequest) {
       description: "Updated developer profile and system settings",
       details: {
         updatedKeys: Object.keys(body),
-        maxConcurrentSessions: settings.maxConcurrentSessions,
+        maxConcurrentSessions: settings?.maxConcurrentSessions,
       },
     });
 

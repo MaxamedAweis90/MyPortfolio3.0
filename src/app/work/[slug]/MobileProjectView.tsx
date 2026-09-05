@@ -9,7 +9,6 @@ import {
   Github,
   ChevronLeft,
   ChevronRight,
-  Star,
   ShieldCheck,
   ExternalLink,
   X,

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useCallback } from "react";
-import { UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle, Link as LinkIcon } from "lucide-react";
+import { UploadCloud, Loader2, Image as ImageIcon, Link as LinkIcon } from "lucide-react";
 import { toast } from "react-toastify";
 
 interface ImageDropzoneProps {
@@ -35,27 +35,30 @@ export function ImageDropzone({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const uploadFile = async (file: File): Promise<string | null> => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder", folder);
+  const uploadFile = useCallback(
+    async (file: File): Promise<string | null> => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", folder);
 
-    const res = await fetch("/api/ugaas/upload", {
-      method: "POST",
-      body: formData,
-    });
+      const res = await fetch("/api/ugaas/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-    const data = await res.json();
-    if (data.success && data.url) {
-      if (data.message && data.storage === "local-fallback") {
-        // Subtle hint for Vercel Blob setup
-        console.info("ℹ️ [Upload Storage]:", data.message);
+      const data = await res.json();
+      if (data.success && data.url) {
+        if (data.message && data.storage === "local-fallback") {
+          // Subtle hint for Vercel Blob setup
+          console.info("ℹ️ [Upload Storage]:", data.message);
+        }
+        return data.url;
+      } else {
+        throw new Error(data.error || "Upload failed");
       }
-      return data.url;
-    } else {
-      throw new Error(data.error || "Upload failed");
-    }
-  };
+    },
+    [folder]
+  );
 
   const handleFiles = useCallback(
     async (files: FileList | File[]) => {
@@ -106,7 +109,7 @@ export function ImageDropzone({
         }
       }
     },
-    [folder, multiple, onUploadComplete]
+    [multiple, onUploadComplete, uploadFile]
   );
 
   const handleDragOver = (e: React.DragEvent) => {

@@ -334,13 +334,9 @@ export function VercelAnalyticsCard() {
                 <button
                   onClick={() => setActiveView("heatmap")}
                   title="Switch to Calendar Heatmap"
-                  className={`px-2.5 py-1 rounded-md transition-colors flex items-center gap-1 ${
-                    activeView === "heatmap"
-                      ? "bg-surface text-yellow-400 shadow-xs font-bold border border-yellow-400/30"
-                      : "hover:text-yellow-400"
-                  }`}
+                  className="px-2.5 py-1 rounded-md transition-colors flex items-center gap-1 hover:text-yellow-400"
                 >
-                  <CalendarIcon className={`w-3 h-3 ${activeView === "heatmap" ? "text-yellow-400" : ""}`} />
+                  <CalendarIcon className="w-3 h-3 text-mutedText group-hover:text-yellow-400" />
                   <span>Calendar</span>
                 </button>
               </div>

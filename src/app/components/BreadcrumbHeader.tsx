@@ -187,6 +187,54 @@ export default function BreadcrumbHeader() {
               );
             })}
           </div>
+
+          {/* Quick Section Navlinks for Experience Screen */}
+          {pathname === "/experience" && (
+            <div className="hidden md:flex items-center gap-1 pl-3 ml-2 border-l border-borderSubtle/60 text-xs shrink-0">
+              <a
+                href="#experience"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("experience")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className={`px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                  isDarkMode
+                    ? "text-mutedText hover:text-brandAccent hover:bg-white/5"
+                    : "text-slate-600 hover:text-brandAccent hover:bg-slate-100"
+                }`}
+              >
+                Experience
+              </a>
+              <a
+                href="#education"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("education")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className={`px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                  isDarkMode
+                    ? "text-mutedText hover:text-emerald-400 hover:bg-white/5"
+                    : "text-slate-600 hover:text-emerald-600 hover:bg-slate-100"
+                }`}
+              >
+                Education
+              </a>
+              <a
+                href="#certificates"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("certificates")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className={`px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                  isDarkMode
+                    ? "text-mutedText hover:text-purple-400 hover:bg-white/5"
+                    : "text-slate-600 hover:text-purple-600 hover:bg-slate-100"
+                }`}
+              >
+                Certificates
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Right Side: Theme Toggle & Logo */}

@@ -5,23 +5,44 @@ import fs from "fs/promises";
 
 export const dynamic = "force-dynamic";
 
-// Maximum 10MB file limit
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
+// Maximum 15MB file limit
+const MAX_FILE_SIZE = 15 * 1024 * 1024;
 
 const ALLOWED_MIME_TYPES = new Set([
+  // Images
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/gif",
   "image/svg+xml",
   "image/avif",
+  // Documents / Resumes
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/octet-stream",
+  "text/plain",
+]);
+
+const ALLOWED_EXTENSIONS = new Set([
+  "jpg",
+  "jpeg",
+  "png",
+  "webp",
+  "gif",
+  "svg",
+  "avif",
+  "pdf",
+  "doc",
+  "docx",
+  "txt",
 ]);
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    const folder = (formData.get("folder") as string) || "projects";
+    const folder = (formData.get("folder") as string) || "resumes";
 
     if (!file) {
       return NextResponse.json(
@@ -30,11 +51,13 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!ALLOWED_MIME_TYPES.has(file.type)) {
+    const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
+
+    if (!ALLOWED_MIME_TYPES.has(file.type) && !ALLOWED_EXTENSIONS.has(fileExtension)) {
       return NextResponse.json(
         {
           success: false,
-          error: `Unsupported file type (${file.type}). Please upload PNG, JPG, WebP, SVG, or GIF.`,
+          error: `Unsupported file type (${file.type || fileExtension}). Allowed types: PDF, DOC, DOCX, PNG, JPG, WebP, SVG.`,
         },
         { status: 400 }
       );
@@ -44,7 +67,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          error: "File size exceeds the 10MB limit.",
+          error: "File size exceeds the 15MB limit.",
         },
         { status: 400 }
       );

@@ -64,7 +64,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <head>
         {/* Anti-flicker inline theme initialization - defaults to light */}
-        <script
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

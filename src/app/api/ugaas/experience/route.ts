@@ -3,98 +3,15 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/ugaas/lib/db";
 import { Experience } from "@/ugaas/models/Experience";
 import { Certificate } from "@/ugaas/models/Certificate";
-import {
-  experiencesData,
-  educationData,
-  certificationsData,
-} from "@/data/experienceData";
-import { certificatesData } from "@/data/portfolioData";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
   try {
     await connectToDatabase();
-    let experiences = await Experience.find().sort({ order: 1, createdAt: -1 }).lean();
-    let certificates = await Certificate.find().sort({ order: 1, createdAt: -1 }).lean();
-
-    // Auto-seed if both collections are empty
-    if (!experiences || experiences.length === 0) {
-      const formattedExperiences = [
-        ...experiencesData.map((e, index) => ({
-          role: e.role,
-          company: e.company,
-          duration: e.period || "Present",
-          badges: [e.type].filter(Boolean),
-          highlights: e.highlights || [],
-          techStack: e.technologies || [],
-          type: "career" as const,
-          order: index + 1,
-        })),
-        ...educationData.map((ed, index) => ({
-          role: ed.degree,
-          company: ed.institution,
-          duration: ed.period || "2022 - 2026",
-          badges: [ed.location].filter(Boolean),
-          highlights: ed.details ? [ed.details] : [],
-          techStack: [],
-          type: "education" as const,
-          order: index + 10,
-        })),
-      ];
-      await Experience.insertMany(formattedExperiences);
-      experiences = await Experience.find().sort({ order: 1, createdAt: -1 }).lean();
-    }
-
-    if (!certificates || certificates.length === 0) {
-      const allCerts: Array<{
-        title: string;
-        issuer: string;
-        link?: string;
-        code?: string;
-        image?: string;
-        category?: string;
-      }> = [
-        ...certificatesData.map((c) => ({
-          title: c.title,
-          issuer: c.issuer || "Certificate Authority",
-          link: c.verificationUrl || "",
-          code: c.verificationCode || "",
-          image: c.imageUrl || "/Hero3DMe.png",
-          category:
-            typeof c.category === "object" && c.category?.title
-              ? c.category.title
-              : "Certification",
-        })),
-        ...certificationsData.map((c) => ({
-          title: c.name,
-          issuer: c.issuer || "Certificate Authority",
-          link: "",
-          code: "",
-          image: "/Hero3DMe.png",
-          category: "Certification",
-        })),
-      ];
-
-      const uniqueCertsMap = new Map<string, (typeof allCerts)[number]>();
-      allCerts.forEach((c) => {
-        if (c && c.title && !uniqueCertsMap.has(c.title)) {
-          uniqueCertsMap.set(c.title, c);
-        }
-      });
-
-      const formattedCertificates = Array.from(uniqueCertsMap.values()).map(
-        (c, index) => ({
-          title: c.title,
-          issuer: c.issuer,
-          link: c.link || "",
-          code: c.code || "",
-          image: c.image || "/Hero3DMe.png",
-          category: c.category || "Certification",
-          order: index + 1,
-        })
-      );
-      await Certificate.insertMany(formattedCertificates);
-      certificates = await Certificate.find().sort({ order: 1, createdAt: -1 }).lean();
-    }
+    const experiences = await Experience.find().sort({ order: 1, createdAt: -1 }).lean();
+    const certificates = await Certificate.find().sort({ order: 1, createdAt: -1 }).lean();
 
     const sanitizedExperiences = experiences.map((e: any) => ({
       ...e,
@@ -108,11 +25,18 @@ export async function GET() {
       _id: c._id.toString(),
     }));
 
-    return NextResponse.json({
-      success: true,
-      experiences: sanitizedExperiences,
-      certificates: sanitizedCertificates,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        experiences: sanitizedExperiences,
+        certificates: sanitizedCertificates,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
   } catch (error) {
     console.error("❌ [Experience Fetch Error]:", error);
     return NextResponse.json(

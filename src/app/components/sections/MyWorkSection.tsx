@@ -37,6 +37,22 @@ export default function MyWorkSection({ initialProjects }: MyWorkSectionProps = 
   const totalProjects = projects.length;
   const totalPages = Math.max(1, Math.ceil(totalProjects / ITEMS_PER_PAGE));
 
+  // Identify the 2 most recently created projects across catalog for consistency with /work
+  const latestTwoProjectIds = React.useMemo(() => {
+    const sortedByLatest = [...projects].sort((a, b) => {
+      return (
+        new Date(b.createdAt || 0).getTime() -
+        new Date(a.createdAt || 0).getTime()
+      );
+    });
+    return new Set(
+      sortedByLatest
+        .slice(0, 2)
+        .map((p) => p._id || p.id || p.slug)
+        .filter(Boolean)
+    );
+  }, [projects]);
+
   // Dynamic pagination slicing: 6 items per page (2 rows of 3 columns)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentProjects = projects.slice(
@@ -81,15 +97,19 @@ export default function MyWorkSection({ initialProjects }: MyWorkSectionProps = 
           </p>
         </div>
 
-        {/* 6 Projects Grid: 2 rows of 3 columns on desktop, responsive 1 column fallback */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch min-h-[500px]">
-          {currentProjects.map((proj, idx) => (
-            <ProjectCard
-              key={proj._id || proj.id || proj.slug || idx}
-              proj={proj}
-              index={startIndex + idx}
-            />
-          ))}
+        {/* 6 Projects Grid: 2 rows of 3 columns matching /work screen */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+          {currentProjects.map((proj, idx) => {
+            const isNew = latestTwoProjectIds.has(proj._id || proj.id || proj.slug || "");
+            return (
+              <ProjectCard
+                key={proj._id || proj.id || proj.slug || idx}
+                proj={proj}
+                index={startIndex + idx}
+                isNew={isNew}
+              />
+            );
+          })}
         </div>
 
         {/* Single Bottom Action & Pagination Control Row */}

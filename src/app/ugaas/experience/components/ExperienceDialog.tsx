@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -24,14 +23,13 @@ import {
   Loader2,
   ListPlus,
   Layers,
-  Image as ImageIcon,
   FileText,
-  ExternalLink,
   Link2,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { ToolBadge, POPULAR_TOOLS, getToolIcon } from "../../projects/components/ToolIconHelper";
 import { ExperienceItem } from "./DeleteExperienceConfirmModal";
+import { ImageDropzone } from "@/app/ugaas/components/ImageDropzone";
 
 interface ExperienceDialogProps {
   isOpen: boolean;
@@ -190,8 +188,6 @@ export function ExperienceDialog({
     }
   };
 
-  const isPdf = image.toLowerCase().endsWith(".pdf") || credentialUrl.toLowerCase().endsWith(".pdf");
-
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl bg-surface border-borderSubtle text-primaryText rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
@@ -329,31 +325,30 @@ export function ExperienceDialog({
 
           {/* CERTIFICATION SPECIFIC: IMAGE OR PDF ATTACHMENT */}
           {type === "certification" && (
-            <div className="space-y-3 p-4 rounded-xl bg-[#111622] border border-[#0B82EC]/30">
+            <div className="space-y-4 p-4 rounded-2xl bg-[#111622] border border-[#0B82EC]/30 shadow-inner">
               <div className="flex items-center justify-between">
                 <Label className="text-xs font-bold text-white flex items-center gap-1.5">
                   <Award className="w-4 h-4 text-[#2DD4BF]" />
                   Certificate Image or PDF Document
                 </Label>
-                <span className="text-[10px] text-mutedText">PNG, JPG, WebP, or PDF</span>
+                <span className="text-[10px] text-mutedText">16:10 Aspect Ratio • Max 15MB</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Certificate Image/PDF URL input */}
-                <div className="space-y-1 sm:col-span-2">
-                  <Label htmlFor="cert-image" className="text-[11px] font-medium text-mutedText flex items-center gap-1">
-                    <ImageIcon className="w-3.5 h-3.5 text-[#0B82EC]" />
-                    Certificate Image or PDF URL
-                  </Label>
-                  <Input
-                    id="cert-image"
-                    placeholder="/Hero3DMe.png or https://.../cert.pdf"
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
-                    className="bg-[#0E131D] border-[#222938] text-white text-xs"
-                  />
-                </div>
+              {/* Drag & Drop Upload Zone */}
+              <ImageDropzone
+                folder="certificates"
+                aspectRatio="16:10"
+                label="Upload Certificate (Image or PDF)"
+                description="Drag & drop or browse device file. JPG, PNG, WebP, or PDF."
+                placeholderUrl={image}
+                onUploadComplete={(uploaded) => {
+                  const url = Array.isArray(uploaded) ? uploaded[0] : uploaded;
+                  setImage(url);
+                  toast.success("Certificate document attached!");
+                }}
+              />
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 {/* Verification URL */}
                 <div className="space-y-1">
                   <Label htmlFor="cert-url" className="text-[11px] font-medium text-mutedText flex items-center gap-1">
@@ -384,48 +379,6 @@ export function ExperienceDialog({
                   />
                 </div>
               </div>
-
-              {/* Live Image / PDF Document Preview */}
-              {image && (
-                <div className="pt-2 border-t border-borderSubtle/60">
-                  <span className="text-[10px] uppercase font-bold text-mutedText tracking-wider block mb-1.5">
-                    Attached Document Preview
-                  </span>
-
-                  {isPdf ? (
-                    <div className="p-3 rounded-lg bg-[#0E131D] border border-borderSubtle flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 flex items-center justify-center">
-                          <FileText className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-xs font-semibold text-white truncate">PDF Certificate Document</p>
-                          <p className="text-[10px] text-mutedText truncate">{image}</p>
-                        </div>
-                      </div>
-                      <a
-                        href={image}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs text-[#0B82EC] hover:underline flex items-center gap-1 shrink-0 ml-2"
-                      >
-                        Open <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-                  ) : (
-                    <div className="relative w-full h-36 rounded-lg overflow-hidden bg-[#0E131D] border border-borderSubtle flex items-center justify-center">
-                      <Image
-                        src={image}
-                        alt="Certificate Preview"
-                        fill
-                        sizes="(max-width: 768px) 100vw, 400px"
-                        className="object-contain p-2"
-                        onError={() => {}}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           )}
 

@@ -62,10 +62,10 @@ export default function ProjectCard({ proj, index, isNew }: ProjectCardProps) {
       {/* Top subtle light flare */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-brandAccent/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-      <div className="relative z-10 space-y-4 flex-1 flex flex-col justify-between">
-        <div>
+      <div className="relative z-10 flex-1 flex flex-col justify-between gap-5">
+        <div className="space-y-3.5">
           {/* Top Header Row: Project Number + New Badge + Category + Hover Arrow */}
-          <div className="flex items-center justify-between mb-3.5">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="text-2xl sm:text-3xl font-black text-primaryText tracking-tight group-hover:text-brandAccent transition-colors">
                 {formattedNumber}
@@ -95,7 +95,7 @@ export default function ProjectCard({ proj, index, isNew }: ProjectCardProps) {
             </h3>
 
             {/* Tech Badges Row */}
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
               {techList.slice(0, 4).map((tech, idx) => (
                 <span
                   key={`${tech}-${idx}`}
@@ -113,15 +113,15 @@ export default function ProjectCard({ proj, index, isNew }: ProjectCardProps) {
           </div>
         </div>
 
-        {/* Project Image Preview Container */}
-        <div className="relative w-full h-48 sm:h-52 rounded-2xl overflow-hidden mt-4 border border-borderSubtle/80 bg-mainBg shrink-0 shadow-inner group/img">
+        {/* Project Image Preview Container - Fixed 16:9 Aspect Ratio with object-cover */}
+        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-borderSubtle/80 bg-mainBg shrink-0 shadow-inner group/img">
           <Image
             src={proj.images?.[0] || proj.screenshots?.[0] || "/Hero3DMe.png"}
             alt={proj.title}
             fill
             loading="lazy"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
           />
 
           {/* Overlay gradient mask */}

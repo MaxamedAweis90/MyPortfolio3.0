@@ -32,11 +32,7 @@ import {
   Trash2,
   ArrowLeft,
   ArrowRight,
-  Monitor,
-  Laptop,
   ExternalLink,
-  Lock,
-  Eye,
   X,
 } from "lucide-react";
 import { FaApple, FaGooglePlay } from "react-icons/fa";
@@ -113,10 +109,12 @@ export function ProjectDialog({
   const [screenshots, setScreenshots] = useState<string[]>([]);
   const [newScreenshotInput, setNewScreenshotInput] = useState("");
   const [images, setImages] = useState<string[]>([]);
-  const [newImageInput, setNewImageInput] = useState("");
   const [image, setImage] = useState("/Hero3DMe.png");
-  const [tools, setTools] = useState<string[]>(["Next.js", "TypeScript", "TailwindCSS"]);
+  const [tools, setTools] = useState<string[]>([]);
   const [customToolInput, setCustomToolInput] = useState("");
+  const [presetTools, setPresetTools] = useState<Array<{ name: string; iconKey?: string; color?: string }>>(() => [
+    ...POPULAR_TOOLS,
+  ]);
   const [isFeatured, setIsFeatured] = useState(false);
 
   // Derived category mode
@@ -150,8 +148,24 @@ export function ProjectDialog({
           : (project.image ? [project.image] : ["/Hero3DMe.png"])
       );
       setImage(project.image || "/Hero3DMe.png");
-      setTools(project.tools || []);
+      const initialTools = project.tools || [];
+      setTools(initialTools);
       setIsFeatured(Boolean(project.isFeatured));
+
+      // Register any custom tools on the project into the presets catalogue so they are displayed and highlighted
+      if (initialTools.length > 0) {
+        setPresetTools((prev) => {
+          const existing = new Set(prev.map((p) => p.name.toLowerCase()));
+          const extra: Array<{ name: string; iconKey?: string; color?: string }> = [];
+          initialTools.forEach((t) => {
+            if (!existing.has(t.toLowerCase())) {
+              existing.add(t.toLowerCase());
+              extra.push({ name: t, color: "#0B82EC" });
+            }
+          });
+          return extra.length > 0 ? [...prev, ...extra] : prev;
+        });
+      }
     } else {
       setTitle("");
       setSlug("");
@@ -174,42 +188,111 @@ export function ProjectDialog({
       setIsFeatured(false);
     }
     setNewScreenshotInput("");
-    setNewImageInput("");
     setActiveTab("general");
   }, [project, isOpen]);
 
   // Title change with auto-slug generation
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement> | string) => {
+    const val = typeof e === "string" ? e : e.target.value;
     setTitle(val);
     if (!isSlugManuallyEdited) {
-      const generatedSlug = val
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)+/g, "");
-      setSlug(generatedSlug);
+      setSlug(
+        val
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+      );
     }
   };
 
-  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement> | string) => {
+    const val = typeof e === "string" ? e : e.target.value;
     setIsSlugManuallyEdited(true);
     setSlug(
-      e.target.value
+      val
         .toLowerCase()
+        .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "")
     );
   };
 
+  const [draggedToolIndex, setDraggedToolIndex] = useState<number | null>(null);
+  const [dragOverToolIndex, setDragOverToolIndex] = useState<number | null>(null);
+
   const addTool = (toolName: string) => {
     const trimmed = toolName.trim();
     if (!trimmed) return;
-    if (tools.includes(trimmed)) {
-      toast.info(`"${trimmed}" is already added.`);
+
+    // Check if tool already exists in selected tools (case-insensitive)
+    const existingIndex = tools.findIndex(
+      (t) => t.toLowerCase() === trimmed.toLowerCase()
+    );
+    if (existingIndex !== -1) {
+      toast.info(`"${tools[existingIndex]}" is already added.`);
       return;
     }
-    setTools([...tools, trimmed]);
+
+    // Check if it matches an existing preset item to adopt canonical casing
+    const matchedPreset = presetTools.find(
+      (p) => p.name.toLowerCase() === trimmed.toLowerCase()
+    );
+    const canonicalName = matchedPreset ? matchedPreset.name : trimmed;
+
+    setTools((prev) => [...prev, canonicalName]);
     setCustomToolInput("");
+
+    // If it's a completely new custom tool, also register it in preset catalogue so it's visible & highlighted
+    if (!matchedPreset) {
+      setPresetTools((prev) => [...prev, { name: canonicalName, color: "#0B82EC" }]);
+    }
+  };
+
+  const removeTool = (toolName: string) => {
+    setTools((prev) =>
+      prev.filter((t) => t.toLowerCase() !== toolName.toLowerCase())
+    );
+  };
+
+  const handleToolDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedToolIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", index.toString());
+  };
+
+  const handleToolDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dragOverToolIndex !== index) {
+      setDragOverToolIndex(index);
+    }
+  };
+
+  const handleToolDragLeave = (index: number) => {
+    if (dragOverToolIndex === index) {
+      setDragOverToolIndex(null);
+    }
+  };
+
+  const handleToolDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedToolIndex === null || draggedToolIndex === targetIndex) {
+      setDraggedToolIndex(null);
+      setDragOverToolIndex(null);
+      return;
+    }
+    const updated = [...tools];
+    const [moved] = updated.splice(draggedToolIndex, 1);
+    updated.splice(targetIndex, 0, moved);
+    setTools(updated);
+    setDraggedToolIndex(null);
+    setDragOverToolIndex(null);
+  };
+
+  const handleToolDragEnd = () => {
+    setDraggedToolIndex(null);
+    setDragOverToolIndex(null);
   };
 
   const handleAddScreenshot = (urlToAdd: string) => {
@@ -235,31 +318,6 @@ export function ProjectDialog({
     updated[index] = updated[newIdx];
     updated[newIdx] = temp;
     setScreenshots(updated);
-  };
-
-  const handleAddImage = (urlToAdd: string) => {
-    const trimmed = urlToAdd.trim();
-    if (!trimmed) return;
-    if (images.includes(trimmed)) {
-      toast.info("This image is already in the gallery.");
-      return;
-    }
-    setImages((prev) => [...prev, trimmed]);
-    setNewImageInput("");
-  };
-
-  const handleRemoveImage = (indexToRemove: number) => {
-    setImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
-  };
-
-  const handleMoveImage = (index: number, direction: "left" | "right") => {
-    const newIdx = direction === "left" ? index - 1 : index + 1;
-    if (newIdx < 0 || newIdx >= images.length) return;
-    const updated = [...images];
-    const temp = updated[index];
-    updated[index] = updated[newIdx];
-    updated[newIdx] = temp;
-    setImages(updated);
   };
 
   const handleAddInlineCategory = async (e?: React.FormEvent) => {
@@ -439,7 +497,7 @@ export function ProjectDialog({
               },
               {
                 id: "media",
-                label: isMobile ? "App Icon & Screens 📱" : "Widescreen Gallery & Cover 💻",
+                label: isMobile ? "App Icon & Screens 📱" : "Project Thumbnail 💻",
               },
             ].map((tab) => (
               <button
@@ -650,15 +708,23 @@ export function ProjectDialog({
               <div className="space-y-2">
                 <Label className="text-xs font-semibold text-mutedText flex items-center justify-between">
                   <span>Selected Tech Stack ({tools.length})</span>
-                  <span className="text-[11px] text-mutedText">Click × to remove</span>
+                  <span className="text-[11px] text-mutedText">Drag to reorder • Click × to remove</span>
                 </Label>
 
                 <div className="p-3.5 rounded-xl bg-[#111622] border border-borderSubtle min-h-[50px] flex flex-wrap gap-2 items-center">
                   {tools.length > 0 ? (
-                    tools.map((tool) => (
+                    tools.map((tool, idx) => (
                       <ToolBadge
-                        key={tool}
+                        key={`${tool}-${idx}`}
                         tool={tool}
+                        draggable
+                        onDragStart={(e) => handleToolDragStart(e, idx)}
+                        onDragOver={(e) => handleToolDragOver(e, idx)}
+                        onDragLeave={() => handleToolDragLeave(idx)}
+                        onDrop={(e) => handleToolDrop(e, idx)}
+                        onDragEnd={handleToolDragEnd}
+                        isDragging={draggedToolIndex === idx}
+                        isDragOver={dragOverToolIndex === idx}
                         onRemove={() => removeTool(tool)}
                       />
                     ))
@@ -705,8 +771,10 @@ export function ProjectDialog({
                   Popular Preset Stack (Click to Add)
                 </Label>
                 <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-1 custom-scrollbar">
-                  {POPULAR_TOOLS.map((item) => {
-                    const isSelected = tools.includes(item.name);
+                  {presetTools.map((item) => {
+                    const isSelected = tools.some(
+                      (t) => t.toLowerCase() === item.name.toLowerCase()
+                    );
                     const Icon = getToolIcon(item.name);
 
                     return (
@@ -718,7 +786,7 @@ export function ProjectDialog({
                         }
                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                           isSelected
-                            ? "bg-[#0B82EC]/20 border-[#0B82EC] text-white"
+                            ? "bg-[#0B82EC]/20 border-[#0B82EC] text-white shadow-sm shadow-[#0B82EC]/20"
                             : "bg-[#111622] border-[#222938] text-mutedText hover:text-white hover:border-borderSubtle"
                         }`}
                       >
@@ -1145,47 +1213,57 @@ export function ProjectDialog({
                   </div>
                 </div>
               ) : (
-                /* ==================== WEB MEDIA SUITE ==================== */
+                /* ==================== WEB MEDIA SUITE (SINGLE THUMBNAIL) ==================== */
                 <div className="space-y-6">
-                  {/* 1. Desktop Hero Banner & Browser Mockup Preview */}
+                  {/* Single Project Thumbnail Upload & Preview */}
                   <div className="p-4 rounded-2xl bg-[#111622] border border-borderSubtle space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                          <Monitor className="w-4 h-4 text-[#0B82EC]" />
-                          <span>Primary Desktop Banner & Browser Mockup</span>
+                          <ImageIcon className="w-4 h-4 text-[#0B82EC]" />
+                          <span>Project Thumbnail</span>
                         </h4>
                         <p className="text-xs text-mutedText mt-0.5">
-                          High-resolution widescreen screenshot displayed in the desktop browser window frame.
+                          High-resolution preview thumbnail displayed alongside the project headline on the case study page.
                         </p>
                       </div>
                       <Badge className="bg-[#0B82EC]/10 border-[#0B82EC]/20 text-[#0B82EC] text-[10px]">
-                        16:10 Widescreen
+                        16:10 / 16:9
                       </Badge>
                     </div>
 
                     <div className="space-y-3">
                       <ImageDropzone
-                        label="Upload Desktop Banner (16:10 / 16:9)"
-                        description="Drag & drop widescreen screenshot or browse from device"
+                        label="Upload Project Thumbnail (16:10 / 16:9)"
+                        description="Drag & drop project screenshot/thumbnail or browse from device"
                         aspectRatio="16:10"
                         folder="banners"
                         placeholderUrl={image}
-                        onUploadComplete={(url) => setImage(Array.isArray(url) ? url[0] : url)}
+                        onUploadComplete={(url) => {
+                          const uploadedUrl = Array.isArray(url) ? url[0] : url;
+                          setImage(uploadedUrl);
+                          setImages([uploadedUrl]);
+                        }}
                       />
                       <Input
-                        placeholder="Or paste desktop banner URL directly"
+                        placeholder="Or paste thumbnail URL directly (e.g. /Hero3DMe.png or https://...)"
                         value={image}
-                        onChange={(e) => setImage(e.target.value)}
+                        onChange={(e) => {
+                          setImage(e.target.value);
+                          setImages([e.target.value]);
+                        }}
                         className="bg-[#0D121F] border-[#222938] text-white text-xs"
                       />
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className="text-[10px] text-mutedText font-semibold">Presets:</span>
-                        {["/Hero3DMe.png", "/myProfile.png", "/images/project1.png"].map((preset) => (
+                        {["/Hero3DMe.png", "/myProfile.png", "/HeroMe.png"].map((preset) => (
                           <button
                             type="button"
                             key={preset}
-                            onClick={() => setImage(preset)}
+                            onClick={() => {
+                              setImage(preset);
+                              setImages([preset]);
+                            }}
                             className="px-2 py-0.5 rounded bg-[#161D2E] border border-borderSubtle text-[10px] text-mutedText hover:text-white transition-colors"
                           >
                             {preset}
@@ -1194,193 +1272,27 @@ export function ProjectDialog({
                       </div>
                     </div>
 
-                    {/* Sleek macOS Browser Mockup Preview */}
-                    <div className="rounded-xl border border-borderSubtle bg-[#0B0F19] overflow-hidden shadow-2xl">
-                      {/* Browser Chrome Header */}
-                      <div className="px-3.5 py-2.5 bg-[#141A29] border-b border-borderSubtle flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]" />
-                          <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
-                          <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" />
-                        </div>
-                        <div className="flex-1 max-w-sm mx-auto px-3 py-1 rounded-md bg-[#0B0F19] border border-[#222938] flex items-center justify-center gap-1.5 text-[11px] text-mutedText font-mono truncate">
-                          <Lock className="w-3 h-3 text-[#2DD4BF]" />
-                          <span className="truncate">{liveUrl || "https://myproject.dev/demo"}</span>
-                        </div>
-                        <div className="w-10 flex justify-end">
-                          <span className="text-[10px] text-mutedText font-bold">16:10</span>
-                        </div>
-                      </div>
-
-                      {/* Viewport */}
-                      <div className="relative aspect-[16/10] w-full bg-mainBg flex items-center justify-center">
+                    {/* Clean Minimalist Thumbnail Card Preview */}
+                    <div className="space-y-1.5 pt-1">
+                      <Label className="text-xs font-semibold text-mutedText">Live Preview</Label>
+                      <div className="relative aspect-[16/10] w-full max-w-lg mx-auto rounded-2xl border border-borderSubtle bg-[#0B0F19] overflow-hidden shadow-xl group">
                         {image ? (
                           <Image
                             src={image}
-                            alt="Desktop Preview"
+                            alt="Project Thumbnail Preview"
                             fill
-                            sizes="(max-width: 768px) 100vw, 600px"
+                            sizes="(max-width: 768px) 100vw, 500px"
                             className="object-cover"
                             onError={() => {}}
                           />
                         ) : (
-                          <Monitor className="w-10 h-10 text-mutedText/30" />
+                          <div className="flex flex-col items-center justify-center h-full text-mutedText/40 gap-2">
+                            <ImageIcon className="w-8 h-8" />
+                            <span className="text-xs">No thumbnail selected</span>
+                          </div>
                         )}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent pointer-events-none" />
                       </div>
-                    </div>
-                  </div>
-
-                  {/* 2. Desktop Screenshot Gallery (images: string[]) */}
-                  <div className="p-4 rounded-2xl bg-[#111622] border border-borderSubtle space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                          <Laptop className="w-4 h-4 text-[#2DD4BF]" />
-                          <span>Desktop Widescreen Gallery ({images.length})</span>
-                        </h4>
-                        <p className="text-xs text-mutedText mt-0.5">
-                          Additional widescreen screenshots showcasing dashboard, analytics, admin screens, or alternate workflows.
-                        </p>
-                      </div>
-                      <Badge variant="teal" className="text-[10px]">
-                        Widescreen Views
-                      </Badge>
-                    </div>
-
-                    {/* Drag & Drop Multi-View Upload Target */}
-                    <ImageDropzone
-                      multiple={true}
-                      label="Upload Desktop Widescreen Views"
-                      description="Drag & drop 1 or more widescreen views, or click to browse device"
-                      aspectRatio="16:10"
-                      folder="desktop-views"
-                      onUploadComplete={(urls) => {
-                        const newUrls = Array.isArray(urls) ? urls : [urls];
-                        setImages((prev) => [...prev, ...newUrls.filter((u) => !prev.includes(u))]);
-                      }}
-                    />
-
-                    {/* Or manual URL entry */}
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Or paste widescreen view URL manually (e.g. /Hero3DMe.png or https://...)"
-                        value={newImageInput}
-                        onChange={(e) => setNewImageInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            handleAddImage(newImageInput);
-                          }
-                        }}
-                        className="bg-[#0D121F] border-[#222938] text-white text-xs"
-                      />
-                      <Button
-                        type="button"
-                        onClick={() => handleAddImage(newImageInput)}
-                        className="bg-[#0B82EC] hover:bg-[#3B82F6] text-white text-xs gap-1.5 shrink-0"
-                      >
-                        <Plus className="w-4 h-4" /> Add
-                      </Button>
-                    </div>
-
-                    {/* Widescreen Grid */}
-                    <div className="pt-2">
-                      {images.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {images.map((imgUrl, idx) => {
-                            const isCurrentBanner = image === imgUrl;
-                            return (
-                              <div
-                                key={`${imgUrl}-${idx}`}
-                                className={`rounded-xl border bg-[#0B0F19] overflow-hidden relative shadow-lg group transition-all ${
-                                  isCurrentBanner ? "border-[#0B82EC] ring-2 ring-[#0B82EC]/30" : "border-borderSubtle"
-                                }`}
-                              >
-                                {/* Mini browser header */}
-                                <div className="px-2.5 py-1.5 bg-[#141A29] border-b border-borderSubtle/60 flex items-center justify-between">
-                                  <div className="flex items-center gap-1">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF5F56]" />
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#FFBD2E]" />
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#27C93F]" />
-                                  </div>
-                                  <span className="text-[9px] font-bold text-mutedText">View #{idx + 1}</span>
-                                  {isCurrentBanner && (
-                                    <span className="text-[9px] font-bold text-[#0B82EC]">Hero Cover</span>
-                                  )}
-                                </div>
-
-                                <div className="relative aspect-[16/10] w-full bg-mainBg">
-                                  <Image
-                                    src={imgUrl}
-                                    alt={`View ${idx + 1}`}
-                                    fill
-                                    sizes="300px"
-                                    className="object-cover"
-                                    onError={() => {}}
-                                  />
-
-                                  {/* Hover Overlay */}
-                                  <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
-                                    <div className="flex justify-end">
-                                      <button
-                                        type="button"
-                                        onClick={() => handleRemoveImage(idx)}
-                                        className="p-1 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors"
-                                        title="Remove view"
-                                      >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                      </button>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-2">
-                                      {!isCurrentBanner && (
-                                        <button
-                                          type="button"
-                                          onClick={() => setImage(imgUrl)}
-                                          className="px-2 py-1 rounded bg-[#0B82EC] hover:bg-[#3B82F6] text-white text-[10px] font-bold transition-colors"
-                                        >
-                                          Set As Banner
-                                        </button>
-                                      )}
-                                      <div className="flex items-center gap-1 ml-auto">
-                                        <button
-                                          type="button"
-                                          disabled={idx === 0}
-                                          onClick={() => handleMoveImage(idx, "left")}
-                                          className="p-1 rounded bg-surface text-mutedText hover:text-white disabled:opacity-30"
-                                        >
-                                          <ArrowLeft className="w-3 h-3" />
-                                        </button>
-                                        <button
-                                          type="button"
-                                          disabled={idx === images.length - 1}
-                                          onClick={() => handleMoveImage(idx, "right")}
-                                          className="p-1 rounded bg-surface text-mutedText hover:text-white disabled:opacity-30"
-                                        >
-                                          <ArrowRight className="w-3 h-3" />
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <div className="p-6 rounded-xl border border-dashed border-borderSubtle text-center space-y-2">
-                          <Laptop className="w-8 h-8 text-mutedText/40 mx-auto" />
-                          <p className="text-xs text-mutedText">No desktop gallery screenshots added yet.</p>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setImages(["/Hero3DMe.png"])}
-                            className="text-xs border-borderSubtle"
-                          >
-                            Add Primary Banner as First View
-                          </Button>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>

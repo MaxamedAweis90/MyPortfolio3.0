@@ -36,8 +36,8 @@ export default function Navbar() {
   const leftNavItems: NavItem[] = [
     { id: "hero", label: "Home", href: "/#hero" },
     { id: "about", label: "About", href: "/#about" },
-    { id: "skills", label: "Skills", href: "/#skills" },
     { id: "work", label: "Work", href: "/#work" },
+    { id: "skills", label: "Skills", href: "/#skills" },
   ];
 
   // Right Navigation Links (Experience, Services) - Contact handled specially
@@ -116,13 +116,13 @@ export default function Navbar() {
         const sectionIds = [
           "hero",
           "about",
-          "skills",
           "work",
+          "skills",
           "experience",
           "services",
           "contact",
         ];
-        const scrollPosition = window.scrollY + 180;
+        const scrollPosition = window.scrollY + 200;
 
         for (let i = sectionIds.length - 1; i >= 0; i--) {
           const sectionId = sectionIds[i];

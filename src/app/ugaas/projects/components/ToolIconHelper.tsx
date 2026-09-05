@@ -1,6 +1,6 @@
 import React from "react";
 import { TOOL_ICONS } from "@/components/toolIcons";
-import { Code, Terminal } from "lucide-react";
+import { Code, Terminal, GripVertical } from "lucide-react";
 import type { IconType } from "react-icons";
 
 // Popular tool preset catalogue mapped to exact/sanitized toolIcons keys
@@ -92,16 +92,53 @@ interface ToolBadgeProps {
   tool: string;
   onRemove?: () => void;
   className?: string;
+  draggable?: boolean;
+  onDragStart?: (e: React.DragEvent) => void;
+  onDragOver?: (e: React.DragEvent) => void;
+  onDragLeave?: (e: React.DragEvent) => void;
+  onDrop?: (e: React.DragEvent) => void;
+  onDragEnd?: (e: React.DragEvent) => void;
+  isDragging?: boolean;
+  isDragOver?: boolean;
 }
 
-export function ToolBadge({ tool, onRemove, className = "" }: ToolBadgeProps) {
+export function ToolBadge({
+  tool,
+  onRemove,
+  className = "",
+  draggable,
+  onDragStart,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+  onDragEnd,
+  isDragging,
+  isDragOver,
+}: ToolBadgeProps) {
   const IconComponent = getToolIcon(tool);
 
   return (
     <span
       data-tool-badge
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-[#111622] border border-[#222938] text-primaryText shadow-sm hover:border-[#0B82EC]/50 transition-colors ${className}`}
+      draggable={draggable}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-[#111622] border text-primaryText shadow-sm transition-all select-none ${
+        draggable ? "cursor-grab active:cursor-grabbing hover:scale-[1.02]" : ""
+      } ${
+        isDragging
+          ? "opacity-35 border-dashed border-[#0B82EC] scale-95"
+          : isDragOver
+          ? "border-[#0B82EC] bg-[#0B82EC]/20 scale-105 ring-2 ring-[#0B82EC]/40"
+          : "border-[#222938] hover:border-[#0B82EC]/50"
+      } ${className}`}
     >
+      {draggable && (
+        <GripVertical className="w-3 h-3 text-mutedText/50 -ml-0.5 shrink-0" />
+      )}
       <IconComponent className="w-3.5 h-3.5 text-[#0B82EC] shrink-0" />
       <span className="text-primaryText font-medium">{tool}</span>
       {onRemove && (

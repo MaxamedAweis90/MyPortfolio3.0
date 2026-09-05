@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/ugaas/lib/db";
 import { VisitorAnalytics } from "@/ugaas/models/VisitorAnalytics";
-import { AuditLog } from "@/ugaas/models/AuditLog";
 
 // Helper: Ensure realistic initial analytics data exists in MongoDB if collection is fresh
 async function ensureVisitorData() {
@@ -231,7 +230,6 @@ export async function GET(req: NextRequest) {
       .map((d) => d.visitors)
       .sort((a, b) => a - b);
 
-    const q1 = activeCounts.length > 0 ? activeCounts[Math.floor(activeCounts.length * 0.25)] : 5;
     const q2 = activeCounts.length > 0 ? activeCounts[Math.floor(activeCounts.length * 0.6)] : 15;
     const q3 = activeCounts.length > 0 ? activeCounts[Math.floor(activeCounts.length * 0.85)] : 30;
 
@@ -306,14 +304,12 @@ export async function GET(req: NextRequest) {
     // Real Device Breakdown calculation
     let desktopCount = 0;
     let mobileCount = 0;
-    let tabletCount = 0;
     let totalDevices = 0;
 
     deviceAgg.forEach((d: any) => {
       totalDevices += d.count;
       if (d._id === "desktop") desktopCount += d.count;
       else if (d._id === "mobile") mobileCount += d.count;
-      else if (d._id === "tablet") tabletCount += d.count;
     });
 
     const desktopPct = totalDevices > 0 ? Math.round((desktopCount / totalDevices) * 100) : 68;
