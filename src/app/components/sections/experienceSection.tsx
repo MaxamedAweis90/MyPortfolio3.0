@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { experiencesData, ExperienceItem } from "@/data/experienceData";
+import type { ExperienceItem } from "@/data/experienceData";
 import {
   RiBriefcase4Line,
   RiArrowRightLine,
@@ -14,7 +14,7 @@ interface ExperienceSectionProps {
 }
 
 export default function ExperienceSection({ initialExperiences }: ExperienceSectionProps = {}) {
-  const experiences = initialExperiences && initialExperiences.length > 0 ? initialExperiences : experiencesData;
+  const experiences = initialExperiences || [];
   // Show the 3 latest experiences on the home page as requested
   const latestExperiences = experiences.slice(0, 3);
 

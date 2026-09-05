@@ -15,7 +15,6 @@ import { LucideVerified } from "lucide-react";
 import { GiSpeaker, GiSpeakerOff } from "react-icons/gi";
 
 import Certificates from "./certificates";
-import { certificatesData } from "@/data/portfolioData";
 import type { Certificate } from "@/types/portfolio";
 
 import {
@@ -45,13 +44,13 @@ export default function Page() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [played, setPlayed] = useState(0);
-  const [certificates, setCertificates] = useState<Certificate[]>(certificatesData);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
 
   useEffect(() => {
-    fetch("/api/ugaas/experience")
+    fetch("/api/ugaas/experience", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && data.certificates && data.certificates.length > 0) {
+        if (data.success && Array.isArray(data.certificates)) {
           setCertificates(
             data.certificates.map((c: any) => ({
               _id: c.id || c._id,
@@ -59,7 +58,7 @@ export default function Page() {
               issuer: c.issuer || "Certificate Authority",
               issuedDate: c.createdAt ? new Date(c.createdAt).getFullYear().toString() : "2024",
               category: { _ref: c.category || "web", title: c.category || "Web Development" },
-              imageUrl: c.image || "/myProfile.png",
+              imageUrl: c.image || "/Hero3DMe.png",
               verificationUrl: c.link || "",
               verificationCode: c.code || "",
             }))

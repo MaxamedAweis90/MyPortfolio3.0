@@ -2,7 +2,6 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import ProjectCard from "@/components/ProjectCard";
-import { projectsData } from "@/data/portfolioData";
 import type { Project } from "@/types/portfolio";
 import {
   RiArrowLeftSLine,
@@ -20,7 +19,7 @@ interface MyWorkSectionProps {
 export default function MyWorkSection({ initialProjects }: MyWorkSectionProps = {}) {
   // Only render projects where isFeatured: true (capped at max 6 items)
   const featuredProjects = React.useMemo(() => {
-    const raw = initialProjects && initialProjects.length > 0 ? initialProjects : projectsData;
+    const raw = initialProjects || [];
     const featured = raw.filter((p) => p.isFeatured);
     return (featured.length > 0 ? featured : raw).slice(0, 6);
   }, [initialProjects]);

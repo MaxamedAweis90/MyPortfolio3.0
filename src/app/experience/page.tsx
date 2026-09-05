@@ -3,10 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  experiencesData,
-  educationData,
-  certificationsData,
+import type {
   ExperienceItem,
   CertificateItem,
 } from "@/data/experienceData";
@@ -33,9 +30,9 @@ import {
 } from "lucide-react";
 
 export default function ExperiencePage() {
-  const [experiences, setExperiences] = useState<ExperienceItem[]>(experiencesData);
-  const [education, setEducation] = useState(educationData);
-  const [certifications, setCertifications] = useState<CertificateItem[]>(certificationsData);
+  const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
+  const [education, setEducation] = useState<any[]>([]);
+  const [certifications, setCertifications] = useState<CertificateItem[]>([]);
   const [activeSection, setActiveSection] = useState<"experience" | "education" | "certificates">("experience");
 
   // Certificate Modal State
@@ -51,49 +48,45 @@ export default function ExperiencePage() {
           const careerDocs = (data.experiences || []).filter((e: any) => e.type === "career");
           const eduDocs = (data.experiences || []).filter((e: any) => e.type === "education");
 
-          if (careerDocs.length > 0 || data.experiences) {
-            const sortedCareer = careerDocs.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
-            setExperiences(
-              sortedCareer.map((doc: any) => ({
-                id: doc.id || doc._id,
-                role: doc.role,
-                company: doc.company,
-                companyShort:
-                  doc.company
-                    .split(" ")
-                    .map((w: string) => w[0])
-                    .join("")
-                    .toUpperCase()
-                    .slice(0, 4) || "EXP",
-                location: doc.badges?.[0] || "Banadir, Somalia",
-                period: doc.duration || "Present",
-                type: doc.badges?.[1] || doc.badges?.[0] || "Career Experience",
-                badgeBg: "bg-blue-500/10",
-                badgeColor: "text-blue-400 border-blue-500/30",
-                highlights: doc.highlights || [],
-                technologies: doc.techStack || [],
-              }))
-            );
-          }
+          const sortedCareer = careerDocs.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+          setExperiences(
+            sortedCareer.map((doc: any) => ({
+              id: doc.id || doc._id,
+              role: doc.role,
+              company: doc.company,
+              companyShort:
+                doc.company
+                  .split(" ")
+                  .map((w: string) => w[0])
+                  .join("")
+                  .toUpperCase()
+                  .slice(0, 4) || "EXP",
+              location: doc.badges?.[0] || "Banadir, Somalia",
+              period: doc.duration || "Present",
+              type: doc.badges?.[1] || doc.badges?.[0] || "Career Experience",
+              badgeBg: "bg-blue-500/10",
+              badgeColor: "text-blue-400 border-blue-500/30",
+              highlights: doc.highlights || [],
+              technologies: doc.techStack || [],
+            }))
+          );
 
-          if (eduDocs.length > 0 || data.experiences) {
-            const sortedEdu = eduDocs.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
-            setEducation(
-              sortedEdu.map((doc: any) => ({
-                degree: doc.role,
-                institution: doc.company,
-                period: doc.duration,
-                location: doc.badges?.[0] || "Somalia",
-                details: doc.highlights?.[0] || "",
-                relevantCourses: doc.techStack || [],
-              }))
-            );
-          }
+          const sortedEdu = eduDocs.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+          setEducation(
+            sortedEdu.map((doc: any) => ({
+              degree: doc.role,
+              institution: doc.company,
+              period: doc.duration,
+              location: doc.badges?.[0] || "Somalia",
+              details: doc.highlights?.[0] || "",
+              relevantCourses: doc.techStack || [],
+            }))
+          );
 
           // 1. Merge certificates collection and certification experience entries
           const allCertItems: (CertificateItem & { order?: number })[] = [];
 
-          if (data.certificates) {
+          if (Array.isArray(data.certificates)) {
             data.certificates.forEach((c: any) => {
               allCertItems.push({
                 name: c.title,
@@ -110,7 +103,7 @@ export default function ExperiencePage() {
             });
           }
 
-          if (data.experiences) {
+          if (Array.isArray(data.experiences)) {
             data.experiences
               .filter((e: any) => e.type === "certification")
               .forEach((e: any) => {
@@ -252,69 +245,75 @@ export default function ExperiencePage() {
             </div>
           </div>
 
-          <div className="space-y-8">
-            {experiences.map((exp, index) => (
-              <motion.div
-                key={exp.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-surface/90 backdrop-blur-xl border border-borderSubtle hover:border-brandAccent/50 rounded-3xl p-6 sm:p-8 shadow-xl transition-all space-y-5"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderSubtle/60 pb-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-mainBg border border-borderSubtle flex items-center justify-center font-extrabold text-brandAccent text-base shadow-inner">
-                      {exp.companyShort}
+          {experiences.length > 0 ? (
+            <div className="space-y-8">
+              {experiences.map((exp, index) => (
+                <motion.div
+                  key={exp.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-surface/90 backdrop-blur-xl border border-borderSubtle hover:border-brandAccent/50 rounded-3xl p-6 sm:p-8 shadow-xl transition-all space-y-5"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderSubtle/60 pb-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-mainBg border border-borderSubtle flex items-center justify-center font-extrabold text-brandAccent text-base shadow-inner">
+                        {exp.companyShort}
+                      </div>
+                      <div>
+                        <h3 className="text-xl sm:text-2xl font-extrabold text-primaryText">
+                          {exp.role}
+                        </h3>
+                        <p className="text-sm font-semibold text-mutedText">
+                          {exp.company} • <span className="text-xs text-mutedText/80">{exp.location}</span>
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl sm:text-2xl font-extrabold text-primaryText">
-                        {exp.role}
-                      </h3>
-                      <p className="text-sm font-semibold text-mutedText">
-                        {exp.company} • <span className="text-xs text-mutedText/80">{exp.location}</span>
-                      </p>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <span className="text-xs font-mono font-bold text-brandAccent bg-mainBg px-3 py-1 rounded-xl border border-borderSubtle flex items-center gap-1.5">
+                        <RiTimeLine /> {exp.period}
+                      </span>
+                      <span className={`text-xs font-bold px-3 py-1 rounded-xl border ${exp.badgeColor} ${exp.badgeBg}`}>
+                        {exp.type}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="text-xs font-mono font-bold text-brandAccent bg-mainBg px-3 py-1 rounded-xl border border-borderSubtle flex items-center gap-1.5">
-                      <RiTimeLine /> {exp.period}
-                    </span>
-                    <span className={`text-xs font-bold px-3 py-1 rounded-xl border ${exp.badgeColor} ${exp.badgeBg}`}>
-                      {exp.type}
-                    </span>
-                  </div>
-                </div>
 
-                {/* Highlights */}
-                <div className="space-y-2">
-                  <p className="text-xs font-bold text-primaryText uppercase tracking-wider">
-                    Key Contributions & Responsibilities:
-                  </p>
-                  <ul className="space-y-2 text-sm text-mutedText leading-relaxed">
-                    {exp.highlights.map((bullet, bIdx) => (
-                      <li key={bIdx} className="flex items-start gap-2.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brandAccent mt-2 shrink-0 shadow-[0_0_6px_#0B82EC]" />
-                        <span>{bullet}</span>
-                      </li>
+                  {/* Highlights */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-bold text-primaryText uppercase tracking-wider">
+                      Key Contributions & Responsibilities:
+                    </p>
+                    <ul className="space-y-2 text-sm text-mutedText leading-relaxed">
+                      {exp.highlights.map((bullet, bIdx) => (
+                        <li key={bIdx} className="flex items-start gap-2.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-brandAccent mt-2 shrink-0 shadow-[0_0_6px_#0B82EC]" />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Tech Chips */}
+                  <div className="pt-2 flex flex-wrap gap-2 border-t border-borderSubtle/50">
+                    {exp.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-xs font-semibold px-3 py-1 rounded-xl bg-mainBg text-primaryText/90 border border-borderSubtle shadow-sm"
+                      >
+                        {tech}
+                      </span>
                     ))}
-                  </ul>
-                </div>
-
-                {/* Tech Chips */}
-                <div className="pt-2 flex flex-wrap gap-2 border-t border-borderSubtle/50">
-                  {exp.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="text-xs font-semibold px-3 py-1 rounded-xl bg-mainBg text-primaryText/90 border border-borderSubtle shadow-sm"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 text-center bg-surface/50 border border-borderSubtle rounded-3xl text-mutedText">
+              <p className="text-sm">No work experience records found yet.</p>
+            </div>
+          )}
         </section>
 
         {/* Section 2: Education & Academic Background */}
@@ -333,31 +332,37 @@ export default function ExperiencePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6">
-            {education.map((edu, idx) => (
-              <div
-                key={idx}
-                className="bg-surface/90 backdrop-blur-xl border border-borderSubtle rounded-3xl p-6 sm:p-8 shadow-xl space-y-3"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <h3 className="text-xl font-extrabold text-primaryText">
-                      {edu.degree}
-                    </h3>
-                    <p className="text-sm font-semibold text-emerald-400">
-                      {edu.institution} • <span className="text-xs text-mutedText">{edu.location}</span>
-                    </p>
+          {education.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6">
+              {education.map((edu, idx) => (
+                <div
+                  key={idx}
+                  className="bg-surface/90 backdrop-blur-xl border border-borderSubtle rounded-3xl p-6 sm:p-8 shadow-xl space-y-3"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-xl font-extrabold text-primaryText">
+                        {edu.degree}
+                      </h3>
+                      <p className="text-sm font-semibold text-emerald-400">
+                        {edu.institution} • <span className="text-xs text-mutedText">{edu.location}</span>
+                      </p>
+                    </div>
+                    <span className="text-xs font-mono font-bold text-mutedText bg-mainBg px-3 py-1 rounded-xl border border-borderSubtle w-max">
+                      {edu.period}
+                    </span>
                   </div>
-                  <span className="text-xs font-mono font-bold text-mutedText bg-mainBg px-3 py-1 rounded-xl border border-borderSubtle w-max">
-                    {edu.period}
-                  </span>
+                  <p className="text-sm text-mutedText leading-relaxed">
+                    {edu.details}
+                  </p>
                 </div>
-                <p className="text-sm text-mutedText leading-relaxed">
-                  {edu.details}
-                </p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 text-center bg-surface/50 border border-borderSubtle rounded-3xl text-mutedText">
+              <p className="text-sm">No education records found yet.</p>
+            </div>
+          )}
         </section>
 
         {/* Section 3: Professional Certifications (Consistent 16:10 Ratio & Interactive PDF/Image Preview) */}
@@ -382,7 +387,8 @@ export default function ExperiencePage() {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+          {certifications.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
             {certifications.map((cert, idx) => (
               <motion.div
                 key={idx}
@@ -509,6 +515,11 @@ export default function ExperiencePage() {
               </motion.div>
             ))}
           </div>
+          ) : (
+            <div className="p-8 text-center bg-surface/50 border border-borderSubtle rounded-3xl text-mutedText">
+              <p className="text-sm">No certificate records found yet.</p>
+            </div>
+          )}
         </section>
 
         {/* Bottom CTA Card */}

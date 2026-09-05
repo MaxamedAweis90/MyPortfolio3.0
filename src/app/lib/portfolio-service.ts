@@ -3,8 +3,7 @@ import { Project as ProjectModel } from "@/ugaas/models/Project";
 import { ProjectCategory as ProjectCategoryModel } from "@/ugaas/models/ProjectCategory";
 import { Experience as ExperienceModel } from "@/ugaas/models/Experience";
 import { Certificate as CertificateModel } from "@/ugaas/models/Certificate";
-import { projectsData, certificatesData } from "@/data/portfolioData";
-import { experiencesData, ExperienceItem } from "@/data/experienceData";
+import type { ExperienceItem } from "@/data/experienceData";
 import type { Project, Tool, Certificate } from "@/types/portfolio";
 
 /**
@@ -88,7 +87,7 @@ export function mapMongoExperienceToItem(doc: any): ExperienceItem {
 }
 
 /**
- * Fetches all active projects from MongoDB Atlas with fallback to static projectsData.
+ * Fetches all active projects from MongoDB Atlas.
  */
 export async function getPublicProjects(): Promise<Project[]> {
   try {
@@ -101,15 +100,14 @@ export async function getPublicProjects(): Promise<Project[]> {
       return docs.map(mapMongoProjectToPortfolio);
     }
   } catch (error) {
-    console.warn("⚠️ [Portfolio Service] MongoDB fetch failed, using fallback projectsData:", error);
-    return projectsData;
+    console.error("❌ [Portfolio Service] MongoDB fetch failed:", error);
   }
 
   return [];
 }
 
 /**
- * Fetches a single project by slug from MongoDB Atlas with fallback to static projectsData.
+ * Fetches a single project by slug from MongoDB Atlas.
  */
 export async function getPublicProjectBySlug(slug: string): Promise<Project | null> {
   try {
@@ -119,16 +117,14 @@ export async function getPublicProjectBySlug(slug: string): Promise<Project | nu
       return mapMongoProjectToPortfolio(doc);
     }
   } catch (error) {
-    console.warn(`⚠️ [Portfolio Service] MongoDB fetch for slug '${slug}' failed:`, error);
+    console.error(`❌ [Portfolio Service] MongoDB fetch for slug '${slug}' failed:`, error);
   }
 
-  // Fallback to static data
-  const fallback = projectsData.find((p) => p.slug === slug);
-  return fallback || null;
+  return null;
 }
 
 /**
- * Fetches career experiences from MongoDB Atlas with fallback to static experiencesData.
+ * Fetches career experiences from MongoDB Atlas.
  */
 export async function getPublicExperiences(): Promise<ExperienceItem[]> {
   try {
@@ -137,27 +133,27 @@ export async function getPublicExperiences(): Promise<ExperienceItem[]> {
       .sort({ order: 1, createdAt: -1 })
       .lean();
 
-    if (docs && docs.length > 0) {
+    if (Array.isArray(docs)) {
       return docs.map(mapMongoExperienceToItem);
     }
   } catch (error) {
-    console.warn("⚠️ [Portfolio Service] MongoDB experiences fetch failed, using fallback:", error);
+    console.error("❌ [Portfolio Service] MongoDB experiences fetch failed:", error);
   }
 
-  return experiencesData;
+  return [];
 }
 
 /**
- * Fetches certificates from MongoDB Atlas with fallback to static certificatesData.
+ * Fetches certificates from MongoDB Atlas.
  */
 export async function getPublicCertificates(): Promise<Certificate[]> {
   try {
     await connectToDatabase();
     const docs = await CertificateModel.find()
-      .sort({ createdAt: -1 })
+      .sort({ order: 1, createdAt: -1 })
       .lean();
 
-    if (docs && docs.length > 0) {
+    if (Array.isArray(docs)) {
       return docs.map((c: any) => ({
         _id: c._id?.toString() || c.id,
         title: c.title,
@@ -174,10 +170,10 @@ export async function getPublicCertificates(): Promise<Certificate[]> {
       }));
     }
   } catch (error) {
-    console.warn("⚠️ [Portfolio Service] MongoDB certificates fetch failed, using fallback:", error);
+    console.error("❌ [Portfolio Service] MongoDB certificates fetch failed:", error);
   }
 
-  return certificatesData;
+  return [];
 }
 
 /**
