@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -26,8 +26,8 @@ export const LinkPreview = ({
   children,
   url,
   className,
-  width = 300,
-  height = 175,
+  width: _width = 300,
+  height: _height = 175,
   quality = 85,
   isStatic = false,
   imageSrc = "",
@@ -57,11 +57,6 @@ export const LinkPreview = ({
   }
 
   const [isOpen, setOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const springConfig = { stiffness: 120, damping: 18 };
   const x = useMotionValue(0);

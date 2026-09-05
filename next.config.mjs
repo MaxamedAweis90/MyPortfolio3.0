@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compress: true,
+  experimental: {
+    optimizePackageImports: ["react-icons", "lucide-react", "framer-motion"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 80, 85, 90],

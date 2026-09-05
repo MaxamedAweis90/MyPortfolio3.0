@@ -191,7 +191,7 @@ export default function ClientProjectGrid({
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout">
             {filteredAndSortedProjects.map((proj, idx) => {
               const projId = proj._id || proj.id || proj.slug || `proj-${idx}`;
               const isNew = latestTwoProjectIds.has(proj._id || proj.id || proj.slug || "");

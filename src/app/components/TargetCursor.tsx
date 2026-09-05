@@ -320,7 +320,7 @@ const TargetCursor = ({
       spinTl.current?.kill();
       document.body.style.cursor = originalCursor;
     };
-  }, [targetSelector, spinDuration, moveCursor, constants, hideDefaultCursor]);
+  }, [targetSelector, spinDuration, moveCursor, constants, hideDefaultCursor, isTouchDevice]);
 
   useEffect(() => {
     if (!cursorRef.current || !spinTl.current) return;
