@@ -164,10 +164,12 @@ export default function ClientProjectGrid({
         {/* Right Side: Sort Order Filter Dropdown */}
         <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
           <RiFilter3Line className="text-brandAccent text-base" />
-          <span className="text-xs font-extrabold uppercase tracking-wider text-mutedText">
+          <label htmlFor="project-sort" className="text-xs font-extrabold uppercase tracking-wider text-mutedText">
             Sort By:
-          </span>
+          </label>
           <select
+            id="project-sort"
+            aria-label="Sort projects by"
             value={activeSort}
             onChange={(e) => setActiveSort(e.target.value)}
             className="bg-mainBg border border-borderSubtle text-primaryText font-bold text-xs sm:text-sm rounded-full px-4 py-2 outline-none cursor-pointer hover:border-brandAccent transition-colors shadow-sm"

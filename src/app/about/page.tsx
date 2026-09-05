@@ -101,10 +101,10 @@ export default function Page() {
       className="absolute top-0 left-0"
     />
     <div className="absolute inset-0  bg-black/20  flex items-end justify-between px-4">
-      <button onClick={toggleMute} className="text-white text-2xl bottom-3">
+      <button onClick={toggleMute} aria-label={isMuted ? "Unmute video" : "Mute video"} className="text-white text-2xl bottom-3">
         {isMuted ? <GiSpeakerOff /> : <GiSpeaker />}
       </button>
-      <button onClick={togglePlayPause} className="text-white text-2xl bottom-3">
+      <button onClick={togglePlayPause} aria-label={isPlaying ? "Pause video" : "Play video"} className="text-white text-2xl bottom-3">
         {isPlaying ? <FaPause /> : <FaPlay />}
       </button>
     </div>

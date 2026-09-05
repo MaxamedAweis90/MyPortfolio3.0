@@ -406,6 +406,7 @@ export default function Contact() {
                   href={contactInfo.website}
                   target="_blank"
                   rel="noreferrer"
+                  aria-label="Visit external website"
                   className="p-2 rounded-lg bg-mainBg border border-borderSubtle text-mutedText hover:text-primaryText transition-colors shrink-0 ml-2"
                 >
                   <RiExternalLinkLine className="text-base" />
@@ -545,11 +546,12 @@ export default function Contact() {
                         {/* Project Type & Budget */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-xs font-bold text-primaryText uppercase tracking-wider mb-2">
+                            <label htmlFor="projectType" className="block text-xs font-bold text-primaryText uppercase tracking-wider mb-2">
                               Project Category{" "}
                               <span className="text-brandAccent">*</span>
                             </label>
                             <select
+                              id="projectType"
                               name="projectType"
                               value={formData.projectType}
                               onChange={handleChange}
@@ -568,10 +570,11 @@ export default function Contact() {
                           </div>
 
                           <div>
-                            <label className="block text-xs font-bold text-primaryText uppercase tracking-wider mb-2">
+                            <label htmlFor="budget" className="block text-xs font-bold text-primaryText uppercase tracking-wider mb-2">
                               Budget Range
                             </label>
                             <input
+                              id="budget"
                               type="text"
                               name="budget"
                               value={formData.budget}

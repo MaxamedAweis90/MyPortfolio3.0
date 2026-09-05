@@ -13,6 +13,10 @@ const TargetCursor = ({
   spinDuration = 2,
   hideDefaultCursor = true,
 }: TargetCursorProps) => {
+  const isTouchDevice =
+    typeof window !== "undefined" &&
+    (window.matchMedia("(pointer: coarse)").matches || "ontouchstart" in window || window.innerWidth < 1024);
+
   const cursorRef = useRef<HTMLDivElement | null>(null);
   const cornersRef = useRef<NodeListOf<HTMLElement> | null>(null);
   const spinTl = useRef<gsap.core.Timeline | null>(null);
@@ -37,7 +41,7 @@ const TargetCursor = ({
   }, []);
 
   useEffect(() => {
-    if (!cursorRef.current) return;
+    if (isTouchDevice || !cursorRef.current) return;
 
     const originalCursor = document.body.style.cursor;
     if (hideDefaultCursor) {
@@ -329,8 +333,10 @@ const TargetCursor = ({
     }
   }, [spinDuration]);
 
+  if (isTouchDevice) return null;
+
   return (
-    <div ref={cursorRef} className="target-cursor-wrapper hidden md:block">
+    <div ref={cursorRef} className="target-cursor-wrapper hidden lg:block">
       <div className="target-cursor-dot" />
       <div className="target-cursor-corner corner-tl" />
       <div className="target-cursor-corner corner-tr" />

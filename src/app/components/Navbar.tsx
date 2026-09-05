@@ -247,6 +247,7 @@ export default function Navbar() {
           <div className="flex md:hidden text-xl font-bold">
             <Link
               href="/"
+              aria-label="Eng_Aweis Portfolio Home"
               onClick={(e) => {
                 if (pathname === "/") {
                   e.preventDefault();
@@ -254,7 +255,7 @@ export default function Navbar() {
                 }
               }}
             >
-              <Image src="/logoR2.png" width={50} height={20} alt="Logo" />
+              <Image src="/logoR2.png" width={50} height={20} alt="Logo" priority={true} style={{ width: "auto", height: "auto" }} />
             </Link>
           </div>
 
@@ -285,6 +286,7 @@ export default function Navbar() {
             <div className="text-xl font-bold px-2">
               <Link
                 href="/"
+                aria-label="Eng_Aweis Portfolio Home"
                 onClick={(e) => {
                   if (pathname === "/") {
                     e.preventDefault();
@@ -315,6 +317,7 @@ export default function Navbar() {
                           alt="Hovered Logo"
                           width={130}
                           height={28}
+                          style={{ width: "auto", height: "auto" }}
                         />
                       </motion.div>
                     ) : (
@@ -331,6 +334,7 @@ export default function Navbar() {
                           alt="Logo"
                           width={45}
                           height={18}
+                          style={{ width: "auto", height: "auto" }}
                         />
                       </motion.div>
                     )}

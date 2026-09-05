@@ -410,7 +410,7 @@ export default function ExperiencePage() {
                     src={cert.image || "/intro-Cover.jpg"}
                     alt={cert.name}
                     fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 550px"
                     className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
                   />
 
@@ -624,9 +624,9 @@ export default function ExperiencePage() {
                       src={selectedCert.image || "/intro-Cover.jpg"}
                       alt={selectedCert.name}
                       fill
-                      sizes="100vw"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 672px"
                       className="object-contain"
-                      priority
+                      loading="lazy"
                     />
                   </div>
                 ) : (

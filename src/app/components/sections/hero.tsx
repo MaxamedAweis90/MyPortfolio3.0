@@ -274,6 +274,7 @@ const Hero = () => {
                 href={resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Download or View Resume PDF"
                 className="w-full flex items-center justify-center gap-3 py-2.5 sm:py-3 rounded-full bg-brandAccent/90 backdrop-blur-md border border-brandAccent/50 text-white font-extrabold text-xs sm:text-sm hover:bg-brandAccent transition-all duration-300 shadow-xl shadow-brandAccent/30 hover:scale-[1.02] group"
               >
                 <span className="tracking-wider">RESUME</span>
@@ -291,6 +292,7 @@ const Hero = () => {
             href={resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Download or View Resume PDF"
             className="inline-flex items-center gap-3.5 pl-5 pr-2 py-2 rounded-full bg-brandAccent/90 backdrop-blur-md border border-brandAccent/50 text-white font-extrabold text-xs sm:text-sm hover:bg-brandAccent transition-all duration-300 shadow-xl shadow-brandAccent/30 hover:scale-105 group"
           >
             <span className="tracking-wider">RESUME</span>
@@ -330,10 +332,8 @@ const Hero = () => {
             src="/me.png"
             alt="Eng_Aweis"
             priority={true}
-            quality={75}
-            placeholder="blur"
-            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzA5MGUxNiIvPjwvc3ZnPg=="
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            quality={80}
+            sizes="(max-width: 640px) 340px, (max-width: 1024px) 440px, 672px"
             width={672}
             height={800}
             className="h-full w-auto object-contain object-bottom align-bottom block drop-shadow-[0_25px_40px_rgba(0,0,0,0.6)] pointer-events-auto transition-transform duration-500 hover:scale-[1.01]"

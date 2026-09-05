@@ -88,15 +88,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             `,
           }}
         />
-        {/* ✅ Remix Icons CDN */}
+        {/* Preload critical LCP Hero Image */}
         <link
-          href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css"
-          rel="stylesheet"
-        />
-        {/* ✅ Anime.js CDN Script - deferred to avoid render blocking */}
-        <Script
-          src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
-          strategy="lazyOnload"
+          rel="preload"
+          as="image"
+          href="/me.png"
+          fetchPriority="high"
         />
         {/* ✅ Google Analytics Scripts - deferred to lazyOnload */}
         <Script

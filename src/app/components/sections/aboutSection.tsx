@@ -365,7 +365,7 @@ export default function AboutSection() {
                   alt="Mohamed Aweys"
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 420px"
-                  priority
+                  loading="lazy"
                   className="object-cover object-top filter grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-105"
                 />
               </div>

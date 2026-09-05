@@ -76,20 +76,6 @@ export const LinkPreview = ({
 
   return (
     <>
-      {isMounted && src ? (
-        <span className="hidden" aria-hidden="true">
-          <Image
-            src={src}
-            width={width}
-            height={height}
-            quality={quality}
-            priority={true}
-            alt="hidden image"
-            unoptimized={true}
-          />
-        </span>
-      ) : null}
-
       <span
         className="relative inline-block"
         onMouseEnter={() => setOpen(true)}
@@ -136,7 +122,7 @@ export const LinkPreview = ({
                       src={src || imageSrc}
                       fill
                       quality={quality}
-                      priority={true}
+                      loading="lazy"
                       className="object-cover object-top rounded-xl"
                       alt={`${domain} preview`}
                       unoptimized={true}
