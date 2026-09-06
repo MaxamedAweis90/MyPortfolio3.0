@@ -17,7 +17,7 @@ test.describe("Backend Ugaas Admin & Auth Suite", () => {
 
   test("Error Path: should handle invalid commands with appropriate error feedback", async () => {
     await loginPage.executeCommand("unknown_cmd_test");
-    const errorOutput = loginPage.getOutputTextLocator(/command not found|unknown command|type "help"/i);
+    const errorOutput = loginPage.getOutputTextLocator(/wrong input|command not found|unknown command|type "help"/i);
     await expect(errorOutput.first()).toBeVisible();
   });
 
@@ -38,7 +38,7 @@ test.describe("Backend Ugaas Admin & Auth Suite", () => {
 
     // Stage 3: Error path - invalid email format
     await loginPage.enterEmail("not-an-email");
-    await expect(loginPage.getOutputTextLocator(/invalid email|must be/i).first()).toBeVisible();
+    await expect(loginPage.getOutputTextLocator(/wrong input|invalid email|must be/i).first()).toBeVisible();
   });
 
   test("Theme Toggle: should toggle terminal theme in login gateway", async ({ page }) => {

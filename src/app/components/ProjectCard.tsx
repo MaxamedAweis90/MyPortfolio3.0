@@ -90,9 +90,9 @@ export default function ProjectCard({ proj, index, isNew }: ProjectCardProps) {
 
           {/* Project Title */}
           <div className="space-y-2">
-            <h3 className="text-xl sm:text-2xl font-extrabold text-primaryText group-hover:text-brandAccent transition-colors leading-snug line-clamp-1">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-primaryText group-hover:text-brandAccent transition-colors leading-snug line-clamp-1">
               {proj.title}
-            </h3>
+            </h2>
 
             {/* Tech Badges Row */}
             <div className="flex flex-wrap gap-1.5 pt-0.5">

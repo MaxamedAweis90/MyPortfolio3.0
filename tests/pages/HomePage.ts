@@ -13,7 +13,7 @@ export class HomePage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.navbar = page.getByRole("navigation");
-    this.themeToggleBtn = page.getByRole("button", { name: /toggle theme|switch to/i }).first();
+    this.themeToggleBtn = page.locator('button[aria-label*="Switch to"]:visible').first();
     this.heroHeading = page.locator("h1").first();
     this.contactSection = page.locator("#contact");
   }

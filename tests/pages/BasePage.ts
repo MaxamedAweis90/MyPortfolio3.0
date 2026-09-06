@@ -15,8 +15,7 @@ export class BasePage {
    * Navigates to a specific path relative to baseURL
    */
   async navigateTo(path: string = "/"): Promise<void> {
-    await this.page.goto(path);
-    await this.page.waitForLoadState("domcontentloaded");
+    await this.page.goto(path, { waitUntil: "domcontentloaded" });
   }
 
   /**

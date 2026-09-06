@@ -32,6 +32,7 @@ export class LoginPage extends BasePage {
    * Type and execute a terminal command
    */
   async executeCommand(command: string): Promise<void> {
+    await this.commandInput.click();
     await this.commandInput.fill(command);
     await this.commandInput.press("Enter");
   }
@@ -54,7 +55,8 @@ export class LoginPage extends BasePage {
    * Toggle theme between light and dark
    */
   async toggleTheme(): Promise<void> {
-    await this.themeToggleButton.click();
+    const toggle = this.page.locator('button[aria-label="Toggle Theme"]:visible').first();
+    await toggle.click();
   }
 
   /**

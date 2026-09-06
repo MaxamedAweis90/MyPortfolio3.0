@@ -183,14 +183,9 @@ export default function ExperiencePage() {
 
       <div className="max-w-6xl mx-auto relative z-10 space-y-10">
         
-        {/* Page Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto space-y-3"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brandAccent/10 border border-brandAccent/30 text-brandAccent text-xs font-bold uppercase tracking-widest">
+        {/* Page Header - Static render for immediate FCP & LCP without hydration delay */}
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brandAccent/10 border border-brandAccent/30 text-blue-700 dark:text-brandAccent text-xs font-bold uppercase tracking-widest">
             <RiSparklingFill className="text-sm" /> Detailed Career Archive
           </div>
           <h1 className="text-4xl sm:text-6xl font-extrabold text-primaryText tracking-tight">
@@ -199,7 +194,7 @@ export default function ExperiencePage() {
           <p className="text-mutedText text-sm sm:text-base leading-relaxed">
             A comprehensive overview of my software engineering positions, internships, university education, and verified certifications.
           </p>
-        </motion.div>
+        </div>
 
         {/* Sticky In-Page Navigation Bar */}
         <div className="sticky top-20 md:top-24 z-40 flex justify-center py-2">
@@ -217,7 +212,7 @@ export default function ExperiencePage() {
                   onClick={() => scrollToSection(tab.id)}
                   className={`flex items-center gap-2 px-3.5 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
                     isActive
-                      ? "bg-[#0B82EC] text-white shadow-lg shadow-[#0B82EC]/25 scale-105"
+                      ? "bg-blue-700 dark:bg-[#0B82EC] text-white shadow-lg shadow-blue-500/25 scale-105"
                       : "text-mutedText hover:text-primaryText hover:bg-mainBg/60"
                   }`}
                 >
@@ -258,7 +253,7 @@ export default function ExperiencePage() {
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderSubtle/60 pb-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-mainBg border border-borderSubtle flex items-center justify-center font-extrabold text-brandAccent text-base shadow-inner">
+                      <div className="w-12 h-12 rounded-2xl bg-mainBg border border-borderSubtle flex items-center justify-center font-extrabold text-blue-700 dark:text-brandAccent text-base shadow-inner">
                         {exp.companyShort}
                       </div>
                       <div>
@@ -271,7 +266,7 @@ export default function ExperiencePage() {
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="text-xs font-mono font-bold text-brandAccent bg-mainBg px-3 py-1 rounded-xl border border-borderSubtle flex items-center gap-1.5">
+                      <span className="text-xs font-mono font-bold text-blue-700 dark:text-brandAccent bg-mainBg px-3 py-1 rounded-xl border border-borderSubtle flex items-center gap-1.5">
                         <RiTimeLine /> {exp.period}
                       </span>
                       <span className={`text-xs font-bold px-3 py-1 rounded-xl border ${exp.badgeColor} ${exp.badgeBg}`}>
@@ -344,7 +339,7 @@ export default function ExperiencePage() {
                       <h3 className="text-xl font-extrabold text-primaryText">
                         {edu.degree}
                       </h3>
-                      <p className="text-sm font-semibold text-emerald-400">
+                      <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
                         {edu.institution} • <span className="text-xs text-mutedText">{edu.location}</span>
                       </p>
                     </div>
@@ -382,7 +377,7 @@ export default function ExperiencePage() {
               </div>
             </div>
 
-            <span className="text-xs font-mono font-bold text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20 self-start sm:self-auto">
+            <span className="text-xs font-mono font-bold text-purple-700 dark:text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20 self-start sm:self-auto">
               {certifications.length} Credentials
             </span>
           </div>
@@ -410,7 +405,7 @@ export default function ExperiencePage() {
                     src={cert.image || "/intro-Cover.jpg"}
                     alt={cert.name}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 550px"
+                    sizes="(max-width: 640px) 380px, (max-width: 1024px) 50vw, 550px"
                     className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
                   />
 
@@ -444,7 +439,7 @@ export default function ExperiencePage() {
                 <div className="p-5 sm:p-6 space-y-4 flex-1 flex flex-col justify-between">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400 flex items-center gap-1.5">
                         <Building2 className="w-3.5 h-3.5" />
                         <span>{cert.issuer}</span>
                       </span>
@@ -502,8 +497,9 @@ export default function ExperiencePage() {
                           href={cert.verifyUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 text-xs font-bold text-purple-400 transition-all cursor-pointer"
-                          title="Verify Certificate"
+                          aria-label={`Verify ${cert.name} credential (opens in new tab)`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 text-xs font-bold text-purple-700 dark:text-purple-400 transition-all cursor-pointer"
+                          title={`Verify ${cert.name}`}
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                           <span>Verify</span>

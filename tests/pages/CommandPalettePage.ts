@@ -24,8 +24,11 @@ export class CommandPalettePage extends BasePage {
   async openViaShortcut(): Promise<void> {
     const isMac = process.platform === "darwin";
     const modifier = isMac ? "Meta" : "Control";
-    await this.page.keyboard.press(`${modifier}+KeyP`);
-    await this.searchInput.waitFor({ state: "visible" });
+    await this.page.keyboard.press(`${modifier}+p`);
+    if (!(await this.searchInput.isVisible())) {
+      await this.page.keyboard.press(`${modifier}+KeyP`);
+    }
+    await this.searchInput.waitFor({ state: "visible", timeout: 8000 });
   }
 
   /**

@@ -144,6 +144,7 @@ export default function BreadcrumbHeader() {
             {/* Root / Home */}
             <Link
               href="/"
+              aria-label="Home"
               className={`flex items-center gap-1.5 transition-colors shrink-0 group ${
                 isDarkMode ? "text-mutedText hover:text-white" : "text-slate-600 hover:text-slate-900 font-semibold"
               }`}

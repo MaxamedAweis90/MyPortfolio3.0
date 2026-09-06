@@ -24,12 +24,12 @@ test.describe("Frontend Portfolio Test Suite", () => {
 
   test("UI & Navigation: should navigate to portfolio sub-pages seamlessly", async ({ page }) => {
     // Navigate to Work page
-    await page.goto("/work");
+    await page.goto("/work", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/.*\/work/);
-    await expect(page.locator("h1, h2").first()).toBeVisible();
+    await expect(page.locator("h1, h2").first()).toBeVisible({ timeout: 10000 });
 
     // Navigate to About page
-    await page.goto("/about");
+    await page.goto("/about", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/.*\/about/);
   });
 

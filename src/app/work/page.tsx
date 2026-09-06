@@ -18,13 +18,14 @@ export default async function WorkPage() {
   return (
     <>
       <div className="flex justify-center items-center text-center w-full bg-surface border-b border-borderSubtle pt-24 md:pt-28 pb-14 md:pb-20 shadow-xl">
-        <BlurText
-          text="My Work"
-          delay={600}
-          animateBy="words"
-          direction="top"
-          className="text-4xl md:text-5xl font-extrabold text-primaryText"
-        />
+        <h1 className="text-4xl md:text-5xl font-extrabold text-primaryText">
+          <BlurText
+            text="My Work"
+            delay={600}
+            animateBy="words"
+            direction="top"
+          />
+        </h1>
       </div>
       <div className="container mx-auto px-4 py-12 min-h-[50vh]">
         {hasProjects ? (

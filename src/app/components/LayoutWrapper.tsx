@@ -2,18 +2,21 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 import Navbar from "./Navbar";
 import BreadcrumbHeader from "./BreadcrumbHeader";
-import TargetCursor from "@/components/TargetCursor";
 import Footer from "./Footer";
 import SocialBar from "./SocialBar";
 import ScrollToTop from "./ScrollToTop";
-import dynamic from "next/dynamic";
-import RouteCommandPalette from "./RouteCommandPalette";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
 
+const TargetCursor = dynamic(() => import("./TargetCursor"), { ssr: false });
+const RouteCommandPalette = dynamic(() => import("./RouteCommandPalette"), { ssr: false });
+const ToastContainer = dynamic(
+  () => import("react-toastify").then((mod) => mod.ToastContainer),
+  { ssr: false }
+);
 const ChatWidget = dynamic(() => import("./chatapp/ChatWidget"), { ssr: false });
 
 const LayoutWrapper = ({ children }: { children: ReactNode }) => {
