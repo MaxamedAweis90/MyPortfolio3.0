@@ -20,9 +20,14 @@ function serialize<T>(data: T): T {
  */
 export const getCachedSettings = unstable_cache(
   async () => {
-    await connectToDatabase();
-    const settingsDoc = await Settings.findOne().lean();
-    return settingsDoc ? serialize(settingsDoc) : null;
+    try {
+      await connectToDatabase();
+      const settingsDoc = await Settings.findOne().lean();
+      return settingsDoc ? serialize(settingsDoc) : null;
+    } catch (error) {
+      console.warn("⚠️ [Portfolio Service] Unable to load settings from database:", error);
+      return null;
+    }
   },
   ["portfolio-settings-cache"],
   {
@@ -39,14 +44,19 @@ export const getCachedSettings = unstable_cache(
  */
 export const getCachedExperiences = unstable_cache(
   async () => {
-    await connectToDatabase();
-    const experiences = await Experience.find({
-      $or: [{ isPublished: true }, { isPublished: { $exists: false } }],
-    })
-      .sort({ order: 1, createdAt: -1 })
-      .lean();
+    try {
+      await connectToDatabase();
+      const experiences = await Experience.find({
+        $or: [{ isPublished: true }, { isPublished: { $exists: false } }],
+      })
+        .sort({ order: 1, createdAt: -1 })
+        .lean();
 
-    return serialize(experiences);
+      return serialize(experiences);
+    } catch (error) {
+      console.warn("⚠️ [Portfolio Service] Unable to load experiences from database:", error);
+      return [];
+    }
   },
   ["portfolio-experience-cache"],
   {
@@ -62,12 +72,17 @@ export const getCachedExperiences = unstable_cache(
  */
 export const getCachedProjects = unstable_cache(
   async () => {
-    await connectToDatabase();
-    const projects = await Project.find({ isFeatured: true })
-      .sort({ order: 1, sortOrder: 1, createdAt: -1 })
-      .lean();
+    try {
+      await connectToDatabase();
+      const projects = await Project.find({ isFeatured: true })
+        .sort({ order: 1, sortOrder: 1, createdAt: -1 })
+        .lean();
 
-    return serialize(projects);
+      return serialize(projects);
+    } catch (error) {
+      console.warn("⚠️ [Portfolio Service] Unable to load featured projects from database:", error);
+      return [];
+    }
   },
   ["portfolio-projects-cache"],
   {
@@ -82,12 +97,17 @@ export const getCachedProjects = unstable_cache(
  */
 export const getCachedAllProjects = unstable_cache(
   async () => {
-    await connectToDatabase();
-    const projects = await Project.find()
-      .sort({ order: 1, sortOrder: 1, createdAt: -1 })
-      .lean();
+    try {
+      await connectToDatabase();
+      const projects = await Project.find()
+        .sort({ order: 1, sortOrder: 1, createdAt: -1 })
+        .lean();
 
-    return serialize(projects);
+      return serialize(projects);
+    } catch (error) {
+      console.warn("⚠️ [Portfolio Service] Unable to load all projects from database:", error);
+      return [];
+    }
   },
   ["portfolio-all-projects-cache"],
   {
@@ -102,15 +122,21 @@ export const getCachedAllProjects = unstable_cache(
  */
 export const getCachedCertificates = unstable_cache(
   async () => {
-    await connectToDatabase();
-    const certificates = await Certificate.find()
-      .sort({ order: 1, createdAt: -1 })
-      .lean();
+    try {
+      await connectToDatabase();
+      const certificates = await Certificate.find()
+        .sort({ order: 1, createdAt: -1 })
+        .lean();
 
-    return serialize(certificates);
+      return serialize(certificates);
+    } catch (error) {
+      console.warn("⚠️ [Portfolio Service] Unable to load certificates from database:", error);
+      return [];
+    }
   },
   ["portfolio-certificates-cache"],
   {
     tags: ["portfolio-certificates"],
   }
 );
+
