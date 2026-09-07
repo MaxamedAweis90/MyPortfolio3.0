@@ -18,7 +18,8 @@
     "REVALIDATION_SECRET",
     "VERCEL",
     "VERCEL_ENV",
-    "VERCEL_URL"
+    "VERCEL_URL",
+    "VERCEL_PROJECT_PRODUCTION_URL"
   ],
   "tasks": {
     "build": {
