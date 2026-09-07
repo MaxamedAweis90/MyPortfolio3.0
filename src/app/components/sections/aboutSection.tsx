@@ -62,10 +62,10 @@ export default function AboutSection() {
           
           {/* Left Column: Heading & Comprehensive Story (col-span-7) */}
           <motion.div
-            initial={{ opacity: 0, y: 25 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="lg:col-span-7 space-y-6 text-left"
           >
             {/* Header */}
@@ -348,10 +348,10 @@ export default function AboutSection() {
 
           {/* Right Column: Styled Profile Image Frame (col-span-5) */}
           <motion.div
-            initial={{ opacity: 0, x: 25 }}
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+            viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
             className="lg:col-span-5 flex justify-center lg:justify-end w-full"
           >
             <div className="relative w-full max-w-[340px] sm:max-w-[400px] lg:max-w-[420px] group">

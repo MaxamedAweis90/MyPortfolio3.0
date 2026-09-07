@@ -73,6 +73,13 @@ const TextType = ({
   useEffect(() => {
     if (!startOnVisible || !containerRef.current) return;
 
+    // Immediately trigger if already within or near viewport on mount/refresh
+    const rect = containerRef.current.getBoundingClientRect();
+    if (rect.top < (typeof window !== "undefined" ? window.innerHeight : 800) + 150 && rect.bottom > -150) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -81,7 +88,7 @@ const TextType = ({
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.01, rootMargin: "150px 0px" }
     );
 
     observer.observe(containerRef.current);

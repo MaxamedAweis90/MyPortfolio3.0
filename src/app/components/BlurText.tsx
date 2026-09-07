@@ -57,6 +57,14 @@ const BlurText = ({
 
   useEffect(() => {
     if (!ref.current) return;
+
+    // Immediately trigger if already within or near viewport on mount/refresh
+    const rect = ref.current.getBoundingClientRect();
+    if (rect.top < (typeof window !== "undefined" ? window.innerHeight : 800) + 150 && rect.bottom > -150) {
+      setInView(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -66,7 +74,7 @@ const BlurText = ({
           }
         }
       },
-      { threshold, rootMargin }
+      { threshold: 0.01, rootMargin: '150px 0px' }
     );
     observer.observe(ref.current);
     return () => observer.disconnect();

@@ -103,10 +103,10 @@ const Services = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+          transition={{ duration: 0.4 }}
           className="text-center max-w-2xl mx-auto mb-16 space-y-3"
         >
           <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-brandAccent">
@@ -126,10 +126,10 @@ const Services = () => {
           {servicesData.map((service, index) => (
             <motion.div
               key={service.id}
-              initial={{ opacity: 0, y: 35 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.5, delay: index * 0.12 }}
+              viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+              transition={{ duration: 0.4, delay: index * 0.08 }}
               className={`bg-surface/90 backdrop-blur-md border border-borderSubtle ${service.borderColor} rounded-3xl p-7 sm:p-8 flex flex-col justify-between shadow-2xl relative group transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden`}
               onClick={() => handleCardClick(service)}
             >

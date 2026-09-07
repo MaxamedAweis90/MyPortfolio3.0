@@ -245,9 +245,9 @@ export default function ExperiencePage() {
               {experiences.map((exp, index) => (
                 <motion.div
                   key={exp.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
                   transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.2) }}
                   className="bg-surface/90 backdrop-blur-xl border border-borderSubtle hover:border-brandAccent/50 rounded-3xl p-6 sm:p-8 shadow-xl transition-all space-y-5"
                 >
@@ -389,7 +389,7 @@ export default function ExperiencePage() {
                 key={idx}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
                 transition={{ duration: 0.35, delay: Math.min(idx * 0.05, 0.2) }}
                 className="group bg-surface/90 backdrop-blur-xl border border-borderSubtle hover:border-purple-500/50 rounded-3xl overflow-hidden shadow-xl transition-all duration-300 flex flex-col justify-between hover:shadow-2xl hover:shadow-purple-500/10"
               >

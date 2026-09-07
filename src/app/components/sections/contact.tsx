@@ -250,10 +250,10 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
         {/* Header Title Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+          transition={{ duration: 0.5 }}
           className="text-center max-w-3xl mx-auto mb-16 space-y-3"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brandAccent/10 border border-brandAccent/30 text-brandAccent text-xs font-bold uppercase tracking-widest shadow-sm">
@@ -273,10 +273,10 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Direct Info & Quick Action Cards (5 Columns) */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+            transition={{ duration: 0.5 }}
             className="lg:col-span-5 space-y-3.5"
           >
             {/* Live Status Card */}
@@ -417,10 +417,10 @@ export default function Contact() {
 
           {/* Right Column: 3-Step Stepper Project Request Form (7 Columns) */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+            transition={{ duration: 0.5 }}
             className="lg:col-span-7"
           >
             <div className="p-6 sm:p-8 rounded-3xl bg-surface/90 backdrop-blur-xl border border-borderSubtle shadow-2xl relative">
@@ -797,10 +797,10 @@ export default function Contact() {
 
         {/* Full-Width Turnaround Guarantee Banner spanning across the entire section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+          transition={{ duration: 0.5, delay: 0.05 }}
           className="mt-8 p-4 sm:p-5 rounded-3xl bg-surface/85 backdrop-blur-md border border-borderSubtle flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-mutedText shadow-xl hover:border-brandAccent/40 transition-all"
         >
           <div className="flex items-center gap-3.5">

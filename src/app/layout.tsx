@@ -77,6 +77,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             __html: `
               (function() {
                 try {
+                  if ('scrollRestoration' in history) {
+                    history.scrollRestoration = 'manual';
+                  }
                   var saved = localStorage.getItem('theme');
                   if (saved === 'dark' || saved === 'mytheme') {
                     document.documentElement.setAttribute('data-theme', 'mytheme');

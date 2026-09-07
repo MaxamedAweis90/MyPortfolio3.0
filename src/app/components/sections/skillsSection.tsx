@@ -145,10 +145,10 @@ export default function SkillsSection() {
       {/* Header Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 relative z-10 mb-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-borderSubtle/60 pb-6"
         >
           <div className="space-y-2">

@@ -33,8 +33,8 @@ export default function ExperienceSection({ initialExperiences }: ExperienceSect
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+          transition={{ duration: 0.5 }}
           className="text-center max-w-3xl mx-auto mb-16 sm:mb-24 space-y-2"
         >
           <p className="text-xs sm:text-sm font-extrabold uppercase tracking-[0.25em] text-mutedText/80">
@@ -69,10 +69,10 @@ export default function ExperienceSection({ initialExperiences }: ExperienceSect
                     {isEven ? (
                       /* Left Card (Even Index) */
                       <motion.div
-                        initial={{ opacity: 0, x: -40 }}
+                        initial={{ opacity: 0, x: -30 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, amount: 0.2 }}
-                        transition={{ duration: 0.6, delay: index * 0.1 }}
+                        viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+                        transition={{ duration: 0.5, delay: index * 0.08 }}
                         className="w-full bg-surface/90 backdrop-blur-xl border border-borderSubtle hover:border-brandAccent/60 rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-300 relative group text-left"
                       >
                         {/* Header */}
@@ -137,10 +137,10 @@ export default function ExperienceSection({ initialExperiences }: ExperienceSect
                     {!isEven ? (
                       /* Right Card (Odd Index) */
                       <motion.div
-                        initial={{ opacity: 0, x: 40 }}
+                        initial={{ opacity: 0, x: 30 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, amount: 0.2 }}
-                        transition={{ duration: 0.6, delay: index * 0.1 }}
+                        viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+                        transition={{ duration: 0.5, delay: index * 0.08 }}
                         className="w-full bg-surface/90 backdrop-blur-xl border border-borderSubtle hover:border-brandAccent/60 rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-300 relative group text-left"
                       >
                         {/* Header */}
@@ -202,10 +202,10 @@ export default function ExperienceSection({ initialExperiences }: ExperienceSect
 
         {/* Load More / Extended Career Path Action Button at the end */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, amount: 0.05, margin: "150px 0px 0px 0px" }}
+          transition={{ duration: 0.4 }}
           className="mt-16 sm:mt-20 text-center"
         >
           <Link
