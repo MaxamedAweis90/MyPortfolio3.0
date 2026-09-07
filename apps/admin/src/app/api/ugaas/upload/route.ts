@@ -88,14 +88,18 @@ export async function POST(request: Request) {
     if (blobToken) {
       try {
         const blob = await put(filename, file, {
-          access: "public",
+          access: "private",
           addRandomSuffix: false,
           token: blobToken,
         });
 
+        // Since the store is private, visitors and clients load it through /api/blob/[...path]
+        const servedUrl = `/api/blob/${filename}`;
+
         return NextResponse.json({
           success: true,
-          url: blob.url,
+          url: servedUrl,
+          blobUrl: blob.url,
           storage: "vercel-blob",
           size: file.size,
           contentType: file.type,

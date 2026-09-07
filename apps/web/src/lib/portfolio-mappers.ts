@@ -1,6 +1,18 @@
 import type { ExperienceItem } from "@/data/experienceData";
 import type { Project, Tool } from "@portfolio/types";
 
+export function normalizeImageUrl(url?: string): string {
+  if (!url) return "";
+  if (url.includes(".private.blob.vercel-storage.com/")) {
+    const parts = url.split(".private.blob.vercel-storage.com/");
+    return `/api/blob/${parts[1]}`;
+  }
+  if (url.startsWith("/uploads/")) {
+    return `/api/blob${url}`;
+  }
+  return url;
+}
+
 /**
  * Pure client-safe data mapper for MongoDB Project documents.
  * Contains ZERO server/database dependencies.
@@ -18,11 +30,20 @@ export function mapMongoProjectToPortfolio(doc: any): Project {
     ? doc.fullDesc.split("\n\n").filter(Boolean)
     : doc.longDescription || (doc.desc ? [doc.desc] : []);
 
-  const primaryImage =
+  const primaryImage = normalizeImageUrl(
     doc.image ||
     doc.appIconUrl ||
     (doc.images && doc.images[0]) ||
-    "/Hero3DMe.png";
+    "/Hero3DMe.png"
+  );
+
+  const images = Array.isArray(doc.images) && doc.images.length > 0
+    ? doc.images.map((img: string) => normalizeImageUrl(img))
+    : [primaryImage];
+
+  const screenshots = Array.isArray(doc.screenshots) && doc.screenshots.length > 0
+    ? doc.screenshots.map((s: string) => normalizeImageUrl(s))
+    : [primaryImage];
 
   return {
     _id: doc._id?.toString() || doc.id || doc.slug,
@@ -33,8 +54,8 @@ export function mapMongoProjectToPortfolio(doc: any): Project {
     description: doc.desc || doc.description || "",
     shortTagline: doc.desc || doc.shortTagline || "",
     longDescription: longDesc,
-    images: doc.images?.length ? doc.images : [primaryImage],
-    appIconUrl: doc.appIconUrl || primaryImage,
+    images,
+    appIconUrl: normalizeImageUrl(doc.appIconUrl) || primaryImage,
     liveProjectUrl: doc.liveUrl || doc.liveProjectUrl || "",
     liveUrl: doc.liveUrl || doc.liveProjectUrl || "",
     githubUrl: doc.githubUrl || "",
@@ -43,7 +64,7 @@ export function mapMongoProjectToPortfolio(doc: any): Project {
     apkUrl: doc.apkUrl || "",
     playStoreUrl: doc.playStoreUrl || "",
     appStoreUrl: doc.appStoreUrl || "",
-    screenshots: doc.screenshots?.length ? doc.screenshots : [primaryImage],
+    screenshots,
     isFeatured: Boolean(doc.isFeatured),
     isBest: Boolean(doc.isBest ?? doc.isFeatured),
     isPopular: Boolean(doc.isPopular ?? doc.isFeatured),

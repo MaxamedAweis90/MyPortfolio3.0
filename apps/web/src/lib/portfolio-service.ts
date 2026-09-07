@@ -6,6 +6,9 @@ import { Certificate as CertificateModel } from "@portfolio/database";
 import type { ExperienceItem } from "@/data/experienceData";
 import type { Project, Tool, Certificate } from "@portfolio/types";
 
+import { normalizeImageUrl } from "./portfolio-mappers";
+export { normalizeImageUrl };
+
 /**
  * Maps a MongoDB Project document into the public portfolio's Project type.
  */
@@ -20,11 +23,20 @@ export function mapMongoProjectToPortfolio(doc: any): Project {
     ? doc.fullDesc.split("\n\n").filter(Boolean)
     : doc.longDescription || (doc.desc ? [doc.desc] : []);
 
-  const primaryImage =
+  const primaryImage = normalizeImageUrl(
     doc.image ||
     doc.appIconUrl ||
     (doc.images && doc.images[0]) ||
-    "/Hero3DMe.png";
+    "/Hero3DMe.png"
+  );
+
+  const images = Array.isArray(doc.images) && doc.images.length > 0
+    ? doc.images.map((img: string) => normalizeImageUrl(img))
+    : [primaryImage];
+
+  const screenshots = Array.isArray(doc.screenshots) && doc.screenshots.length > 0
+    ? doc.screenshots.map((s: string) => normalizeImageUrl(s))
+    : [primaryImage];
 
   return {
     _id: doc._id?.toString() || doc.id || doc.slug,
@@ -35,8 +47,8 @@ export function mapMongoProjectToPortfolio(doc: any): Project {
     description: doc.desc || doc.description || "",
     shortTagline: doc.desc || doc.shortTagline || "",
     longDescription: longDesc,
-    images: doc.images?.length ? doc.images : [primaryImage],
-    appIconUrl: doc.appIconUrl || primaryImage,
+    images,
+    appIconUrl: normalizeImageUrl(doc.appIconUrl) || primaryImage,
     liveProjectUrl: doc.liveUrl || doc.liveProjectUrl || "",
     liveUrl: doc.liveUrl || doc.liveProjectUrl || "",
     githubUrl: doc.githubUrl || "",
@@ -163,7 +175,7 @@ export async function getPublicCertificates(): Promise<Certificate[]> {
           _ref: c.category || "web",
           title: c.category || "Web Development",
         },
-        imageUrl: c.image || "/Hero3DMe.png",
+        imageUrl: normalizeImageUrl(c.image) || "/Hero3DMe.png",
         link: c.link || "",
         verificationUrl: c.link || "",
         verificationCode: c.code || "",
