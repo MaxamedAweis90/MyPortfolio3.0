@@ -14,6 +14,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
+import { AdminLoginForm } from "@/components/AdminLoginForm";
 
 type LoginStage =
   | "ROOT" // Must run 'cd ugaas'
@@ -118,6 +119,7 @@ function TerminalLoginForm() {
   const [domain, setDomain] = useState("portfolio.dev");
 
   // Terminal state
+  const [viewMode, setViewMode] = useState<"terminal" | "form">("terminal");
   const [stage, setStage] = useState<LoginStage>("ROOT");
   const [currentPath, setCurrentPath] = useState("~");
   const [inputVal, setInputVal] = useState("");
@@ -403,6 +405,30 @@ function TerminalLoginForm() {
 
     setLines((prev) => [...prev, newPromptLine]);
     pushToHistory(rawVal);
+
+    // CHECK FOR FORM MODE COMMAND: npm -form (works in any stage)
+    if (
+      firstCmd === "npm -form" ||
+      firstCmd === "npm --form" ||
+      firstCmd === "npm -f" ||
+      firstCmd === "npm form" ||
+      firstCmd === "npm run form" ||
+      firstCmd === "form" ||
+      firstCmd === "gui"
+    ) {
+      setLines((prev) => [
+        ...prev,
+        {
+          id: `form-switch-${Date.now()}`,
+          type: "boot",
+          text: "[UI] Switching to Graphic Form Login (mobile/GUI alternative)...",
+        },
+      ]);
+      setTimeout(() => {
+        setViewMode("form");
+      }, 350);
+      return;
+    }
 
     if (!isEnteringCredentials) {
       // CHECK IF CURRENTLY PROVIDING TIMEOUT SECRET PHRASE
@@ -1190,8 +1216,18 @@ function TerminalLoginForm() {
         }`}
       />
 
-      {/* Auto-expanding Terminal Window (Fits wide lines dynamically) */}
-      <motion.div
+      {/* Terminal or Alternative Form View */}
+      {viewMode === "form" ? (
+        <AdminLoginForm
+          callbackUrl={callbackUrl}
+          isDarkMode={isDarkMode}
+          onToggleTheme={toggleTheme}
+          onSwitchToTerminal={() => setViewMode("terminal")}
+          onSuccess={() => setIsLaunchingApp(true)}
+        />
+      ) : (
+        /* Auto-expanding Terminal Window (Fits wide lines dynamically) */
+        <motion.div
         initial={{ opacity: 0, scale: 0.98, y: 10 }}
         animate={
           isLaunchingApp
@@ -1239,48 +1275,8 @@ function TerminalLoginForm() {
             <span className="truncate">terminal ~ bash</span>
           </div>
 
-          {/* Right Action: Privacy Stealth Mode & Quick Theme Toggle Button */}
+          {/* Right Action: Quick Theme Toggle Button */}
           <div className="flex items-center gap-1.5 justify-end">
-            {/* Stealth Blur Privacy Toggle Button */}
-            <button
-              onClick={() => {
-                const next = !isPrivacyBlurred;
-                setIsPrivacyBlurred(next);
-                try {
-                  localStorage.setItem(
-                    "ugaas_terminal_privacy_blur",
-                    String(next),
-                  );
-                } catch {}
-              }}
-              type="button"
-              title={
-                isPrivacyBlurred
-                  ? "Stealth Blur: ACTIVE (Click to unblur or run 'hide -terminal false')"
-                  : "Stealth Blur: OFF (Click to blur or run 'hide -terminal true')"
-              }
-              aria-label="Toggle Privacy Blur"
-              className={`p-1.5 rounded-lg border transition-all duration-200 flex items-center gap-1 text-xs ${
-                isPrivacyBlurred
-                  ? "bg-amber-500/15 border-amber-500/40 text-amber-400 hover:bg-amber-500/25"
-                  : isDarkMode
-                    ? "bg-[#161D2B] border-[#2A374A] text-slate-400 hover:text-white hover:bg-[#1E283A]"
-                    : "bg-[#F1F5F9] border-[#CBD5E1] text-slate-600 hover:text-slate-900 hover:bg-[#E2E8F0]"
-              }`}
-            >
-              {isPrivacyBlurred ? (
-                <>
-                  <EyeOff className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="hidden sm:inline text-[10px] font-bold text-amber-400 tracking-wider">
-                    BLUR ON
-                  </span>
-                </>
-              ) : (
-                <Eye className="w-3.5 h-3.5" />
-              )}
-            </button>
-
-            {/* Quick Theme Toggle Button */}
             <button
               onClick={toggleTheme}
               type="button"
@@ -1616,6 +1612,7 @@ function TerminalLoginForm() {
           <div ref={terminalBottomRef} />
         </div>
       </motion.div>
+      )}
 
       {/* App Launch Shutter Overlay */}
       {isLaunchingApp && (
