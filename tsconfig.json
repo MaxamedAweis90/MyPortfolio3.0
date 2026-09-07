@@ -1,58 +1,23 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./packages/config/tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
-    "module": "esnext",
-    "esModuleInterop": true,
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/app/*",
-        "./src/*"
-      ],
-      "@/components/*": [
-        "./src/app/components/*"
-      ],
-      "@/lib/*": [
-        "./src/app/lib/*"
-      ],
-      "@/ugaas/*": [
-        "./src/app/ugaas/*",
-        "./src/ugaas/*"
-      ],
-      "@ugaas/*": [
-        "./src/app/ugaas/*",
-        "./src/ugaas/*"
-      ]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+      "@portfolio/ui": ["./packages/ui/src"],
+      "@portfolio/database": ["./packages/database/src"],
+      "@portfolio/types": ["./packages/types/src"],
+      "@portfolio/config": ["./packages/config"]
+    }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    "scripts/**/*.ts",
+    "tests/**/*.ts",
+    "playwright.config.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    ".turbo"
   ]
 }

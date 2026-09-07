@@ -1,0 +1,11 @@
+{
+  "name": "@portfolio/config",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.js",
+  "exports": {
+    "./tailwind": "./tailwind.config.mjs",
+    "./eslint": "./eslint.base.mjs",
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  }
+}

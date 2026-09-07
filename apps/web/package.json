@@ -1,33 +1,18 @@
 {
-  "name": "myportfolio3.0",
+  "name": "web",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.28.2",
-  "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=9.0.0"
-  },
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "start": "next start",
-    "lint": "turbo run lint",
-    "test": "playwright test",
-    "test:headed": "playwright test --headed",
-    "test:frontend": "playwright test tests/frontend",
-    "test:frontend:headed": "playwright test tests/frontend --headed",
-    "test:ugaas": "playwright test tests/ugaas",
-    "test:ugaas:headed": "playwright test tests/ugaas --headed",
-    "test:ui": "playwright test --ui",
-    "test:report": "playwright show-report",
-    "test:mobile": "playwright test --project=\"Mobile Chrome (Android)\" --project=\"Mobile Safari (iOS)\"",
-    "perf:audit": "npm run build && lhci autorun",
-    "perf:mobile": "lhci autorun",
-    "db:seed": "npx tsx scripts/seed-database.ts",
-    "db:seed:admin": "npx tsx scripts/seed-admin.ts",
-    "admin:seed": "npx tsx scripts/seed-admin.ts"
+    "dev": "next dev --turbopack -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@portfolio/config": "workspace:*",
+    "@portfolio/database": "workspace:*",
+    "@portfolio/types": "workspace:*",
+    "@portfolio/ui": "workspace:*",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-dropdown-menu": "^2.1.24",
     "@radix-ui/react-label": "^2.1.15",
@@ -35,11 +20,9 @@
     "@radix-ui/react-slot": "^1.3.3",
     "@radix-ui/react-switch": "^1.3.7",
     "@radix-ui/react-tabs": "^1.1.21",
-    "@tailwindcss/postcss": "^4.1.5",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.0",
     "aos": "^2.3.4",
-    "better-auth": "^1.1.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.1",
@@ -63,8 +46,6 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.15.1",
-    "@playwright/test": "^1.62.1",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.7",
@@ -73,8 +54,6 @@
     "eslint-config-next": "15.5.12",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
-    "tsx": "^4.19.3",
-    "turbo": "^2.10.12",
     "typescript": "^5.6.3"
   }
 }

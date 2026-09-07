@@ -1,0 +1,857 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================
+   THEME TOKENS — Light mode = DEFAULT
+   ============================================= */
+:root,
+[data-theme="light"] {
+  --color-mainBg: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-borderSubtle: #cbd5e1;
+  --color-primaryText: #0f172a;
+  --color-mutedText: #475569;
+}
+
+/* Dark mode — (mytheme / dark) */
+[data-theme="mytheme"],
+[data-theme="dark"] {
+  --color-mainBg: #11161d;
+  --color-surface: #1d2631;
+  --color-borderSubtle: #2c394b;
+  --color-primaryText: #e2e8f0;
+  --color-mutedText: #94a3b8;
+}
+
+/* =============================================
+   LIGHT MODE — Override Tailwind compiled utilities
+   Tailwind bakes in static hex at build time, so we
+   need CSS-level overrides scoped to data-theme=light
+   ============================================= */
+[data-theme="light"] .bg-mainBg {
+  background-color: #f1f5f9 !important;
+}
+[data-theme="light"] .bg-surface {
+  background-color: #ffffff !important;
+}
+[data-theme="light"] .text-primaryText {
+  color: #0f172a !important;
+}
+[data-theme="light"] .text-mutedText {
+  color: #475569 !important;
+}
+[data-theme="light"] .border-borderSubtle {
+  border-color: #cbd5e1 !important;
+}
+
+/* Opacity-modified variants */
+[data-theme="light"] .bg-surface\/85 {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+[data-theme="light"] .bg-surface\/90 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+[data-theme="light"] .bg-surface\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+[data-theme="light"] .bg-surface\/98 {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+}
+[data-theme="light"] .bg-mainBg\/80 {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+}
+[data-theme="light"] .bg-mainBg\/90 {
+  background-color: rgba(241, 245, 249, 0.9) !important;
+}
+[data-theme="light"] .bg-mainBg\/95 {
+  background-color: rgba(241, 245, 249, 0.95) !important;
+}
+[data-theme="light"] .border-borderSubtle\/50 {
+  border-color: rgba(203, 213, 225, 0.5) !important;
+}
+[data-theme="light"] .border-borderSubtle\/60 {
+  border-color: rgba(203, 213, 225, 0.6) !important;
+}
+[data-theme="light"] .border-borderSubtle\/80 {
+  border-color: rgba(203, 213, 225, 0.8) !important;
+}
+[data-theme="light"] .text-primaryText\/90 {
+  color: rgba(15, 23, 42, 0.9) !important;
+}
+[data-theme="light"] .text-mutedText\/80 {
+  color: rgba(71, 85, 105, 0.8) !important;
+}
+[data-theme="light"] .text-mutedText\/90 {
+  color: rgba(71, 85, 105, 0.9) !important;
+}
+
+/* Ring color (used on timeline nodes) */
+[data-theme="light"] .ring-mainBg {
+  --tw-ring-color: #f1f5f9 !important;
+}
+
+/* Body + html background */
+[data-theme="light"] body,
+[data-theme="light"] html {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Admin Specific Light Mode Overrides */
+[data-theme="light"] .bg-\[\#111622\],
+[data-theme="light"] .bg-\[\#0E131D\],
+[data-theme="light"] .bg-\[\#161C2C\] {
+  background-color: #ffffff !important;
+}
+
+[data-theme="light"] .bg-\[\#111622\]\/80,
+[data-theme="light"] .bg-\[\#111622\]\/70,
+[data-theme="light"] .bg-\[\#111622\]\/60,
+[data-theme="light"] .bg-\[\#111622\]\/50,
+[data-theme="light"] .bg-\[\#111622\]\/90,
+[data-theme="light"] .bg-\[\#111622\]\/95,
+[data-theme="light"] .bg-\[\#0E131D\]\/90,
+[data-theme="light"] .bg-\[\#0E131D\]\/80,
+[data-theme="light"] .bg-\[\#0E131D\]\/60,
+[data-theme="light"] .bg-\[\#0E131D\]\/95 {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+}
+
+[data-theme="light"] .border-\[\#222938\],
+[data-theme="light"] .border-\[\#222938\]\/80,
+[data-theme="light"] .border-\[\#222938\]\/60,
+[data-theme="light"] .border-\[\#222938\]\/50,
+[data-theme="light"] .border-\[\#222938\]\/40 {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] aside.bg-\[\#111622\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Light Mode Typography & Text Refinements */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"]
+  .text-white:not(
+    .bg-\[\#0B82EC\],
+    .bg-\[\#0B82EC\] *,
+    button.bg-\[\#0B82EC\],
+    button.bg-\[\#0B82EC\] *,
+    a.bg-\[\#0B82EC\],
+    a.bg-\[\#0B82EC\] *,
+    .bg-primary,
+    .bg-primary *,
+    .badge-primary,
+    .btn-primary,
+    .bg-\[\#00875A\],
+    .bg-\[\#00875A\] *,
+    .bg-black,
+    .bg-black *,
+    [class*="bg-black"],
+    [class*="bg-black"] *,
+    [class*="bg-slate-900"],
+    [class*="bg-slate-900"] *
+  ) {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .text-gray-100,
+[data-theme="light"] .text-gray-200,
+[data-theme="light"] .text-gray-300 {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .text-gray-400 {
+  color: #475569 !important;
+}
+
+[data-theme="light"] [data-tool-badge] {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] [data-tool-badge] span {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] tr.border-b {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] tr.bg-\[\#111622\]\/70,
+[data-theme="light"] tr.bg-\[\#111622\]\/80 {
+  background-color: #f8fafc !important;
+}
+
+[data-theme="light"]
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+    .bg-transparent
+  ):not([style*="background: transparent"]):not(
+    [style*="background-color: transparent"]
+  ):not([style*="transparent"]),
+[data-theme="light"] textarea:not(.bg-transparent),
+[data-theme="light"] select:not(.bg-transparent) {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* =============================================
+   CUSTOM SCROLLBAR STYLING
+   ============================================= */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.28) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.28);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(45, 212, 191, 0.6);
+}
+
+[data-theme="light"] .custom-scrollbar {
+  scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+}
+
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.45);
+}
+
+[data-theme="light"] .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(13, 148, 136, 0.65);
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+[data-theme="light"] .badge,
+[data-theme="light"] [class*="variant-secondary"] {
+  border-color: #cbd5e1 !important;
+}
+
+/* =============================================
+   WHOLE-APP THEME SWITCH ANIMATION
+   - Switching to Dark Mode: Circular wipe from TOP-RIGHT (Toggle Button)
+   - Switching to Light Mode: Circular wipe in reverse from BOTTOM-LEFT
+   ============================================= */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* Default / fallback wipe */
+::view-transition-new(root) {
+  z-index: 999999;
+  animation: theme-wipe-top-right 2.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 1. Switching to DARK MODE: Wipe expands from Top-Right (near toggle button) */
+[data-theme-transition="to-dark"]::view-transition-new(root) {
+  z-index: 999999;
+  animation: theme-wipe-top-right 2.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes theme-wipe-top-right {
+  0% {
+    clip-path: circle(0% at 90% 40px);
+  }
+  100% {
+    clip-path: circle(160% at 90% 40px);
+  }
+}
+
+/* 2. Switching to LIGHT MODE: Wipe expands in reverse from Bottom-Left */
+[data-theme-transition="to-light"]::view-transition-new(root) {
+  z-index: 999999;
+  animation: theme-wipe-bottom-left 1.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes theme-wipe-bottom-left {
+  0% {
+    clip-path: circle(0% at 0% 100%);
+  }
+  100% {
+    clip-path: circle(160% at 0% 100%);
+  }
+}
+
+/* Smooth color fallback for elements */
+body,
+section,
+nav {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+}
+
+/* Automatically apply .cursor-target styles to all buttons */
+button {
+  /* This lets GSAP detect it as a cursor-target */
+  position: relative; /* ensure layout behaves well */
+}
+
+button::before {
+  content: "";
+  display: none; /* just to show it could be customized */
+}
+
+/* Let the custom cursor system target buttons */
+button.cursor-target,
+button {
+  /* optional: add a style hook if needed */
+}
+
+/* Tooltip */
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Initially, position the tooltip slightly above its final drop-down position */
+.tooltip {
+  position: absolute;
+  top: 100%; /* places it below the link */
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: #333;
+  color: #fff;
+
+  /* WhatsApp-like thin scrollbar for chat areas */
+  .scrollbar-whatsapp {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+  }
+  .scrollbar-whatsapp::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-whatsapp::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-whatsapp::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 9999px;
+  }
+  @media (max-width: 640px) {
+    /* Hide scrollbar on small screens for a cleaner mobile look */
+    .scrollbar-whatsapp {
+      scrollbar-width: none;
+    }
+    .scrollbar-whatsapp::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Tooltip arrow pointing upward toward the link */
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+}
+
+/* Keyframe for the drop-down effect */
+@keyframes dropDown {
+  from {
+    transform: translateX(-50%) translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Keyframe for the shake effect */
+@keyframes shake {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-50%) translateY(0) rotate(7deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(0) rotate(-7deg);
+  }
+  75% {
+    transform: translateX(-50%) translateY(0) rotate(1deg);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+}
+
+/* On hover: first drop down then shake */
+.tooltip-container:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  animation:
+    dropDown 0.3s ease-out forwards,
+    shake 0.5s ease-in-out 0.3s forwards;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  --color: rgba(44, 57, 75, 0.25);
+  background-color: #11161d;
+  color: #e2e8f0;
+  background-image:
+    linear-gradient(
+      0deg,
+      transparent 24%,
+      var(--color) 25%,
+      var(--color) 26%,
+      transparent 27%,
+      transparent 74%,
+      var(--color) 75%,
+      var(--color) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      var(--color) 25%,
+      var(--color) 26%,
+      transparent 27%,
+      transparent 74%,
+      var(--color) 75%,
+      var(--color) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 50px 50px;
+}
+
+/* Hide the native browser cursor on body */
+body {
+  cursor: none;
+}
+
+/* Restore standard browser cursors on Navbar elements */
+nav,
+nav *,
+header,
+header * {
+  cursor: auto !important;
+}
+nav a,
+nav button,
+nav [role="button"],
+header a,
+header button {
+  cursor: pointer !important;
+}
+
+/* Smooth Natural Left & Right Waving Animation for Hand Emoji */
+.animate-wave {
+  display: inline-block;
+  transform-origin: 75% 75%;
+  animation: wave-hand 2.5s ease-in-out infinite;
+}
+
+@keyframes wave-hand {
+  0% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(18deg);
+  }
+  30% {
+    transform: rotate(-12deg);
+  }
+  45% {
+    transform: rotate(18deg);
+  }
+  60% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(12deg);
+  }
+  85% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Main custom cursor styling using CSS custom properties for positioning */
+.custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  width: 20px;
+  height: 20px;
+  left: var(--cursor-x, 0);
+  top: var(--cursor-y, 0);
+  background: radial-gradient(
+    circle,
+    rgba(255, 165, 0, 1) 0%,
+    rgba(255, 69, 0, 1) 60%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.2s,
+    height 0.2s,
+    background 0.2s;
+  z-index: 9999;
+}
+
+/* Cursor appearance when hovering over clickable elements */
+.custom-cursor.hover {
+  background: #fff;
+  width: 60px;
+  height: 60px;
+  backdrop-filter: grayscale(1);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  cursor: none;
+  zoom: 1;
+}
+
+/* Tail styling for a flame-like trailing effect */
+.cursor-tail {
+  position: fixed;
+  pointer-events: none;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 140, 0, 0.8) 0%,
+    rgba(255, 69, 0, 0.5) 70%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9998;
+}
+
+/* 🌟 Global Container for Consistency */
+.container {
+  @apply max-w-screen-2xl  mx-auto px-4 sm:px-8 md:px-12;
+}
+
+/* 🌟 Responsive Font Sizes */
+h1 {
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold;
+}
+h2 {
+  @apply text-2xl md:text-3xl lg:text-4xl font-semibold;
+}
+p {
+  @apply text-base md:text-lg;
+}
+
+/* 🌟 Section Spacing */
+.section {
+  height: 100%;
+  @apply py-12 md:py-16 lg:py-20;
+}
+
+/* 🌟 Flexbox Centering */
+.flex-center {
+  @apply flex justify-center items-center;
+}
+
+/* 🌟 Button Styling */
+.btn {
+  @apply bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition;
+}
+
+/* 🌟 section-header */
+
+/* Base styling for section headers */
+.section-header {
+  display: inline-block; /* Shrink to fit text */
+  text-align: center;
+  margin-bottom: 5rem; /* Space below the header */
+  font-size: 2.2rem; /* Adjust the size as needed */
+  font-weight: bold;
+  color: #ffffff; /* Text color */
+  text-transform: uppercase; /* Optional: makes text uppercase */
+  letter-spacing: 1px; /* Optional: adds spacing between letters */
+  position: relative;
+  z-index: 10; /* Brings it forward */
+  -webkit-text-stroke: 2px #3a137a; /* Outline size and color */
+  text-shadow: 2px 2px 5px rgba(221, 220, 220, 0.753); /* Optional: Adds depth */
+}
+
+/* Optional: Add a subtle decoration under the header */
+.section-header::after {
+  content: "";
+  position: absolute;
+  width: 80%; /* Match the text width */
+  height: 30px;
+  background-color: #fef3c7; /* Customize the color */
+  bottom: -10px; /* Adjust vertical position */
+  left: 50%;
+  transform: translateX(-50%); /* Center under the text */
+  z-index: -1; /* Place behind the header */
+  border-radius: 5px; /* Optional: Adds rounded corners */
+  border-color: #fef3c7;
+  /* Shadow effect */
+  --tw-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  --tw-shadow-colored: 0px 10px 20px var(--tw-shadow-color);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+    var(--tw-shadow);
+}
+
+/* 🌟 Footer */
+.footer {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-borderSubtle);
+  color: var(--color-primaryText);
+}
+
+[data-theme="light"] .footer {
+  background-color: #ffffff !important;
+  border-top: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+@media screen and (max-width: 818px) {
+  .custom-cursor {
+    display: none;
+  }
+
+  .cursor-tail {
+    display: none;
+  }
+
+  body {
+    cursor: default;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .footer .socials {
+    display: grid;
+    grid-template-columns: 1fr; /* Ensures one column */
+    gap: 10px; /* Adjust space between links */
+    text-align: left; /* Aligns text inside links to the left */
+    justify-items: start; /* Ensures the links are aligned to the left */
+  }
+
+  .footer .socials a {
+    font-size: small;
+  }
+}
+
+/* Scroll down style */
+.scroll-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0px;
+}
+
+@media screen and (max-width: 818px) {
+  .scroll-container {
+    display: none;
+  }
+}
+
+.mouse {
+  --color: black;
+  width: 30px;
+  height: 50px;
+  border: 3px solid var(--color);
+  border-radius: 25px;
+  position: relative;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.scroll-ball {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  background-color: var(--color);
+  border-radius: 50%;
+  animation: scroll-ball-move 2s infinite;
+  box-shadow: 0px -5px 3px 1px #2a547066;
+}
+
+@keyframes scroll-ball-move {
+  0% {
+    opacity: 0;
+    height: 6px;
+    top: 10px;
+  }
+  40% {
+    opacity: 1;
+    height: 10px;
+  }
+  80% {
+    opacity: 0;
+    top: 30px;
+    height: 10px;
+  }
+  100% {
+    opacity: 0;
+    height: 3px;
+  }
+}
+
+.chevrons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0px;
+}
+
+.chevrondown {
+  border: solid var(--color);
+  border-width: 0 3px 3px 0;
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  margin-top: 0px;
+  animation: chevron-pulse 500ms ease infinite alternate;
+}
+
+.chevrondown:nth-child(2) {
+  animation-delay: 250ms;
+}
+
+@keyframes chevron-pulse {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+/* globals.css */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-screenshots {
+  scrollbar-width: none;
+}
+
+.scrollbar-screenshots::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .scrollbar-screenshots {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(2, 129, 220, 0.45) transparent;
+  }
+
+  .scrollbar-screenshots::-webkit-scrollbar {
+    display: block;
+    height: 6px;
+  }
+
+  .scrollbar-screenshots::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-screenshots::-webkit-scrollbar-thumb {
+    background-color: rgba(2, 129, 220, 0.45);
+    border-radius: 9999px;
+  }
+}
+
+/* Infinite Looping Tech Marquee Animations */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee-left {
+  animation: marquee-left 45s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right {
+  animation: marquee-right 45s linear infinite;
+  will-change: transform;
+}
+
+/* Shimmer Loading Skeleton Wave */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2.2s infinite ease-in-out;
+}

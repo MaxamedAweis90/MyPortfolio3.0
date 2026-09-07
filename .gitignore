@@ -1,8 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -11,14 +9,14 @@
 !.yarn/versions
 
 # testing
-/coverage
+coverage/
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
+# next.js & turbopack build caches
+.next/
+**/.next/
+out/
+build/
+dist/
 
 # misc
 .DS_Store
@@ -30,22 +28,35 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+!.env.example
 
 # vercel
-.vercel
+.vercel/
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
 # Playwright & Lighthouse CI
-node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/playwright/.auth/
-/.lighthouseci/
-/lighthouse-report/
+test-results/
+playwright-report/
+blob-report/
+.lighthouseci/
+lighthouse-report/
+
+# Turborepo
+.turbo/
+**/.turbo/
+
+# Uploaded Media Assets (keep directory structure via .gitkeep)
+**/public/uploads/**
+!**/public/uploads/**/
+!**/public/uploads/**/.gitkeep
+!**/public/uploads/.gitkeep
+
+# Local environment shims
+powershell.cmd
+
+
