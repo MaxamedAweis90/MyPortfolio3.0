@@ -35,25 +35,34 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    const adminAppUrl = process.env.ADMIN_APP_URL || "http://localhost:3001";
-    return [
-      {
-        source: "/ugaas",
-        destination: `${adminAppUrl}/ugaas`,
-      },
-      {
-        source: "/ugaas/:path*",
-        destination: `${adminAppUrl}/ugaas/:path*`,
-      },
-      {
-        source: "/api/auth/:path*",
-        destination: `${adminAppUrl}/api/auth/:path*`,
-      },
-      {
-        source: "/api/ugaas/:path*",
-        destination: `${adminAppUrl}/api/ugaas/:path*`,
-      },
-    ];
+    const adminAppUrl =
+      process.env.ADMIN_APP_URL ||
+      (process.env.NODE_ENV === "production"
+        ? "https://ugaas.engaweis.dev"
+        : "http://localhost:3001");
+
+    return {
+      beforeFiles: [],
+      afterFiles: [
+        {
+          source: "/ugaas",
+          destination: `${adminAppUrl}/ugaas`,
+        },
+        {
+          source: "/ugaas/:path*",
+          destination: `${adminAppUrl}/ugaas/:path*`,
+        },
+        {
+          source: "/api/auth/:path*",
+          destination: `${adminAppUrl}/api/auth/:path*`,
+        },
+        {
+          source: "/api/ugaas/:path*",
+          destination: `${adminAppUrl}/api/ugaas/:path*`,
+        },
+      ],
+      fallback: [],
+    };
   },
 };
 
