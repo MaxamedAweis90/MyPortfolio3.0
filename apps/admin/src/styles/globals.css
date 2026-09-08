@@ -488,6 +488,17 @@ header button {
   cursor: pointer !important;
 }
 
+/* Restore standard browser text cursor on inputs, textareas, and code editors */
+input,
+textarea,
+select,
+[contenteditable="true"],
+.terminal-input,
+pre,
+code {
+  cursor: text !important;
+}
+
 /* Smooth Natural Left & Right Waving Animation for Hand Emoji */
 .animate-wave {
   display: inline-block;

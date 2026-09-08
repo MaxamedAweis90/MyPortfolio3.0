@@ -3,7 +3,14 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import type { ExperienceItem, CertificateItem } from "@/data/experienceData";
+import {
+  experiencesData,
+  educationData,
+  certificationsData,
+  type ExperienceItem,
+  type CertificateItem,
+} from "@/data/experienceData";
+import { normalizeImageUrl } from "@/lib/portfolio-mappers";
 import {
   RiBriefcase4Line,
   RiGraduationCapLine,
@@ -27,9 +34,9 @@ import {
 } from "lucide-react";
 
 export default function ExperiencePage() {
-  const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
-  const [education, setEducation] = useState<any[]>([]);
-  const [certifications, setCertifications] = useState<CertificateItem[]>([]);
+  const [experiences, setExperiences] = useState<ExperienceItem[]>(experiencesData);
+  const [education, setEducation] = useState<any[]>(educationData);
+  const [certifications, setCertifications] = useState<CertificateItem[]>(certificationsData);
   const [activeSection, setActiveSection] = useState<
     "experience" | "education" | "certificates"
   >("experience");
@@ -97,19 +104,21 @@ export default function ExperiencePage() {
 
           if (Array.isArray(data.certificates)) {
             data.certificates.forEach((c: any) => {
+              const rawImg = c.image || "/Hero3DMe.png";
+              const normalizedImg = normalizeImageUrl(rawImg);
               allCertItems.push({
                 name: c.title,
                 issuer: c.issuer || "Certificate Authority",
                 date: c.createdAt
                   ? new Date(c.createdAt).getFullYear().toString()
                   : "2024",
-                image: c.image || "/Hero3DMe.png",
+                image: normalizedImg,
                 pdfUrl:
                   c.pdfUrl ||
                   (c.link && c.link.endsWith(".pdf")
                     ? c.link
-                    : c.image?.endsWith(".pdf")
-                      ? c.image
+                    : rawImg.endsWith(".pdf")
+                      ? normalizedImg
                       : "/resume.pdf"),
                 verifyUrl: c.link || c.credentialUrl || "",
                 credentialId: c.code || c.credentialId || "",
@@ -124,12 +133,14 @@ export default function ExperiencePage() {
             data.experiences
               .filter((e: any) => e.type === "certification")
               .forEach((e: any) => {
+                const rawImg = e.image || "/Hero3DMe.png";
+                const normalizedImg = normalizeImageUrl(rawImg);
                 allCertItems.push({
                   name: e.role,
                   issuer: e.company || "Certificate Authority",
                   date: e.duration || "2024",
-                  image: e.image || "/Hero3DMe.png",
-                  pdfUrl: e.image?.endsWith(".pdf") ? e.image : "/resume.pdf",
+                  image: normalizedImg,
+                  pdfUrl: rawImg.endsWith(".pdf") ? normalizedImg : "/resume.pdf",
                   verifyUrl: e.credentialUrl || "",
                   credentialId: e.credentialId || "",
                   badge: e.badges?.[0] || "Verified Credential",

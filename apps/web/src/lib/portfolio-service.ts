@@ -3,7 +3,13 @@ import { Project as ProjectModel } from "@portfolio/database";
 import { ProjectCategory as ProjectCategoryModel } from "@portfolio/database";
 import { Experience as ExperienceModel } from "@portfolio/database";
 import { Certificate as CertificateModel } from "@portfolio/database";
-import type { ExperienceItem } from "@/data/experienceData";
+import {
+  experiencesData,
+  educationData,
+  certificationsData,
+  type ExperienceItem,
+  type CertificateItem,
+} from "@/data/experienceData";
 import type { Project, Tool, Certificate } from "@portfolio/types";
 
 import { normalizeImageUrl } from "./portfolio-mappers";
@@ -216,3 +222,114 @@ export async function getPublicProjectCategories(): Promise<string[]> {
 
   return ["Web", "Mobile", "Design"];
 }
+
+/**
+ * Fetches all experience sections (career, education, certifications)
+ * directly from MongoDB Atlas with fallback.
+ */
+export async function getPublicExperiencePageData(): Promise<{
+  experiences: ExperienceItem[];
+  education: any[];
+  certifications: CertificateItem[];
+}> {
+  try {
+    await connectToDatabase();
+    const [careerDocs, eduDocs, certExps, certDocs] = await Promise.all([
+      ExperienceModel.find({ type: "career" }).sort({ order: 1, createdAt: -1 }).lean(),
+      ExperienceModel.find({ type: "education" }).sort({ order: 1, createdAt: -1 }).lean(),
+      ExperienceModel.find({ type: "certification" }).sort({ order: 1, createdAt: -1 }).lean(),
+      CertificateModel.find().sort({ order: 1, createdAt: -1 }).lean(),
+    ]);
+
+    const experiences: ExperienceItem[] = (careerDocs || []).map((doc: any) => ({
+      id: doc.id || doc._id?.toString(),
+      role: doc.role,
+      company: doc.company,
+      companyShort:
+        doc.company
+          .split(" ")
+          .map((w: string) => w[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 4) || "EXP",
+      location: doc.badges?.[0] || "Banadir, Somalia",
+      period: doc.duration || "Present",
+      type: doc.badges?.[1] || doc.badges?.[0] || "Career Experience",
+      badgeBg: "bg-blue-500/10",
+      badgeColor: "text-blue-400 border-blue-500/30",
+      highlights: doc.highlights || [],
+      technologies: doc.techStack || [],
+    }));
+
+    const education = (eduDocs || []).map((doc: any) => ({
+      degree: doc.role,
+      institution: doc.company,
+      period: doc.duration,
+      location: doc.badges?.[0] || "Somalia",
+      details: doc.highlights?.[0] || "",
+      relevantCourses: doc.techStack || [],
+    }));
+
+    const allCertItems: (CertificateItem & { order?: number })[] = [];
+
+    (certDocs || []).forEach((c: any) => {
+      const rawImg = c.image || "/Hero3DMe.png";
+      const normalizedImg = normalizeImageUrl(rawImg);
+      allCertItems.push({
+        name: c.title,
+        issuer: c.issuer || "Certificate Authority",
+        date: c.createdAt ? new Date(c.createdAt).getFullYear().toString() : "2024",
+        image: normalizedImg,
+        pdfUrl: c.pdfUrl || (c.link?.endsWith(".pdf") ? c.link : (rawImg.endsWith(".pdf") ? normalizedImg : "/resume.pdf")),
+        verifyUrl: c.link || c.credentialUrl || "",
+        credentialId: c.code || c.credentialId || "",
+        badge: c.category || "Professional Certification",
+        category: c.category || "Certification",
+        order: c.order || 0,
+      });
+    });
+
+    (certExps || []).forEach((e: any) => {
+      const rawImg = e.image || "/Hero3DMe.png";
+      const normalizedImg = normalizeImageUrl(rawImg);
+      allCertItems.push({
+        name: e.role,
+        issuer: e.company || "Certificate Authority",
+        date: e.duration || "2024",
+        image: normalizedImg,
+        pdfUrl: rawImg.endsWith(".pdf") ? normalizedImg : "/resume.pdf",
+        verifyUrl: e.credentialUrl || "",
+        credentialId: e.credentialId || "",
+        badge: e.badges?.[0] || "Verified Credential",
+        category: e.badges?.[0] || "Certification",
+        order: e.order || 0,
+      });
+    });
+
+    // Deduplicate certificates by name
+    const uniqueMap = new Map();
+    allCertItems.forEach((item) => {
+      if (item.name && !uniqueMap.has(item.name)) {
+        uniqueMap.set(item.name, item);
+      }
+    });
+
+    const certifications = Array.from(uniqueMap.values()).sort(
+      (a: any, b: any) => (a.order || 0) - (b.order || 0)
+    );
+
+    return {
+      experiences: experiences.length ? experiences : experiencesData,
+      education: education.length ? education : educationData,
+      certifications: certifications.length ? certifications : certificationsData,
+    };
+  } catch (error) {
+    console.error("❌ [Portfolio Service] Failed to load experience page data from DB:", error);
+    return {
+      experiences: experiencesData,
+      education: educationData,
+      certifications: certificationsData,
+    };
+  }
+}
+
